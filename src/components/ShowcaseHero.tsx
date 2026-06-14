@@ -53,11 +53,26 @@ export default function ShowcaseHero() {
               transition={{ duration: 0.75, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
               className="relative w-full max-w-[408px] md:w-[525px] lg:w-[650px] h-48 md:h-64 lg:h-80 mx-auto mb-1 md:mb-0"
             >
+              {/* Animated gold shine */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(ellipse 60% 55% at 50% 52%, rgba(212,175,55,0.6) 0%, rgba(212,175,55,0.18) 42%, transparent 68%)',
+                  filter: 'blur(30px)',
+                }}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 1, 0.5],
+                  x: [-10, 10, -10],
+                  y: [-5, 5, -5],
+                }}
+                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              />
               <Image
                 src="/images/gurkerlcup.webp"
                 alt="Gurkerl Cup 2026"
                 fill
-                className="object-contain"
+                className="object-contain relative"
                 priority
                 onError={() => setLogoErr(true)}
               />
