@@ -136,7 +136,13 @@ export default function RegistrationForm() {
                 </div>
               ))}
             </div>
-            <p className="font-nunito text-white/30 text-xs mt-8">
+            <div className="mt-5 p-4 rounded-xl border border-[#52B788]/20 bg-[#52B788]/5 text-left">
+              <p className="font-bebas text-xs tracking-widest text-[#52B788] mb-1.5">WICHTIG · CHECK-IN</p>
+              <p className="font-nunito text-sm text-white/70 leading-relaxed">
+                Bitte seid <span className="text-white font-700">30 Minuten vor dem Start</span> beim Check-In – dort bekommt ihr euren Gurkerl-Pass und die Joker-Karten.
+              </p>
+            </div>
+            <p className="font-nunito text-white/30 text-xs mt-6">
               Bis am 18. Juli 2026 in Pöttsching! 🎉
             </p>
           </motion.div>
