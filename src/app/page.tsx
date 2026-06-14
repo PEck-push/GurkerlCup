@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import ShowcaseHero from '@/components/ShowcaseHero';
 import HowItWorks from '@/components/HowItWorks';
 import Schedule from '@/components/Schedule';
+import SpritzerwertungSection from '@/components/SpritzerwertungSection';
 import RegistrationForm from '@/components/RegistrationForm';
 
 export default function HomePage() {
@@ -12,6 +13,7 @@ export default function HomePage() {
         <ShowcaseHero />
         <HowItWorks />
         <Schedule />
+        <SpritzerwertungSection />
         <RegistrationForm />
 
         {/* Footer */}
