@@ -54,16 +54,8 @@ export default function SpritzerwertungSection() {
 
             {/* Content */}
             <div className="order-1 md:order-2 flex-1 p-8 md:p-10">
-              {/* Badge */}
-              <div className="flex justify-center md:justify-start mb-5">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/8">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-                  <span className="font-bebas text-xs tracking-[0.25em] text-[#F0CE67]">SPECIAL AWARD</span>
-                </div>
-              </div>
-
               <h2 className="font-fredoka font-700 text-4xl md:text-5xl text-white mb-1 leading-tight text-center md:text-left">
-                Die Spritzerwertung
+                Spritzerwertung
               </h2>
               <p className="font-bebas text-sm tracking-[0.2em] text-red-400/70 mb-5 text-center md:text-left">
                 DIE HÄRTESTE WERTUNG DES ABENDS
@@ -75,21 +67,6 @@ export default function SpritzerwertungSection() {
                 Wertung geht in die nächste Runde.
               </p>
 
-              {/* Titles */}
-              <div className="grid sm:grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-red-900/40 bg-red-950/20 p-4">
-                  <p className="font-bebas text-sm tracking-[0.15em] text-red-400 mb-1">🍷 ROTWEINRITTER</p>
-                  <p className="font-nunito text-xs text-white/45 leading-relaxed">
-                    Wer bis zum Ende die Fassung bewahrt – mit Stil und ohne Flecken.
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/5 p-4">
-                  <p className="font-bebas text-sm tracking-[0.15em] text-[#F0CE67] mb-1">💦 SPRÜHERHUNTER</p>
-                  <p className="font-nunito text-xs text-white/45 leading-relaxed">
-                    Wer am meisten davonkommt – oder am wenigsten erwischt wird.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </motion.div>
