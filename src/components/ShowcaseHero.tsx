@@ -25,7 +25,7 @@ export default function ShowcaseHero() {
   return (
     <section
       id="disziplinen"
-      className="relative min-h-screen flex flex-col overflow-hidden pt-24 md:pt-28 pb-10"
+      className="relative min-h-screen flex flex-col overflow-hidden pt-20 md:pt-24 pb-10"
     >
       <AuroraBackground />
 
@@ -51,7 +51,7 @@ export default function ShowcaseHero() {
               initial={{ opacity: 0, scale: 0.88, filter: 'blur(12px)' }}
               animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
               transition={{ duration: 0.75, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-[360px] md:w-[525px] lg:w-[650px] h-44 md:h-64 lg:h-80 mx-auto"
+              className="relative w-[396px] md:w-[525px] lg:w-[650px] h-48 md:h-64 lg:h-80 mx-auto mb-1 md:mb-0"
             >
               <Image
                 src="/images/gurkerlcup.webp"
@@ -89,7 +89,7 @@ export default function ShowcaseHero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="font-nunito text-sm md:text-lg text-white/55 max-w-xl mx-auto mt-2 md:mt-4"
+            className="font-nunito text-sm md:text-lg text-white/55 max-w-xl mx-auto mt-4 md:mt-8 mb-2 md:mb-4"
           >
             10 Disziplinen. 3er-Teams.{' '}
             <span className="text-[#F0CE67] font-700">Ein Sieger.</span>

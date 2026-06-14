@@ -103,7 +103,6 @@ const typeConfig = {
 export default function Schedule() {
   return (
     <section id="zeitplan" className="py-24 px-6 md:px-16" style={{ background: '#111E15' }}>
-      <div className="section-divider mb-24" />
       <div className="max-w-3xl mx-auto">
         {/* Heading */}
         <motion.div
@@ -122,9 +121,6 @@ export default function Schedule() {
 
         {/* Timeline */}
         <div className="relative">
-          {/* Vertical line */}
-          <div className="hidden md:block absolute left-[68px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#2D6A4F]/40 to-transparent" />
-
           <div className="flex flex-col gap-2">
             {events.map((event, i) => {
               const cfg = typeConfig[event.type as keyof typeof typeConfig];
