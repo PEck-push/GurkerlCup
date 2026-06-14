@@ -37,6 +37,7 @@ export default function RegistrationForm() {
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [successEmail, setSuccessEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(true);
   const formRef = useRef<HTMLFormElement>(null);
 
   const validate = (): boolean => {
@@ -84,6 +85,7 @@ export default function RegistrationForm() {
       }
 
       setSuccessEmail(form.email.trim());
+      setEmailSent(data.emailSent ?? false);
       setStatus('success');
 
       if (typeof window !== 'undefined') {
@@ -123,10 +125,16 @@ export default function RegistrationForm() {
               Anmeldung erfolgreich!
             </h2>
             <p className="font-nunito text-[#52B788] mb-2">Team <strong className="text-white">{form.teamName}</strong> ist dabei.</p>
-            <p className="font-nunito text-white/50 text-sm">
-              Eine Bestätigung wurde an{' '}
-              <span className="text-[#D4AF37]">{successEmail}</span> gesendet.
-            </p>
+            {emailSent ? (
+              <p className="font-nunito text-white/50 text-sm">
+                Eine Bestätigung wurde an{' '}
+                <span className="text-[#D4AF37]">{successEmail}</span> gesendet.
+              </p>
+            ) : (
+              <p className="font-nunito text-amber-400/80 text-sm">
+                Bestätigungsmail konnte nicht gesendet werden – eure Anmeldung ist aber gespeichert.
+              </p>
+            )}
             <div className="mt-8 p-5 rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/5 text-left">
               <p className="font-bebas text-xs tracking-widest text-[#D4AF37] mb-3">EUER TEAM</p>
               {[form.player1, form.player2, form.player3].map((p, i) => (

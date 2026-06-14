@@ -150,17 +150,28 @@ export async function POST(request: NextRequest) {
   }
 
   // Send confirmation email
+  let emailSent = false;
+  let emailError: string | null = null;
   try {
-    await resend.emails.send({
-      from: `${process.env.RESEND_FROM_NAME ?? 'Gurkerl Cup 2026'} <${process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'}>`,
+    const fromAddress = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev';
+    const fromName    = process.env.RESEND_FROM_NAME  ?? 'Gurkerl Cup 2026';
+    const { data, error } = await resend.emails.send({
+      from: `${fromName} <${fromAddress}>`,
       to: [email.trim()],
       subject: `🥒 Team "${teamName}" ist beim Gurkerl Cup 2026 dabei!`,
       html: htmlEmail(teamName.trim(), [player1, player2, player3].map((p) => p.trim()), email),
     });
+    if (error) {
+      emailError = JSON.stringify(error);
+      console.error('Resend error:', error);
+    } else {
+      emailSent = true;
+      console.log('Email sent, id:', data?.id);
+    }
   } catch (mailError) {
-    console.error('Mail error:', mailError);
-    // Still return success – registration is saved
+    emailError = String(mailError);
+    console.error('Mail exception:', mailError);
   }
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, emailSent, emailError });
 }
