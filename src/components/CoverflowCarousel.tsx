@@ -288,8 +288,8 @@ function CardFace({
 }) {
   // Character dimensions relative to the card. Centered cards are larger and
   // positioned so the figure breaks above the card's top edge (pop-out effect).
-  const imgH = isCenter ? cardH * 0.74 : cardH * 0.52;
-  const bottomPct = isCenter ? 0.42 : 0.36; // higher = pops further out the top
+  const imgH = isCenter ? cardH * 0.81 : cardH * 0.57;
+  const bottomPct = isCenter ? 0.30 : 0.24; // higher = pops further out the top
 
   // Fall back to the emoji if the (optional) image is missing / fails to load.
   const [imgErr, setImgErr] = useState(false);

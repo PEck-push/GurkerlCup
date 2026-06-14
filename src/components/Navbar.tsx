@@ -13,6 +13,7 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [iconErr, setIconErr] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -42,16 +43,20 @@ export default function Navbar() {
           className="flex items-center gap-2.5 group"
         >
           <div className="relative w-9 h-9 md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110">
-            <Image
-              src="/images/logo.webp"
-              alt="Gurkerl Cup"
-              fill
-              className="object-contain"
-              priority
-            />
-            <span className="absolute inset-0 flex items-center justify-center text-2xl" aria-hidden>
-              🥒
-            </span>
+            {!iconErr ? (
+              <Image
+                src="/images/gurkerlcup-icon.webp"
+                alt=""
+                fill
+                className="object-contain"
+                priority
+                onError={() => setIconErr(true)}
+              />
+            ) : (
+              <span className="absolute inset-0 flex items-center justify-center text-2xl" aria-hidden>
+                🥒
+              </span>
+            )}
           </div>
           <span className="font-pacifico text-lg md:text-xl text-gold-gradient leading-none pt-1">
             Gurkerl&nbsp;Cup

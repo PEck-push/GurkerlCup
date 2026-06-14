@@ -36,8 +36,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'hasbro-simon',
-    name: 'Hasbro Simon',
-    subtitle: 'Gedächtnisspiel',
+    name: 'Farbblitz',
     category: 'Station 1',
     categoryVariant: 'green',
     emoji: '🟢',
@@ -99,7 +98,7 @@ export const disciplines: Discipline[] = [
     time: '1:30 Min. (fix)',
     scoring: 'Meiste richtige Songs',
     points: '12',
-    image: '/images/kazoomeister.webp',
+    image: '/images/kazzoomeister.webp',
   },
   {
     id: 'gurkerl-biathlon',
