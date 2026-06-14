@@ -21,13 +21,17 @@ export default function SpritzerwertungSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="rounded-3xl overflow-hidden border border-red-900/30"
+          className="relative rounded-3xl overflow-hidden border border-red-900/30"
           style={{
             background: 'linear-gradient(145deg, #1C0A0A 0%, #0F1208 60%, #0A1208 100%)',
             boxShadow: '0 32px 80px rgba(123,30,30,0.25), 0 0 0 1px rgba(212,175,55,0.08)',
           }}
         >
-          <div className="flex flex-col md:flex-row items-center gap-0">
+          {/* Full-card red atmosphere – spans image AND text area */}
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse 150% 110% at 15% 85%, rgba(160,25,25,0.55) 0%, transparent 55%)' }} />
+
+          <div className="relative flex flex-col md:flex-row items-center gap-0">
             {/* Image panel – below text on mobile, left on desktop */}
             <div className="order-2 md:order-1 relative w-full md:w-80 flex-shrink-0 h-64 md:h-auto md:min-h-[420px] flex items-center justify-center overflow-hidden"
               style={{ background: 'linear-gradient(160deg, #2A0A0A, #0F0505)' }}
