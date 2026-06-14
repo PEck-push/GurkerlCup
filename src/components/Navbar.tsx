@@ -58,9 +58,6 @@ export default function Navbar() {
               </span>
             )}
           </div>
-          <span className="font-pacifico text-lg md:text-xl text-gold-gradient leading-none pt-1">
-            Gurkerl&nbsp;Cup
-          </span>
         </button>
 
         {/* Desktop links */}
