@@ -11,6 +11,7 @@ export interface Discipline {
   teaser: string;
   time: string;
   scoring: string;
+  points: string;
   image?: string;
   badge?: string;
 }
@@ -29,6 +30,7 @@ export const disciplines: Discipline[] = [
       'Präzision ohne Berührung. Eine Holzstange, sechs Muttern – und die Uhr tickt. Alle Teams gleichzeitig. Wer stapelt am schnellsten?',
     time: 'Ca. 10 Min.',
     scoring: 'Zeitwertung',
+    points: '12',
     badge: 'OPENING',
   },
   {
@@ -45,6 +47,7 @@ export const disciplines: Discipline[] = [
       'Farbe folgt Farbe, Ton folgt Ton. Alle drei Teammitglieder treten an – die Scores werden addiert. Wer hat das beste Teamgedächtnis?',
     time: '3–5 Min.',
     scoring: 'Höchste Teamsumme',
+    points: '12',
     image: '/images/simon.webp',
   },
   {
@@ -61,6 +64,7 @@ export const disciplines: Discipline[] = [
       'Drei Boards, drei Distanzen. Je weiter, desto mehr Punkte – aber wer traut sich wirklich an die Schwer-Zone? 8 Würfe pro Person.',
     time: '5–7 Min.',
     scoring: 'Höchste Teampunktzahl',
+    points: '12',
   },
   {
     id: 'schwammstaffel',
@@ -75,6 +79,7 @@ export const disciplines: Discipline[] = [
       'Wasser muss fließen – durch Slalom, unten durch, oben drüber. Nach exakt 3 Minuten entscheidet die Küchenwaage. Gramm um Gramm.',
     time: '3 Min. (fix)',
     scoring: 'Meistes Wasser im Ziel',
+    points: '12',
   },
   {
     id: 'kazoomeister',
@@ -90,6 +95,7 @@ export const disciplines: Discipline[] = [
       'Mallorca-Hits, Austropop, Klassiker – gespielt auf einem sehr seltsamen Instrument. 90 Sekunden. Möglichst viele Songs erraten.',
     time: '1:30 Min. (fix)',
     scoring: 'Meiste richtige Songs',
+    points: '12',
   },
   {
     id: 'gurkerl-biathlon',
@@ -104,6 +110,7 @@ export const disciplines: Discipline[] = [
       'Gemeinsam laufen, zielen, treffen – und Strafrunden mögen. Das Signature Game des Gurkerl Cups. Jeder Fehler kostet wertvolle Zeit.',
     time: '4–6 Min.',
     scoring: 'Zeitwertung',
+    points: '12',
     badge: 'SIGNATURE',
   },
   {
@@ -119,6 +126,7 @@ export const disciplines: Discipline[] = [
       'Werfen ist leicht. Fangen ist die Kunst. Platzen ist Programm. Die Weiten aller drei Durchgänge werden addiert.',
     time: 'Ca. 8 Min.',
     scoring: 'Größte Distanzsumme',
+    points: '12',
     image: '/images/wasserbomben.webp',
   },
   {
@@ -134,6 +142,7 @@ export const disciplines: Discipline[] = [
       'Die Gurken wurden schon gegessen – jetzt kommen Tischtennisbälle rein. Beer-Pong-Stil auf Gurkengläser. 5 Bälle pro Person.',
     time: 'Ca. 3 Min.',
     scoring: 'Meiste Treffer',
+    points: '12',
   },
   {
     id: 'riesen-ringerl',
@@ -148,6 +157,7 @@ export const disciplines: Discipline[] = [
       'Alle Teams gleichzeitig. Ein Netz, ein Ball, keine Gnade. Nach jedem Kontakt läuft man rüber und stellt sich an. Fehler = Ausscheiden.',
     time: '15–20 Min.',
     scoring: 'Letztes Team gewinnt',
+    points: '20',
   },
   {
     id: 'baelle-chaos',
@@ -162,6 +172,7 @@ export const disciplines: Discipline[] = [
       'Verbundene Augen. Chaos-Feld voller Bälle. Teamkameraden schreien Anweisungen. 5 Minuten, alle Teams gleichzeitig. Alle Punkte doppelt!',
     time: 'Ca. 10 Min.',
     scoring: '×2 DOPPELTE PUNKTE!',
+    points: '40',
     badge: 'FINALE ×2',
   },
 ];

@@ -102,7 +102,7 @@ const typeConfig = {
 
 export default function Schedule() {
   return (
-    <section className="py-24 px-6 md:px-16" style={{ background: '#111E15' }}>
+    <section id="zeitplan" className="py-24 px-6 md:px-16" style={{ background: '#111E15' }}>
       <div className="section-divider mb-24" />
       <div className="max-w-3xl mx-auto">
         {/* Heading */}

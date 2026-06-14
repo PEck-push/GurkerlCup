@@ -78,7 +78,7 @@ const pointsTable = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-24 px-6 md:px-16 bg-[#0D2818] noise-overlay">
+    <section id="ablauf" className="py-24 px-6 md:px-16 bg-[#0D2818] noise-overlay relative">
       <div className="section-divider mb-24" />
 
       <div className="max-w-6xl mx-auto">
