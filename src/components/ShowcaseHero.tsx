@@ -51,7 +51,7 @@ export default function ShowcaseHero() {
               initial={{ opacity: 0, scale: 0.88, filter: 'blur(12px)' }}
               animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
               transition={{ duration: 0.75, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-[396px] md:w-[525px] lg:w-[650px] h-48 md:h-64 lg:h-80 mx-auto mb-1 md:mb-0"
+              className="relative w-full max-w-[408px] md:w-[525px] lg:w-[650px] h-48 md:h-64 lg:h-80 mx-auto mb-1 md:mb-0"
             >
               <Image
                 src="/images/gurkerlcup.webp"
