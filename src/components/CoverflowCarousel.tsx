@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, animate } from 'framer-motion';
 import Image from 'next/image';
 import type { Discipline } from '@/lib/disciplines';
 
@@ -72,11 +72,8 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
   const [moving, setMoving] = useState(false);
   const movingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // drag tracking
-  const pointerStart = useRef<{ x: number; y: number } | null>(null);
+  const stageX = useMotionValue(0);
   const dragged = useRef(false);
-  const isDragging = useRef(false);
-  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const update = () => setCompact(window.innerWidth < 768);
@@ -111,56 +108,6 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
     return () => window.removeEventListener('keydown', onKey);
   }, [next, prev]);
 
-  // drag handlers – live visual feedback + snap on release
-  const resetTrack = () => {
-    if (!trackRef.current) return;
-    trackRef.current.style.transition = 'transform 0.35s cubic-bezier(0.16,1,0.3,1)';
-    trackRef.current.style.transform = 'translateX(0px)';
-    setTimeout(() => {
-      if (trackRef.current) trackRef.current.style.transition = '';
-    }, 350);
-  };
-
-  const onPointerDown = (e: React.PointerEvent) => {
-    pointerStart.current = { x: e.clientX, y: e.clientY };
-    dragged.current = false;
-    isDragging.current = false;
-  };
-
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!pointerStart.current) return;
-    const dx = e.clientX - pointerStart.current.x;
-    const dy = Math.abs(e.clientY - pointerStart.current.y);
-    // only claim horizontal swipe if dx wins the direction battle
-    if (Math.abs(dx) > 6 && Math.abs(dx) > dy) {
-      isDragging.current = true;
-      dragged.current = true;
-    }
-    if (isDragging.current && trackRef.current) {
-      // cards follow finger at 50% ratio for a gentle parallax feel
-      trackRef.current.style.transform = `translateX(${dx * 0.5}px)`;
-    }
-  };
-
-  const onPointerUp = (e: React.PointerEvent) => {
-    if (!pointerStart.current) return;
-    const dx = e.clientX - pointerStart.current.x;
-    pointerStart.current = null;
-    isDragging.current = false;
-    resetTrack();
-    if (Math.abs(dx) > 30) {
-      if (dx < 0) next();
-      else prev();
-    }
-  };
-
-  const onPointerLeave = () => {
-    if (!pointerStart.current) return;
-    pointerStart.current = null;
-    isDragging.current = false;
-    resetTrack();
-  };
-
   const handleCardClick = (i: number) => {
     if (dragged.current) return;
     if (i === active) onOpen(disciplines[i]);
@@ -171,17 +118,27 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
 
   return (
     <div className="w-full select-none-all">
-      {/* Stage */}
+      {/* Stage – Framer Motion drag handles all touch/pointer physics */}
       <motion.div
         initial={{ opacity: 0, y: 120, scale: 0.9, filter: 'blur(10px)' }}
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
         transition={{ duration: 1, delay: entranceDelay, ease: [0.16, 1, 0.3, 1] }}
         className="relative coverflow-stage w-full"
-        style={{ height: compact ? 295 : 480, touchAction: 'pan-y' }}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerLeave={onPointerLeave}
+        style={{ x: stageX, height: compact ? 295 : 480, touchAction: 'pan-y' }}
+        drag="x"
+        dragConstraints={{ left: -(compact ? 210 : 360), right: compact ? 210 : 360 }}
+        dragElastic={0.12}
+        dragMomentum={false}
+        onDragStart={() => { dragged.current = true; }}
+        onDragEnd={(_, info) => {
+          animate(stageX, 0, { type: 'spring', stiffness: 320, damping: 36 });
+          // velocity-aware snap: quick flick counts even if distance is small
+          const swipeLeft  = info.offset.x < -50 || info.velocity.x < -600;
+          const swipeRight = info.offset.x >  50 || info.velocity.x >  600;
+          if (swipeLeft)  next();
+          else if (swipeRight) prev();
+          setTimeout(() => { dragged.current = false; }, 300);
+        }}
       >
         {/* moving blur veil */}
         <motion.div
@@ -194,9 +151,7 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
           }}
         />
 
-        {/* track – translates as one unit during live drag */}
-        <div ref={trackRef} className="absolute inset-0" style={{ willChange: 'transform' }}>
-          {disciplines.map((disc, i) => {
+        {disciplines.map((disc, i) => {
             let offset = i - active;
             if (offset > n / 2) offset -= n;
             if (offset < -n / 2) offset += n;
@@ -240,7 +195,6 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
               </motion.div>
             );
           })}
-        </div>
       </motion.div>
 
       {/* Controls */}
