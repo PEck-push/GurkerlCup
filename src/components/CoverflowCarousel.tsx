@@ -290,6 +290,7 @@ function CardFace({
   // positioned so the figure breaks above the card's top edge (pop-out effect).
   const imgH = isCenter ? cardH * 0.81 : cardH * 0.57;
   const bottomPct = isCenter ? 0.30 : 0.24; // higher = pops further out the top
+  const extraOffsetY = disc.id === 'gurkerl-biathlon' ? 30 : 0; // landscape image needs downward nudge
 
   // Fall back to the emoji if the (optional) image is missing / fails to load.
   const [imgErr, setImgErr] = useState(false);
@@ -331,6 +332,7 @@ function CardFace({
           bottom: `${bottomPct * 100}%`,
           height: imgH,
           width: imgH,
+          transform: extraOffsetY ? `translateX(-50%) translateY(${extraOffsetY}px)` : undefined,
           transition: 'all 0.45s cubic-bezier(0.16,1,0.3,1)',
         }}
       >
