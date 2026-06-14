@@ -27,7 +27,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#0D0804',
     glowColor: 'rgba(212,175,55,0.4)',
     teaser:
-      'Präzision ohne Berührung. Eine Holzstange, sechs Muttern – und die Uhr tickt. Alle Teams gleichzeitig. Wer stapelt am schnellsten?',
+      'Der Auftakt gehört allen – der Vorsprung nur einem. Was hier entschieden wird, setzt den Ton für den Rest des Tages.',
     time: 'Ca. 10 Min.',
     scoring: 'Zeitwertung',
     points: '12',
@@ -45,7 +45,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#040A14',
     glowColor: 'rgba(82,183,136,0.4)',
     teaser:
-      'Farbe folgt Farbe, Ton folgt Ton. Alle drei Teammitglieder treten an – die Scores werden addiert. Wer hat das beste Teamgedächtnis?',
+      'Dreimal spielen. Dreimal zählen. Wer ein gutes Gedächtnis hat, ist im Vorteil – wer keins hat, hofft auf die anderen beiden.',
     time: '3–5 Min.',
     scoring: 'Höchste Teamsumme',
     points: '12',
@@ -62,7 +62,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#080F05',
     glowColor: 'rgba(82,183,136,0.4)',
     teaser:
-      'Drei Boards, drei Distanzen. Je weiter, desto mehr Punkte – aber wer traut sich wirklich an die Schwer-Zone? 8 Würfe pro Person.',
+      'Nah ist sicher. Weit ist riskant. Und irgendwo dazwischen liegt die Frage: Wie mutig seid ihr wirklich?',
     time: '5–7 Min.',
     scoring: 'Höchste Teampunktzahl',
     points: '12',
@@ -78,7 +78,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#030A10',
     glowColor: 'rgba(82,183,136,0.4)',
     teaser:
-      'Wasser muss fließen – durch Slalom, unten durch, oben drüber. Nach exakt 3 Minuten entscheidet die Küchenwaage. Gramm um Gramm.',
+      'Drei Minuten. Hindernisse. Eine Waage. Was ihr in dieser Zeit schafft, steht danach schwarz auf weiß – Gramm für Gramm.',
     time: '3 Min. (fix)',
     scoring: 'Meistes Wasser im Ziel',
     points: '12',
@@ -95,7 +95,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#0D0813',
     glowColor: 'rgba(146,75,200,0.4)',
     teaser:
-      'Mallorca-Hits, Austropop, Klassiker – gespielt auf einem sehr seltsamen Instrument. 90 Sekunden. Möglichst viele Songs erraten.',
+      'Ihr werdet Songs hören, die ihr kennt. Nur klingen sie gerade… etwas seltsam. 90 Sekunden, um trotzdem die richtigen Antworten zu liefern.',
     time: '1:30 Min. (fix)',
     scoring: 'Meiste richtige Songs',
     points: '12',
@@ -111,7 +111,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#120404',
     glowColor: 'rgba(212,175,55,0.5)',
     teaser:
-      'Gemeinsam laufen, zielen, treffen – und Strafrunden mögen. Das Signature Game des Gurkerl Cups. Jeder Fehler kostet wertvolle Zeit.',
+      'Laufen reicht nicht. Treffen reicht nicht. Das Herzstück des Gurkerl Cups fordert beides – und bestraft jeden Fehler auf seine ganz eigene Art.',
     time: '4–6 Min.',
     scoring: 'Zeitwertung',
     points: '12',
@@ -128,7 +128,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#030D11',
     glowColor: 'rgba(56,189,248,0.4)',
     teaser:
-      'Werfen ist leicht. Fangen ist die Kunst. Platzen ist Programm. Die Weiten aller drei Durchgänge werden addiert.',
+      'Einer wirft. Einer fängt – oder auch nicht. Was dazwischen passiert, liegt nicht mehr in eurer Hand. Die Distanz entscheidet, der Rest ist Schicksal.',
     time: 'Ca. 8 Min.',
     scoring: 'Größte Distanzsumme',
     points: '12',
@@ -144,7 +144,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#080D03',
     glowColor: 'rgba(132,204,22,0.4)',
     teaser:
-      'Die Gurken wurden schon gegessen – jetzt kommen Tischtennisbälle rein. Beer-Pong-Stil auf Gurkengläser. 5 Bälle pro Person.',
+      'Das Glas hat schon Besseres gesehen. Jetzt bekommt es fünf Chancen auf einen neuen Inhalt. Klingt einfach – ist es meistens nicht.',
     time: 'Ca. 3 Min.',
     scoring: 'Meiste Treffer',
     points: '12',
@@ -160,7 +160,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#070711',
     glowColor: 'rgba(251,146,60,0.4)',
     teaser:
-      'Alle Teams gleichzeitig. Ein Netz, ein Ball, keine Gnade. Nach jedem Kontakt läuft man rüber und stellt sich an. Fehler = Ausscheiden.',
+      'Alle gleichzeitig. Ein Fehler zu viel, und ihr schaut dem Rest zu. Wer zuletzt übrig bleibt, hat gewonnen – was vorher passiert, ist keine Garantie.',
     time: '15–20 Min.',
     scoring: 'Letztes Team gewinnt',
     points: '20',
@@ -176,7 +176,7 @@ export const disciplines: Discipline[] = [
     bgTo: '#110602',
     glowColor: 'rgba(239,68,68,0.5)',
     teaser:
-      'Verbundene Augen. Chaos-Feld voller Bälle. Teamkameraden schreien Anweisungen. 5 Minuten, alle Teams gleichzeitig. Alle Punkte doppelt!',
+      'Das Finale setzt auf Dunkelheit, Lärm und doppelte Punkte. Mehr verraten wir nicht – außer dass hier der Gurkerl Cup entschieden wird.',
     time: 'Ca. 10 Min.',
     scoring: '×2 DOPPELTE PUNKTE!',
     points: '40',

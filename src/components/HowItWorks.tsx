@@ -204,8 +204,8 @@ function GurkerlKarten() {
       </div>
       <h4 className="font-fredoka font-700 text-lg text-white mb-1.5">Die Gurkerl-Karten</h4>
       <p className="font-nunito text-sm text-white/55 leading-relaxed mb-4">
-        Jedes Team bekommt zwei Gurkerl-Karten auf den Gurkerl-Pass. Einsetzbar nur in Phase A und
-        beim Eröffnungsspiel – maximal eine pro Spiel. Klug eingesetzt, können sie alles drehen.
+        Jedes Team bekommt zwei Gurkerl-Karten auf den Gurkerl-Pass. Einsetzbar nur in Phase A –
+        maximal eine pro Station. Klug eingesetzt, können sie alles drehen.
       </p>
       <div className="grid sm:grid-cols-2 gap-3">
         {jokers.map((j) => (
