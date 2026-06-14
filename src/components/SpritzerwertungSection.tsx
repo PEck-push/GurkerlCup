@@ -28,8 +28,8 @@ export default function SpritzerwertungSection() {
           }}
         >
           <div className="flex flex-col md:flex-row items-center gap-0">
-            {/* Image panel */}
-            <div className="relative w-full md:w-80 flex-shrink-0 h-72 md:h-auto md:min-h-[420px] flex items-center justify-center overflow-hidden"
+            {/* Image panel – below text on mobile, left on desktop */}
+            <div className="order-2 md:order-1 relative w-full md:w-80 flex-shrink-0 h-64 md:h-auto md:min-h-[420px] flex items-center justify-center overflow-hidden"
               style={{ background: 'linear-gradient(160deg, #2A0A0A, #0F0505)' }}
             >
               <div className="absolute inset-0"
@@ -53,21 +53,23 @@ export default function SpritzerwertungSection() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 p-8 md:p-10">
+            <div className="order-1 md:order-2 flex-1 p-8 md:p-10">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/8 mb-5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-                <span className="font-bebas text-xs tracking-[0.25em] text-[#F0CE67]">SPECIAL AWARD</span>
+              <div className="flex justify-center md:justify-start mb-5">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/8">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                  <span className="font-bebas text-xs tracking-[0.25em] text-[#F0CE67]">SPECIAL AWARD</span>
+                </div>
               </div>
 
-              <h2 className="font-fredoka font-700 text-4xl md:text-5xl text-white mb-1 leading-tight">
+              <h2 className="font-fredoka font-700 text-4xl md:text-5xl text-white mb-1 leading-tight text-center md:text-left">
                 Die Spritzerwertung
               </h2>
-              <p className="font-bebas text-sm tracking-[0.2em] text-red-400/70 mb-5">
+              <p className="font-bebas text-sm tracking-[0.2em] text-red-400/70 mb-5 text-center md:text-left">
                 DIE HÄRTESTE WERTUNG DES ABENDS
               </p>
 
-              <p className="font-nunito text-[#F5F0E8]/65 text-base leading-relaxed mb-8">
+              <p className="font-nunito text-[#F5F0E8]/65 text-base leading-relaxed mb-8 text-center md:text-left">
                 Wie immer gibt es die legendäre Spritzerwertung mit im Programm.
                 Ob als Rotweinritter oder Sprüherhunter – der Kampf um die härteste
                 Wertung geht in die nächste Runde.
