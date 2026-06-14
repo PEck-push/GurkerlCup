@@ -104,10 +104,19 @@ export default function ShowcaseHero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="font-nunito text-sm md:text-lg text-white/55 max-w-xl mx-auto mt-4 md:mt-8 mb-2 md:mb-4"
+            className="font-nunito text-sm md:text-lg text-white/55 max-w-xl mx-auto mt-4 md:mt-8 mb-2 md:mb-2"
           >
             10 Disziplinen. 3er-Teams.{' '}
             <span className="text-[#F0CE67] font-700">Ein Sieger.</span>
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="font-nunito text-xs md:text-sm text-white/35 max-w-sm mx-auto mb-2 md:mb-4 px-4"
+          >
+            Für alle Altersklassen & Fitnesslevel – Gaudi, schräge Spiele und ein kleiner Funken Wettkampf.
           </motion.p>
         </div>
 
