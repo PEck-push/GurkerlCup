@@ -8,12 +8,7 @@ export default function SpritzerwertungSection() {
   const [imgErr, setImgErr] = useState(false);
 
   return (
-    <section className="py-24 px-6 md:px-16 relative overflow-hidden" style={{ background: '#0F1A0D' }}>
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(ellipse, #7B1E1E 0%, transparent 70%)' }} />
-      </div>
+    <section className="py-24 px-6 md:px-16 relative" style={{ background: '#0F1A0D' }}>
 
       <div className="relative max-w-4xl mx-auto">
         <motion.div
@@ -33,11 +28,7 @@ export default function SpritzerwertungSection() {
 
           <div className="relative flex flex-col md:flex-row items-center gap-0">
             {/* Image panel – below text on mobile, left on desktop */}
-            <div className="order-2 md:order-1 relative w-full md:w-80 flex-shrink-0 h-64 md:h-auto md:min-h-[420px] flex items-center justify-center overflow-hidden"
-              style={{ background: 'linear-gradient(160deg, #2A0A0A, #0F0505)' }}
-            >
-              <div className="absolute inset-0"
-                style={{ background: 'radial-gradient(ellipse at 50% 60%, rgba(180,30,30,0.35), transparent 65%)' }} />
+            <div className="order-2 md:order-1 relative w-full md:w-80 flex-shrink-0 h-64 md:h-auto md:min-h-[420px] flex items-center justify-center overflow-hidden">
               {!imgErr ? (
                 <div className="relative w-56 h-56 md:w-64 md:h-64 z-10">
                   <Image
