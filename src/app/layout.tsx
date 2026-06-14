@@ -39,6 +39,20 @@ export const metadata: Metadata = {
     title: 'Gurkerl Cup 2026 – Fun Games Pöttsching',
     description: 'Outdoor-Teamwettkampf mit 10 Disziplinen. Wer holt die Goldene Gurke?',
     type: 'website',
+    images: [
+      {
+        url: '/images/gurkerlcup.webp',
+        width: 1200,
+        height: 630,
+        alt: 'Gurkerl Cup 2026 – Fun Games Pöttsching',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gurkerl Cup 2026 – Fun Games Pöttsching',
+    description: 'Outdoor-Teamwettkampf mit 10 Disziplinen. Wer holt die Goldene Gurke?',
+    images: ['/images/gurkerlcup.webp'],
   },
 };
 
