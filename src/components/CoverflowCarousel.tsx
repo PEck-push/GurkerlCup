@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, animate } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import Image from 'next/image';
 import type { Discipline } from '@/lib/disciplines';
 
@@ -126,15 +126,15 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
         className="relative coverflow-stage w-full"
         style={{ x: stageX, height: compact ? 295 : 480, touchAction: 'pan-y' }}
         drag="x"
-        dragConstraints={{ left: -(compact ? 210 : 360), right: compact ? 210 : 360 }}
-        dragElastic={0.12}
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.18}
         dragMomentum={false}
+        dragTransition={{ bounceStiffness: 340, bounceDamping: 34 }}
         onDragStart={() => { dragged.current = true; }}
         onDragEnd={(_, info) => {
-          animate(stageX, 0, { type: 'spring', stiffness: 320, damping: 36 });
-          // velocity-aware snap: quick flick counts even if distance is small
-          const swipeLeft  = info.offset.x < -50 || info.velocity.x < -600;
-          const swipeRight = info.offset.x >  50 || info.velocity.x >  600;
+          // FM auto-springs back to 0 via dragConstraints – no manual animate needed
+          const swipeLeft  = info.offset.x < -35 || info.velocity.x < -400;
+          const swipeRight = info.offset.x >  35 || info.velocity.x >  400;
           if (swipeLeft)  next();
           else if (swipeRight) prev();
           setTimeout(() => { dragged.current = false; }, 300);
