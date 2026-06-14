@@ -72,9 +72,11 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
   const [moving, setMoving] = useState(false);
   const movingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // swipe tracking
+  // drag tracking
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const dragged = useRef(false);
+  const isDragging = useRef(false);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const update = () => setCompact(window.innerWidth < 768);
@@ -109,21 +111,54 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
     return () => window.removeEventListener('keydown', onKey);
   }, [next, prev]);
 
-  // swipe handlers
+  // drag handlers – live visual feedback + snap on release
+  const resetTrack = () => {
+    if (!trackRef.current) return;
+    trackRef.current.style.transition = 'transform 0.35s cubic-bezier(0.16,1,0.3,1)';
+    trackRef.current.style.transform = 'translateX(0px)';
+    setTimeout(() => {
+      if (trackRef.current) trackRef.current.style.transition = '';
+    }, 350);
+  };
+
   const onPointerDown = (e: React.PointerEvent) => {
     pointerStart.current = { x: e.clientX, y: e.clientY };
     dragged.current = false;
+    isDragging.current = false;
   };
+
   const onPointerMove = (e: React.PointerEvent) => {
     if (!pointerStart.current) return;
-    if (Math.abs(e.clientX - pointerStart.current.x) > 8) dragged.current = true;
+    const dx = e.clientX - pointerStart.current.x;
+    const dy = Math.abs(e.clientY - pointerStart.current.y);
+    // only claim horizontal swipe if dx wins the direction battle
+    if (Math.abs(dx) > 6 && Math.abs(dx) > dy) {
+      isDragging.current = true;
+      dragged.current = true;
+    }
+    if (isDragging.current && trackRef.current) {
+      // cards follow finger at 50% ratio for a gentle parallax feel
+      trackRef.current.style.transform = `translateX(${dx * 0.5}px)`;
+    }
   };
+
   const onPointerUp = (e: React.PointerEvent) => {
     if (!pointerStart.current) return;
     const dx = e.clientX - pointerStart.current.x;
     pointerStart.current = null;
-    if (dx < -45) next();
-    else if (dx > 45) prev();
+    isDragging.current = false;
+    resetTrack();
+    if (Math.abs(dx) > 30) {
+      if (dx < 0) next();
+      else prev();
+    }
+  };
+
+  const onPointerLeave = () => {
+    if (!pointerStart.current) return;
+    pointerStart.current = null;
+    isDragging.current = false;
+    resetTrack();
   };
 
   const handleCardClick = (i: number) => {
@@ -142,11 +177,11 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
         transition={{ duration: 1, delay: entranceDelay, ease: [0.16, 1, 0.3, 1] }}
         className="relative coverflow-stage w-full"
-        style={{ height: compact ? 295 : 480 }}
+        style={{ height: compact ? 295 : 480, touchAction: 'pan-y' }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerLeave={() => (pointerStart.current = null)}
+        onPointerLeave={onPointerLeave}
       >
         {/* moving blur veil */}
         <motion.div
@@ -159,50 +194,53 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
           }}
         />
 
-        {disciplines.map((disc, i) => {
-          let offset = i - active;
-          if (offset > n / 2) offset -= n;
-          if (offset < -n / 2) offset += n;
-          const slot = getSlot(offset, compact);
-          const isCenter = offset === 0;
-          const cardW = compact ? 174 : 276;
-          const cardH = compact ? 254 : 396;
+        {/* track – translates as one unit during live drag */}
+        <div ref={trackRef} className="absolute inset-0" style={{ willChange: 'transform' }}>
+          {disciplines.map((disc, i) => {
+            let offset = i - active;
+            if (offset > n / 2) offset -= n;
+            if (offset < -n / 2) offset += n;
+            const slot = getSlot(offset, compact);
+            const isCenter = offset === 0;
+            const cardW = compact ? 174 : 276;
+            const cardH = compact ? 254 : 396;
 
-          return (
-            <motion.div
-              key={disc.id}
-              className={`absolute left-1/2 top-1/2 ${isCenter ? 'cf-card-active' : ''}`}
-              style={{
-                width: cardW,
-                height: cardH,
-                marginLeft: -cardW / 2,
-                marginTop: -cardH / 2,
-                transformStyle: 'preserve-3d',
-                cursor: slot.pointer ? 'pointer' : 'default',
-                pointerEvents: slot.pointer ? 'auto' : 'none',
-              }}
-              initial={{ opacity: 0, x: 0, y: 80, scale: 0.7 }}
-              animate={{
-                x: slot.x,
-                y: slot.y,
-                scale: slot.scale,
-                rotateY: slot.rotateY,
-                opacity: slot.opacity,
-                filter: `blur(${slot.blur}px)`,
-                zIndex: slot.z,
-              }}
-              transition={{
-                type: 'spring',
-                stiffness: 260,
-                damping: 30,
-                opacity: { duration: 0.4 },
-              }}
-              onClick={() => handleCardClick(i)}
-            >
-              <CardFace disc={disc} isCenter={isCenter} compact={compact} cardH={cardH} />
-            </motion.div>
-          );
-        })}
+            return (
+              <motion.div
+                key={disc.id}
+                className={`absolute left-1/2 top-1/2 ${isCenter ? 'cf-card-active' : ''}`}
+                style={{
+                  width: cardW,
+                  height: cardH,
+                  marginLeft: -cardW / 2,
+                  marginTop: -cardH / 2,
+                  transformStyle: 'preserve-3d',
+                  cursor: slot.pointer ? 'pointer' : 'default',
+                  pointerEvents: slot.pointer ? 'auto' : 'none',
+                }}
+                initial={{ opacity: 0, x: 0, y: 80, scale: 0.7 }}
+                animate={{
+                  x: slot.x,
+                  y: slot.y,
+                  scale: slot.scale,
+                  rotateY: slot.rotateY,
+                  opacity: slot.opacity,
+                  filter: `blur(${slot.blur}px)`,
+                  zIndex: slot.z,
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 260,
+                  damping: 30,
+                  opacity: { duration: 0.4 },
+                }}
+                onClick={() => handleCardClick(i)}
+              >
+                <CardFace disc={disc} isCenter={isCenter} compact={compact} cardH={cardH} />
+              </motion.div>
+            );
+          })}
+        </div>
       </motion.div>
 
       {/* Controls */}
