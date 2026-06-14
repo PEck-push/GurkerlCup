@@ -347,6 +347,8 @@ function CardFace({
               filter: `drop-shadow(0 18px 28px rgba(0,0,0,0.6))${isCenter ? ` drop-shadow(0 0 34px ${disc.glowColor})` : ''}`,
             }}
             draggable={false}
+            unoptimized
+            priority={isCenter}
             onError={() => setImgErr(true)}
           />
         ) : (

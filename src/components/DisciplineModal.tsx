@@ -95,8 +95,10 @@ export default function DisciplineModal({ discipline, onClose }: Props) {
                     <Image
                       src={discipline.image}
                       alt={discipline.name}
-                      fill
-                      className="object-contain drop-shadow-2xl"
+                      width={192}
+                      height={192}
+                      className="object-contain drop-shadow-2xl w-full h-full"
+                      unoptimized
                       onError={() => setImgErr(true)}
                     />
                   </div>
