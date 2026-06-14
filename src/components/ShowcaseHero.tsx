@@ -35,7 +35,7 @@ export default function ShowcaseHero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass mb-5"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass mb-3 md:mb-5"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
             <span className="font-bebas text-xs md:text-sm tracking-[0.3em] text-[#F0CE67]">
@@ -70,7 +70,7 @@ export default function ShowcaseHero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="font-nunito text-base md:text-lg text-white/55 max-w-xl mx-auto mt-4"
+            className="font-nunito text-sm md:text-lg text-white/55 max-w-xl mx-auto mt-2 md:mt-4"
           >
             10 Disziplinen. 3er-Teams.{' '}
             <span className="text-[#F0CE67] font-700">Ein Sieger.</span>

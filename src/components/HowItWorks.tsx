@@ -198,7 +198,7 @@ function GurkerlKarten() {
     >
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-xl">🃏</span>
-        <p className="font-bebas text-xs tracking-[0.2em] text-[#F0CE67]">
+        <p className="font-bebas text-[11px] tracking-[0.12em] text-[#F0CE67] whitespace-nowrap">
           SPECIAL · NUR IN PHASE A
         </p>
       </div>

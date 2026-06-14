@@ -34,8 +34,8 @@ function getSlot(offset: number, compact: boolean): Slot {
   const dir = Math.sign(offset);
   const a = Math.abs(offset);
 
-  const X = compact ? [0, 138, 232] : [0, 286, 512];
-  const Y = compact ? [-6, 16, 34] : [-34, 18, 50];
+  const X = compact ? [0, 126, 214] : [0, 286, 512];
+  const Y = compact ? [-4, 14, 30] : [-34, 18, 50];
   const S = [1, 0.78, 0.6];
   const R = [0, 42, 50];
   const O = [1, 0.92, 0.5];
@@ -142,7 +142,7 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
         animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
         transition={{ duration: 1, delay: entranceDelay, ease: [0.16, 1, 0.3, 1] }}
         className="relative coverflow-stage w-full"
-        style={{ height: compact ? 380 : 480 }}
+        style={{ height: compact ? 295 : 480 }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -165,8 +165,8 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
           if (offset < -n / 2) offset += n;
           const slot = getSlot(offset, compact);
           const isCenter = offset === 0;
-          const cardW = compact ? 196 : 276;
-          const cardH = compact ? 286 : 396;
+          const cardW = compact ? 174 : 276;
+          const cardH = compact ? 254 : 396;
 
           return (
             <motion.div
@@ -210,10 +210,10 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: entranceDelay + 0.8, duration: 0.6 }}
-        className="flex flex-col items-center gap-5 mt-2 md:mt-4"
+        className="flex flex-col items-center gap-3 md:gap-5 mt-2 md:mt-4"
       >
-        {/* active title + details */}
-        <div className="text-center min-h-[64px] flex flex-col items-center justify-center">
+        {/* active title + details – hidden on mobile, card footer already shows this */}
+        <div className="hidden md:flex text-center min-h-[64px] flex-col items-center justify-center">
           <motion.div
             key={activeDisc.id}
             initial={{ opacity: 0, y: 8 }}
@@ -274,7 +274,7 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
           </button>
         </div>
 
-        <p className="font-nunito text-xs text-white/30">
+        <p className="hidden md:block font-nunito text-xs text-white/30 text-center">
           Klicke eine Karte oder nutze die Pfeile · Karte in der Mitte öffnet die Details
         </p>
       </motion.div>
