@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import type { Discipline } from '@/lib/disciplines';
@@ -18,7 +18,10 @@ const variantColors: Record<string, string> = {
 };
 
 export default function DisciplineModal({ discipline, onClose }: Props) {
+  const [imgErr, setImgErr] = useState(false);
+
   useEffect(() => {
+    setImgErr(false); // reset fallback when a new discipline opens
     if (discipline) {
       document.body.style.overflow = 'hidden';
     }
@@ -87,13 +90,14 @@ export default function DisciplineModal({ discipline, onClose }: Props) {
                     background: `radial-gradient(ellipse at 50% 60%, ${discipline.glowColor}, transparent 70%)`,
                   }}
                 />
-                {discipline.image ? (
+                {discipline.image && !imgErr ? (
                   <div className="relative w-48 h-48 z-10">
                     <Image
                       src={discipline.image}
                       alt={discipline.name}
                       fill
                       className="object-contain drop-shadow-2xl"
+                      onError={() => setImgErr(true)}
                     />
                   </div>
                 ) : (

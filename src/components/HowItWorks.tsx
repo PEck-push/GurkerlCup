@@ -2,189 +2,223 @@
 
 import { motion } from 'framer-motion';
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] },
-  }),
-};
+interface Step {
+  no: string;
+  kicker: string;
+  title: string;
+  body: string;
+  accent: string; // hex
+  glow: string;
+  icon: string;
+}
 
-const phases = [
+const steps: Step[] = [
   {
-    icon: '👥',
-    title: '3er Teams',
-    color: 'text-[#52B788]',
-    borderColor: 'border-[#52B788]/30',
-    bgColor: 'bg-[#52B788]/5',
-    content:
-      'Bildet Teams aus je 3 Personen und gebt eurem Team einen würdigen Namen. Gemeinsam kämpft ihr den ganzen Nachmittag an verschiedenen Stationen um Punkte – und am Ende um die legendäre Goldene Gurke.',
+    no: '1',
+    kicker: 'ERÖFFNUNG',
+    title: 'Mutter Stapeln',
+    body: 'Alle Teams starten gemeinsam. Mit einer dünnen Holzstange werden sechs Sechskantmuttern zu einem Turm gestapelt – ganz ohne die Hände zu benutzen. Das Eröffnungsspiel gibt den Startschuss und zählt bereits zur Gesamtwertung.',
+    accent: '#D4AF37',
+    glow: 'rgba(212,175,55,0.25)',
+    icon: '🔩',
   },
   {
-    icon: '🎮',
-    title: 'Eröffnungsspiel',
-    color: 'text-[#D4AF37]',
-    borderColor: 'border-[#D4AF37]/30',
-    bgColor: 'bg-[#D4AF37]/5',
-    content:
-      'Alle Teams starten gleichzeitig mit dem Mutter Stapeln. Sechs Sechskantmuttern, eine Holzstange – keine Hände. Das Ergebnis zählt bereits zur Gesamtwertung.',
-  },
-  {
+    no: '2',
+    kicker: 'PHASE A',
+    title: 'Die freien Stationen',
+    body: 'Sieben Stationen, frei wählbare Reihenfolge – während parallel das Fest läuft. Jedes Team entscheidet selbst, wann es welche Station besucht. Euer Ergebnis wird sofort an der Station festgehalten.',
+    accent: '#52B788',
+    glow: 'rgba(82,183,136,0.22)',
     icon: '🗺️',
-    title: 'Phase A – Freie Stationen',
-    color: 'text-[#52B788]',
-    borderColor: 'border-[#52B788]/30',
-    bgColor: 'bg-[#52B788]/5',
-    content:
-      '7 Stationen können in freier Reihenfolge besucht werden – während das Fest parallel läuft. Euer Rohwert (Zeit, Treffer, Distanz) wird sofort notiert. Das Ranking aller Teams wird erst um 19:30 Uhr berechnet. Deadline: hart.',
   },
   {
-    icon: '🃏',
-    title: 'Die Joker-Karten',
-    color: 'text-[#D4AF37]',
-    borderColor: 'border-[#D4AF37]/30',
-    bgColor: 'bg-[#D4AF37]/5',
-    content: null,
-    jokers: [
-      {
-        name: 'DOPPEL GURKERL',
-        desc: 'Vor Spielbeginn ansagen. Rangpunkte dieser Station werden verdoppelt. Platz 1 = 24 statt 12 Punkte.',
-        warning: 'Gilt auch bei schlechtem Ergebnis!',
-      },
-      {
-        name: '2ND CHANCE GURKERL',
-        desc: 'Nach dem ersten Versuch einsetzen. Das Team darf die Station nochmal absolvieren.',
-        warning: 'Der 2. Versuch zählt IMMER – auch wenn er schlechter ist!',
-      },
-    ],
-  },
-  {
-    icon: '🏟️',
-    title: 'Phase B – Das Finale',
-    color: 'text-orange-400',
-    borderColor: 'border-orange-400/30',
-    bgColor: 'bg-orange-400/5',
-    content:
-      'Um 19:45 Uhr: Die große Zwischenstand-Zeremonie – das Phase-A-Ranking wird dramatisch Platz für Platz enthüllt. Danach: Riesen-Ringerl (alle gegen alle) und das Finale Grande Bälle Chaos mit doppelter Punktzahl!',
+    no: '3',
+    kicker: 'PHASE B · DAS FINALE',
+    title: 'Showdown für alle',
+    body: 'Nach der großen Zwischenstand-Zeremonie treten alle Teams gleichzeitig an: erst das Riesen-Ringerl, dann das große Finale Bälle Chaos. Hier fällt die Entscheidung – wer holt sich die Goldene Gurke?',
+    accent: '#FB923C',
+    glow: 'rgba(251,146,60,0.22)',
+    icon: '🏆',
   },
 ];
 
-const pointsTable = [
-  { label: 'Phase A + Eröffnung', rows: [{ rank: '1.', pts: '12' }, { rank: '2.', pts: '10' }, { rank: '3.', pts: '8' }, { rank: '4.', pts: '7' }, { rank: '5.', pts: '6' }] },
-  { label: 'Riesen-Ringerl', rows: [{ rank: '1.', pts: '20' }, { rank: '2.', pts: '15' }, { rank: '3.', pts: '12' }, { rank: '4–6.', pts: '8' }, { rank: '7+', pts: '4' }] },
-  { label: 'Bälle Chaos ×2 🔥', rows: [{ rank: '1.', pts: '40' }, { rank: '2.', pts: '30' }, { rank: '3.', pts: '24' }, { rank: '4–6.', pts: '16' }, { rank: '7+', pts: '8' }] },
+const jokers = [
+  {
+    name: 'DOPPEL GURKERL',
+    desc: 'Vor Spielbeginn ansagen – die Wertung dieser Station zählt doppelt.',
+    warn: 'Gilt auch bei schlechtem Ergebnis!',
+  },
+  {
+    name: '2ND CHANCE GURKERL',
+    desc: 'Nach dem ersten Versuch einsetzen – das Team darf die Station nochmal absolvieren.',
+    warn: 'Der 2. Versuch zählt immer – auch wenn er schlechter ist!',
+  },
 ];
 
 export default function HowItWorks() {
   return (
-    <section id="ablauf" className="py-24 px-6 md:px-16 bg-[#0D2818] noise-overlay relative">
-      <div className="section-divider mb-24" />
+    <section id="ablauf" className="py-24 px-6 md:px-16 bg-[#0D2818] noise-overlay relative overflow-hidden">
+      {/* soft accent glows */}
+      <div className="absolute top-1/4 -left-40 w-96 h-96 rounded-full bg-[#2D6A4F]/10 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-40 w-96 h-96 rounded-full bg-[#D4AF37]/5 blur-3xl pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto">
+      <div className="relative max-w-3xl mx-auto">
         {/* Heading */}
         <motion.div
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          variants={fadeUp}
-          custom={0}
+          transition={{ duration: 0.6 }}
           className="text-center mb-20"
         >
           <p className="font-bebas text-xs tracking-[0.3em] text-[#52B788]/60 mb-3">DER WETTKAMPF</p>
           <h2 className="font-fredoka font-700 text-5xl md:text-6xl text-white">
-            So funktioniert{' '}
+            So läuft{' '}
             <span className="text-gold-gradient font-pacifico font-400">der Cup</span>
           </h2>
         </motion.div>
 
-        {/* Phase cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-20">
-          {phases.map((phase, i) => (
-            <motion.div
-              key={phase.title}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-50px' }}
-              variants={fadeUp}
-              custom={i}
-              className={`rounded-2xl border p-7 ${phase.borderColor} ${phase.bgColor}`}
-              style={{ background: 'rgba(13,40,24,0.6)' }}
-            >
-              <div className="flex items-start gap-4">
-                <span className="text-3xl flex-shrink-0 mt-0.5">{phase.icon}</span>
-                <div className="flex-1">
-                  <h3 className={`font-fredoka font-700 text-xl ${phase.color} mb-2`}>
-                    {phase.title}
-                  </h3>
-                  {phase.content && (
-                    <p className="font-nunito text-[#F5F0E8]/70 text-sm leading-relaxed">
-                      {phase.content}
-                    </p>
-                  )}
-                  {phase.jokers && (
-                    <div className="flex flex-col gap-3 mt-1">
-                      {phase.jokers.map((j) => (
-                        <div key={j.name} className="bg-black/20 rounded-xl p-4 border border-[#D4AF37]/20">
-                          <p className="font-bebas text-sm tracking-[0.12em] text-[#D4AF37] mb-1">
-                            {j.name}
-                          </p>
-                          <p className="font-nunito text-xs text-white/60 leading-relaxed">{j.desc}</p>
-                          <p className="font-nunito text-xs text-red-400/80 mt-1.5">⚠ {j.warning}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
+        {/* Flow diagram */}
+        <div className="relative">
+          {steps.map((step, i) => (
+            <div key={step.no} className="relative">
+              <StepNode step={step} index={i}>
+                {/* Phase A special: Gurkerl-Karten */}
+                {step.no === '2' && <GurkerlKarten />}
+              </StepNode>
+
+              {/* Connector */}
+              {i < steps.length - 1 && <Connector />}
+            </div>
           ))}
         </div>
-
-        {/* Points table */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          custom={0}
-        >
-          <h3 className="font-fredoka font-700 text-3xl text-white text-center mb-10">
-            Das <span className="text-gold-gradient font-pacifico font-400">Punktesystem</span>
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            {pointsTable.map((table, ti) => (
-              <div
-                key={table.label}
-                className="rounded-2xl border border-[#2D6A4F]/30 overflow-hidden"
-                style={{ background: 'rgba(13,40,24,0.8)' }}
-              >
-                <div
-                  className={`px-5 py-4 border-b border-[#2D6A4F]/20 ${ti === 2 ? 'bg-red-900/20' : 'bg-[#1B4332]/40'}`}
-                >
-                  <p className="font-fredoka font-600 text-white text-sm">{table.label}</p>
-                </div>
-                <div className="px-5 py-4">
-                  {table.rows.map((row) => (
-                    <div
-                      key={row.rank}
-                      className="flex justify-between items-center py-2 border-b border-white/5 last:border-0"
-                    >
-                      <span className="font-nunito text-sm text-white/50">{row.rank}</span>
-                      <span className={`font-bebas text-lg ${ti === 2 ? 'text-red-400' : 'text-[#D4AF37]'}`}>
-                        {row.pts} Pkt
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="font-nunito text-center text-white/30 text-sm mt-6">
-            Maximal erreichbar: 156 Punkte · Punkte werden rangbasiert vergeben (nicht absolut summiert)
-          </p>
-        </motion.div>
       </div>
     </section>
+  );
+}
+
+/* ───────────── Step node ───────────── */
+function StepNode({
+  step,
+  index,
+  children,
+}: {
+  step: Step;
+  index: number;
+  children?: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.6, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+      className="relative rounded-3xl glass p-7 md:p-9"
+      style={{ boxShadow: `0 24px 60px -30px ${step.glow}` }}
+    >
+      {/* number badge */}
+      <div
+        className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center font-bebas text-2xl"
+        style={{
+          background: `linear-gradient(135deg, ${step.accent}, ${step.accent}99)`,
+          color: '#0A1F12',
+          boxShadow: `0 0 24px ${step.glow}`,
+        }}
+      >
+        {step.no}
+      </div>
+
+      <div className="flex items-start gap-5 mt-4">
+        <span className="text-4xl md:text-5xl flex-shrink-0 leading-none">{step.icon}</span>
+        <div className="flex-1">
+          <p
+            className="font-bebas text-sm tracking-[0.25em] mb-1"
+            style={{ color: step.accent }}
+          >
+            {step.kicker}
+          </p>
+          <h3 className="font-fredoka font-700 text-2xl md:text-3xl text-white mb-3">
+            {step.title}
+          </h3>
+          <p className="font-nunito text-[#F5F0E8]/65 text-sm md:text-base leading-relaxed">
+            {step.body}
+          </p>
+          {children}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ───────────── Connector ───────────── */
+function Connector() {
+  return (
+    <div className="relative h-16 flex flex-col items-center justify-center">
+      <motion.div
+        initial={{ scaleY: 0 }}
+        whileInView={{ scaleY: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="w-px h-full origin-top"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(82,183,136,0.6), rgba(212,175,55,0.5))',
+        }}
+      />
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4, duration: 0.4 }}
+        className="absolute bottom-1.5 text-[#D4AF37]"
+      >
+        <motion.svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          animate={{ y: [0, 4, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+        </motion.svg>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ───────────── Gurkerl-Karten special (Phase A) ───────────── */
+function GurkerlKarten() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.15 }}
+      className="mt-6 rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/[0.04] p-5"
+    >
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="text-xl">🃏</span>
+        <p className="font-bebas text-xs tracking-[0.2em] text-[#F0CE67]">
+          SPECIAL · NUR IN PHASE A
+        </p>
+      </div>
+      <h4 className="font-fredoka font-700 text-lg text-white mb-1.5">Die Gurkerl-Karten</h4>
+      <p className="font-nunito text-sm text-white/55 leading-relaxed mb-4">
+        Jedes Team bekommt zwei Gurkerl-Karten auf den Gurkerl-Pass. Einsetzbar nur in Phase A und
+        beim Eröffnungsspiel – maximal eine pro Spiel. Klug eingesetzt, können sie alles drehen.
+      </p>
+      <div className="grid sm:grid-cols-2 gap-3">
+        {jokers.map((j) => (
+          <div
+            key={j.name}
+            className="rounded-xl bg-black/25 border border-[#D4AF37]/15 p-4"
+          >
+            <p className="font-bebas text-sm tracking-[0.1em] text-[#F0CE67] mb-1.5">{j.name}</p>
+            <p className="font-nunito text-xs text-white/55 leading-relaxed">{j.desc}</p>
+            <p className="font-nunito text-xs text-red-400/80 mt-2">⚠ {j.warn}</p>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }

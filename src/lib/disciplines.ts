@@ -31,6 +31,7 @@ export const disciplines: Discipline[] = [
     time: 'Ca. 10 Min.',
     scoring: 'Zeitwertung',
     points: '12',
+    image: '/images/mutter-stapeln.webp',
     badge: 'OPENING',
   },
   {
@@ -65,6 +66,7 @@ export const disciplines: Discipline[] = [
     time: '5–7 Min.',
     scoring: 'Höchste Teampunktzahl',
     points: '12',
+    image: '/images/cornhole.webp',
   },
   {
     id: 'schwammstaffel',
@@ -80,6 +82,7 @@ export const disciplines: Discipline[] = [
     time: '3 Min. (fix)',
     scoring: 'Meistes Wasser im Ziel',
     points: '12',
+    image: '/images/schwammstaffel.webp',
   },
   {
     id: 'kazoomeister',
@@ -96,6 +99,7 @@ export const disciplines: Discipline[] = [
     time: '1:30 Min. (fix)',
     scoring: 'Meiste richtige Songs',
     points: '12',
+    image: '/images/kazoomeister.webp',
   },
   {
     id: 'gurkerl-biathlon',
@@ -111,6 +115,7 @@ export const disciplines: Discipline[] = [
     time: '4–6 Min.',
     scoring: 'Zeitwertung',
     points: '12',
+    image: '/images/biathlon.webp',
     badge: 'SIGNATURE',
   },
   {
@@ -143,6 +148,7 @@ export const disciplines: Discipline[] = [
     time: 'Ca. 3 Min.',
     scoring: 'Meiste Treffer',
     points: '12',
+    image: '/images/gurkerlglasl.webp',
   },
   {
     id: 'riesen-ringerl',
@@ -158,6 +164,7 @@ export const disciplines: Discipline[] = [
     time: '15–20 Min.',
     scoring: 'Letztes Team gewinnt',
     points: '20',
+    image: '/images/riesen-ringerl.webp',
   },
   {
     id: 'baelle-chaos',
@@ -173,6 +180,7 @@ export const disciplines: Discipline[] = [
     time: 'Ca. 10 Min.',
     scoring: '×2 DOPPELTE PUNKTE!',
     points: '40',
+    image: '/images/baelle-chaos.webp',
     badge: 'FINALE ×2',
   },
 ];

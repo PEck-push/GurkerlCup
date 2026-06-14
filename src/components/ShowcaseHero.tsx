@@ -72,9 +72,8 @@ export default function ShowcaseHero() {
             transition={{ duration: 0.6, delay: 0.45 }}
             className="font-nunito text-base md:text-lg text-white/55 max-w-xl mx-auto mt-4"
           >
-            10 Disziplinen. 3er-Teams. Eine{' '}
-            <span className="text-[#F0CE67] font-700">Goldene Gurke</span>. Entdecke die Spiele –
-            wische oder klick dich durch.
+            10 Disziplinen. 3er-Teams.{' '}
+            <span className="text-[#F0CE67] font-700">Ein Sieger.</span>
           </motion.p>
         </div>
 

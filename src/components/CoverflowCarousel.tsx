@@ -299,6 +299,10 @@ function CardFace({
   const imgH = isCenter ? cardH * 0.74 : cardH * 0.52;
   const bottomPct = isCenter ? 0.42 : 0.36; // higher = pops further out the top
 
+  // Fall back to the emoji if the (optional) image is missing / fails to load.
+  const [imgErr, setImgErr] = useState(false);
+  const showImg = disc.image && !imgErr;
+
   return (
     <div className="relative w-full h-full" style={{ transformStyle: 'preserve-3d' }}>
       {/* glass body */}
@@ -338,9 +342,9 @@ function CardFace({
           transition: 'all 0.45s cubic-bezier(0.16,1,0.3,1)',
         }}
       >
-        {disc.image ? (
+        {showImg ? (
           <Image
-            src={disc.image}
+            src={disc.image as string}
             alt={disc.name}
             width={Math.round(imgH)}
             height={Math.round(imgH)}
@@ -349,6 +353,7 @@ function CardFace({
               filter: `drop-shadow(0 18px 28px rgba(0,0,0,0.6))${isCenter ? ` drop-shadow(0 0 34px ${disc.glowColor})` : ''}`,
             }}
             draggable={false}
+            onError={() => setImgErr(true)}
           />
         ) : (
           <motion.div
@@ -371,18 +376,15 @@ function CardFace({
           background: 'linear-gradient(to top, rgba(0,0,0,0.92) 10%, rgba(0,0,0,0.55) 60%, transparent 100%)',
         }}
       >
+        <p className={`font-bebas tracking-[0.18em] mb-0.5 ${variantText[disc.categoryVariant]} ${compact ? 'text-[10px]' : 'text-xs'}`}>
+          {disc.category}
+        </p>
         <p className={`font-fredoka font-700 text-white leading-tight ${compact ? 'text-base' : 'text-xl'}`}>
           {disc.name}
         </p>
         {disc.subtitle && !compact && (
           <p className="font-nunito text-xs text-white/45 mt-0.5">{disc.subtitle}</p>
         )}
-        <div className="flex items-center gap-1.5 mt-2">
-          <span className="text-[#F0CE67] text-sm">👑</span>
-          <span className="font-bebas text-sm text-[#F0CE67] tracking-wide">
-            {disc.points} {disc.id === 'baelle-chaos' ? 'PKT ×2' : 'PKT'}
-          </span>
-        </div>
       </div>
     </div>
   );
