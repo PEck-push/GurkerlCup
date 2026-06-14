@@ -224,8 +224,8 @@ export default function CoverflowCarousel({ disciplines, onOpen, entranceDelay =
           </motion.div>
         </div>
 
-        {/* arrows + dots */}
-        <div className="flex items-center gap-5">
+        {/* arrows + dots – hidden on mobile, swipe is the gesture */}
+        <div className="hidden md:flex items-center gap-5">
           <button
             onClick={prev}
             aria-label="Vorherige Disziplin"
