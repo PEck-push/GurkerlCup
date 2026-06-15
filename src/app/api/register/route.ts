@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { LOGO_PNG_BASE64 } from '@/lib/logoBase64';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,15 +57,12 @@ function htmlEmail(teamName: string, players: string[], email: string): string {
               <!-- HERO HEADER -->
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="background:linear-gradient(160deg,#1A3020 0%,#0D1F10 50%,#0A1A0C 100%);padding:48px 40px 40px;text-align:center;border-bottom:1px solid #1E4028;position:relative;">
-                    <!-- Decorative dots -->
-                    <p style="font-size:36px;margin:0 0 20px;letter-spacing:8px;">🥒&nbsp;🏆&nbsp;🥒</p>
-                    <h1 style="margin:0 0 6px;font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#52B788;font-weight:700;">
+                  <td style="background:linear-gradient(160deg,#1A3020 0%,#0D1F10 50%,#0A1A0C 100%);padding:44px 40px 36px;text-align:center;border-bottom:1px solid #1E4028;position:relative;">
+                    <!-- Logo (inline CID, falls back to alt text) -->
+                    <img src="cid:gurkerllogo" width="260" alt="Gurkerl Cup 2026" style="display:block;margin:0 auto 18px;max-width:260px;width:100%;height:auto;border:0;outline:none;text-decoration:none;" />
+                    <h1 style="margin:0 0 24px;font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#52B788;font-weight:700;">
                       Fun Games Pöttsching
                     </h1>
-                    <h2 style="margin:0 0 24px;font-size:40px;font-weight:900;color:#D4AF37;letter-spacing:-1px;line-height:1.1;">
-                      Gurkerl Cup<br><span style="color:#ffffff;">2026</span>
-                    </h2>
                     <!-- Gold divider -->
                     <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
                       <tr>
@@ -218,6 +216,32 @@ function htmlEmail(teamName: string, players: string[], email: string): string {
 </html>`;
 }
 
+function textEmail(teamName: string, players: string[]): string {
+  return `GURKERL CUP 2026 - Fun Games Poettsching
+
+Anmeldung bestaetigt!
+
+Euer Team "${teamName}" ist erfolgreich angemeldet.
+
+Euer Kader:
+${players.map((p, i) => `  ${i + 1}. ${p}`).join('\n')}
+
+Event Info:
+  Datum:  Samstag, 18. Juli 2026
+  Zeit:   Ab 14:30 Uhr (Ankunft & Empfang)
+  Ort:    Fussballplatz Poettsching
+
+Check-In: Bitte 30 Minuten vor Start beim Check-In erscheinen.
+Dort erhaltet ihr euren Gurkerl Pass und die Joker-Karten.
+
+Bei Fragen einfach auf diese Mail antworten.
+Wir sehen uns am 18. Juli!
+
+--
+Gurkerl Cup 2026 - Fun Games Poettsching
+Diese Mail bestaetigt eure Anmeldung gemaess DSGVO Art. 6 Abs. 1 lit. a`;
+}
+
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
   try {
@@ -272,11 +296,23 @@ export async function POST(request: NextRequest) {
   try {
     const fromAddress = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev';
     const fromName    = process.env.RESEND_FROM_NAME  ?? 'Gurkerl Cup 2026';
+    const replyTo     = process.env.RESEND_REPLY_TO   ?? fromAddress;
+    const trimmedPlayers = [player1, player2, player3].map((p) => p.trim());
     const { data, error } = await resend.emails.send({
       from: `${fromName} <${fromAddress}>`,
       to: [email.trim()],
-      subject: `🥒 Team "${teamName}" ist beim Gurkerl Cup 2026 dabei!`,
-      html: htmlEmail(teamName.trim(), [player1, player2, player3].map((p) => p.trim()), email),
+      replyTo,
+      subject: `Team "${teamName}" ist beim Gurkerl Cup 2026 dabei`,
+      html: htmlEmail(teamName.trim(), trimmedPlayers, email),
+      text: textEmail(teamName.trim(), trimmedPlayers),
+      attachments: [
+        {
+          filename: 'gurkerlcup.png',
+          content: LOGO_PNG_BASE64,
+          contentType: 'image/png',
+          inlineContentId: 'gurkerllogo',
+        },
+      ],
     });
     if (error) {
       emailError = JSON.stringify(error);
