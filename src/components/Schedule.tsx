@@ -17,7 +17,7 @@ const events = [
   },
   {
     time: '15:15',
-    title: 'OPENING: Mutter Stapeln',
+    title: 'OPENING: Bleib ruhig!',
     desc: 'Alle Teams gleichzeitig – das Eröffnungsspiel startet den Wettkampf',
     type: 'highlight',
   },
@@ -47,7 +47,7 @@ const events = [
   },
   {
     time: '20:45',
-    title: 'FINALE GRANDE: Bälle Chaos',
+    title: 'FINALE GRANDE: Blindes Chaos',
     desc: 'DOPPELTE PUNKTE! Alle Teams gleichzeitig. Der größtmögliche Showdown.',
     type: 'finale',
   },

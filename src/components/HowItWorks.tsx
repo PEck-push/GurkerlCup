@@ -16,7 +16,7 @@ const steps: Step[] = [
   {
     no: '1',
     kicker: 'ERÖFFNUNG',
-    title: 'Mutter Stapeln',
+    title: 'Bleib ruhig!',
     body: 'Alle Teams gleichzeitig – kein Warming-up, kein Warten. Das Eröffnungsspiel gibt den Startschuss und zählt bereits zur Gesamtwertung. Wer hier überrascht, beginnt mit Vorsprung.',
     accent: '#D4AF37',
     glow: 'rgba(212,175,55,0.25)',

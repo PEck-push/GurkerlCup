@@ -19,7 +19,7 @@ export interface Discipline {
 export const disciplines: Discipline[] = [
   {
     id: 'mutter-stapeln',
-    name: 'Mutter Stapeln',
+    name: 'Bleib ruhig!',
     category: 'Eröffnung',
     categoryVariant: 'gold',
     emoji: '🔩',
@@ -36,7 +36,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'hasbro-simon',
-    name: 'Farbblitz',
+    name: 'Konzentrier di!',
     category: 'Station 1',
     categoryVariant: 'green',
     emoji: '🟢',
@@ -52,8 +52,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'cornhole',
-    name: 'Cornhole',
-    subtitle: 'Entfernungs-Challenge',
+    name: "Wirf g'scheit!",
     category: 'Station 2',
     categoryVariant: 'green',
     emoji: '🎯',
@@ -69,7 +68,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'schwammstaffel',
-    name: 'Schwammstaffel',
+    name: 'Fü auf!',
     category: 'Station 3',
     categoryVariant: 'green',
     emoji: '💧',
@@ -85,8 +84,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'kazoomeister',
-    name: 'Kazoomeister',
-    subtitle: 'Songs erraten',
+    name: 'Huach zua!',
     category: 'Station 4',
     categoryVariant: 'green',
     emoji: '🎵',
@@ -119,7 +117,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'wasserbomben',
-    name: 'Wasserbomben Weitwurf',
+    name: 'Faung des Zeig!',
     category: 'Station 6',
     categoryVariant: 'green',
     emoji: '💦',
@@ -135,7 +133,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'gurkerlglasl',
-    name: 'Gurkerlglasl Treffer',
+    name: 'Is Runde ins Eckige',
     category: 'Station 7',
     categoryVariant: 'green',
     emoji: '🫙',
@@ -167,7 +165,7 @@ export const disciplines: Discipline[] = [
   },
   {
     id: 'baelle-chaos',
-    name: 'Bälle Chaos',
+    name: 'Blindes Chaos',
     category: 'FINALE',
     categoryVariant: 'red',
     emoji: '🎯',
