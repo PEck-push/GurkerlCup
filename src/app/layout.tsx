@@ -31,6 +31,10 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+  ),
   title: 'Gurkerl Cup 2026 – Fun Games Pöttsching',
   description:
     'Der legendäre Outdoor-Teamwettkampf auf dem Fußballplatz. 10 Disziplinen, 3er Teams, eine Goldene Gurke. Seid dabei – 18. Juli 2026 in Pöttsching.',
