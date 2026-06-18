@@ -145,7 +145,7 @@ export const disciplines: Discipline[] = [
     time: 'Ca. 3 Min.',
     scoring: 'Meiste Treffer',
     points: '12',
-    image: '/images/gurkerlglasl.webp',
+    image: '/images/jar.webp',
   },
   {
     id: 'riesen-ringerl',
