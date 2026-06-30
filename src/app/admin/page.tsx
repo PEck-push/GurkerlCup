@@ -125,7 +125,7 @@ export default function AdminPage() {
 
   /* ───────────── Dashboard ───────────── */
   return (
-    <main className="min-h-screen bg-[#0A1A0C] px-4 md:px-8 py-8">
+    <main className="min-h-[100svh] bg-[#0A1A0C] px-4 md:px-8 pt-8 pb-32">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">

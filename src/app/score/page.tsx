@@ -98,7 +98,7 @@ export default function ScorePage() {
   if (!authed) return <ScoreLogin onSuccess={() => setAuthed(true)} />;
 
   return (
-    <main className="min-h-screen bg-[#0A1A0C] px-4 py-6">
+    <main className="min-h-[100svh] bg-[#0A1A0C] px-4 pt-6 pb-32">
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">

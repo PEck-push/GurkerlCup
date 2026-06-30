@@ -57,7 +57,7 @@ export default function TeamSelfView() {
   const sFor = (id: string) => myScores.find((s) => s.discipline_id === id);
 
   return (
-    <main className="min-h-screen bg-[#0A1A0C] px-4 py-8">
+    <main className="min-h-[100svh] bg-[#0A1A0C] px-4 pt-8 pb-32">
       <div className="max-w-lg mx-auto">
         {/* Team-Kopf */}
         <div

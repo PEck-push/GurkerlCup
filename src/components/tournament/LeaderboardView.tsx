@@ -63,7 +63,7 @@ export default function LeaderboardView({
   const rot = entries.filter((e) => e.rank >= 9);
 
   return (
-    <div className="relative w-full h-full flex flex-col px-[4vw] py-[3.5vh]">
+    <div className="relative w-full h-full flex flex-col px-[4vw] pt-[3.5vh] pb-[6vh]">
       {/* Header-Sticker */}
       <div className="flex-none flex justify-center mb-[2vh]">
         <motion.div
@@ -135,17 +135,25 @@ export default function LeaderboardView({
             <Row key={e.team.id} e={e} unit={unit} />
           ))}
           {rot.length > 0 && (
-            <div className="flex-1 min-h-0 overflow-hidden mt-1 pt-2" style={{ borderTop: `2px dashed ${COMIC_OUTLINE}` }}>
-              <motion.div
-                animate={{ y: [0, -(rot.length * ROW_H)] }}
-                transition={{ duration: rot.length * 2, repeat: Infinity, ease: 'linear' }}
+            <div className="flex-1 min-h-0 mt-3 pt-3 flex flex-col" style={{ borderTop: `2px dashed ${COMIC_OUTLINE}` }}>
+              <div
+                className="flex-1 min-h-0 overflow-hidden"
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0, #000 16%, #000 84%, transparent 100%)',
+                  maskImage: 'linear-gradient(to bottom, transparent 0, #000 16%, #000 84%, transparent 100%)',
+                }}
               >
-                {[...rot, ...rot].map((e, i) => (
-                  <div key={i} style={{ height: ROW_H, paddingTop: 4, paddingBottom: 4 }}>
-                    <Row e={e} unit={unit} />
-                  </div>
-                ))}
-              </motion.div>
+                <motion.div
+                  animate={{ y: [0, -(rot.length * ROW_H)] }}
+                  transition={{ duration: rot.length * 2, repeat: Infinity, ease: 'linear' }}
+                >
+                  {[...rot, ...rot].map((e, i) => (
+                    <div key={i} style={{ height: ROW_H, paddingTop: 4, paddingBottom: 4 }}>
+                      <Row e={e} unit={unit} />
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
             </div>
           )}
         </div>
