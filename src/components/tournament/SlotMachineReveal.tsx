@@ -69,8 +69,6 @@ export default function SlotMachineReveal({
       <BeamerHeading variant="eyebrow" title="Zwischenstand" className="mb-[1.5vh]" />
 
       <div ref={viewportRef} className="relative flex-1 min-h-0 w-full max-w-3xl overflow-hidden">
-        {/* Fokus-Linie */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[76px] rounded-2xl bg-white/[0.03] border border-[#D4AF37]/20 pointer-events-none" />
         <motion.div animate={{ y: translateY }} transition={{ type: 'spring', stiffness: 90, damping: 20 }}>
           {rows.map((row) => {
             const t = teamById.get(row.teamId);
@@ -80,20 +78,24 @@ export default function SlotMachineReveal({
             return (
               <div key={row.teamId} style={{ height: ROW_H }} className="flex items-center px-3">
                 <div
-                  className="flex items-center gap-4 w-full rounded-xl px-4 py-2 transition-colors"
+                  className="flex items-center gap-4 w-full rounded-2xl px-4 py-2 transition-all"
                   style={{
-                    background: revealed ? `${col}14` : 'transparent',
-                    border: `1px solid ${revealed ? `${col}55` : 'transparent'}`,
-                    opacity: revealed ? 1 : 0.55,
+                    background: revealed ? `linear-gradient(90deg, ${col}2e, transparent 85%)` : 'transparent',
+                    border: `1px solid ${revealed ? `${col}66` : 'transparent'}`,
+                    boxShadow: revealed ? `0 0 24px ${col}33` : 'none',
+                    opacity: revealed ? 1 : 0.5,
                   }}
                 >
-                  <span className="font-bebas w-[3.5vw] min-w-[48px] text-center" style={{ fontSize: 'min(3.6vw, 2.4rem)', color: col }}>
+                  <span
+                    className="font-bebas w-[3.5vw] min-w-[52px] text-center"
+                    style={{ fontSize: 'min(3.8vw, 2.6rem)', WebkitTextStroke: '2px rgba(6,15,9,0.75)', color: col, textShadow: `0 0 16px ${col}88` }}
+                  >
                     {row.finalRank}
                   </span>
                   {revealed ? (
-                    <TeamAvatar color={t.color} emoji={t.emoji} size={52} />
+                    <TeamAvatar color={t.color} emoji={t.emoji} size={54} />
                   ) : (
-                    <span className="w-[52px] h-[52px] rounded-full bg-white/10 flex-shrink-0" />
+                    <span className="w-[54px] h-[54px] rounded-full bg-white/10 flex-shrink-0" />
                   )}
                   <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3.4vw, 2.1rem)' }}>
                     {revealed ? (
@@ -107,7 +109,10 @@ export default function SlotMachineReveal({
                       />
                     )}
                   </span>
-                  <span className="font-bebas tabular-nums" style={{ fontSize: 'min(3.4vw, 2.2rem)', color: revealed ? col : '#fff' }}>
+                  <span
+                    className="font-bebas tabular-nums"
+                    style={{ fontSize: 'min(3.6vw, 2.4rem)', WebkitTextStroke: revealed ? '2px rgba(6,15,9,0.7)' : '0', color: revealed ? '#F0CE67' : '#fff', textShadow: revealed ? '0 0 16px rgba(240,206,103,0.5)' : 'none' }}
+                  >
                     {row.total}
                   </span>
                 </div>
