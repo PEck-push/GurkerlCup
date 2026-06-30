@@ -1,66 +1,40 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import RegistrationsPanel from '@/components/admin/RegistrationsPanel';
+import CheckInPanel from '@/components/admin/CheckInPanel';
 
-interface Registration {
-  id: string;
-  team_name: string;
-  player1: string;
-  player2: string;
-  player3: string;
-  email: string;
-  created_at: string;
-}
+type TabId = 'registrations' | 'checkin';
+
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'registrations', label: 'Anmeldungen' },
+  { id: 'checkin', label: 'Check-In' },
+];
 
 export default function AdminPage() {
   const [checking, setChecking] = useState(true);
   const [authed, setAuthed] = useState(false);
 
-  // login
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
 
-  // data
-  const [regs, setRegs] = useState<Registration[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [listError, setListError] = useState('');
-  const [query, setQuery] = useState('');
+  const [tab, setTab] = useState<TabId>('registrations');
 
-  // delete confirm flow
-  const [confirmId, setConfirmId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const loadRegs = useCallback(async () => {
-    setLoading(true);
-    setListError('');
+  const checkSession = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/registrations');
-      if (res.status === 401) {
-        setAuthed(false);
-        return;
-      }
-      const data = await res.json();
-      if (!res.ok) {
-        setListError(data.error ?? 'Fehler beim Laden.');
-        setAuthed(true);
-        return;
-      }
-      setRegs(data.registrations ?? []);
-      setAuthed(true);
+      const res = await fetch('/api/admin/session');
+      setAuthed(res.ok);
     } catch {
-      setListError('Netzwerkfehler.');
+      setAuthed(false);
     } finally {
-      setLoading(false);
+      setChecking(false);
     }
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await loadRegs();
-      setChecking(false);
-    })();
-  }, [loadRegs]);
+    checkSession();
+  }, [checkSession]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -78,7 +52,7 @@ export default function AdminPage() {
         return;
       }
       setPassword('');
-      await loadRegs();
+      setAuthed(true);
     } catch {
       setLoginError('Netzwerkfehler.');
     } finally {
@@ -89,52 +63,7 @@ export default function AdminPage() {
   async function handleLogout() {
     await fetch('/api/admin/logout', { method: 'POST' });
     setAuthed(false);
-    setRegs([]);
-    setConfirmId(null);
   }
-
-  async function handleDelete(id: string) {
-    setDeletingId(id);
-    setListError('');
-    try {
-      const res = await fetch('/api/admin/registrations', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-      if (res.ok) {
-        setRegs((prev) => prev.filter((r) => r.id !== id));
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setListError(data.error ?? 'Löschen fehlgeschlagen.');
-      }
-    } catch {
-      setListError('Netzwerkfehler beim Löschen.');
-    } finally {
-      setDeletingId(null);
-      setConfirmId(null);
-    }
-  }
-
-  const filtered = regs.filter((r) => {
-    const q = query.trim().toLowerCase();
-    if (!q) return true;
-    return [r.team_name, r.player1, r.player2, r.player3, r.email].some((v) =>
-      (v ?? '').toLowerCase().includes(q)
-    );
-  });
-
-  const fmt = (iso: string) =>
-    iso
-      ? new Date(iso).toLocaleString('de-AT', {
-          timeZone: 'Europe/Vienna',
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      : '—';
 
   /* ───────────── Loading ───────────── */
   if (checking) {
@@ -160,9 +89,7 @@ export default function AdminPage() {
             <p className="font-nunito text-sm text-white/40 mt-1">Gurkerl Cup 2026</p>
           </div>
 
-          <label className="block font-bebas text-xs tracking-[0.2em] text-[#52B788] mb-2">
-            PASSWORT
-          </label>
+          <label className="block font-bebas text-xs tracking-[0.2em] text-[#52B788] mb-2">PASSWORT</label>
           <input
             type="password"
             value={password}
@@ -172,9 +99,7 @@ export default function AdminPage() {
             placeholder="••••••••"
           />
 
-          {loginError && (
-            <p className="font-nunito text-sm text-red-400/90 mt-3">{loginError}</p>
-          )}
+          {loginError && <p className="font-nunito text-sm text-red-400/90 mt-3">{loginError}</p>}
 
           <button
             type="submit"
@@ -193,21 +118,18 @@ export default function AdminPage() {
     <main className="min-h-screen bg-[#0A1A0C] px-4 md:px-8 py-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="font-fredoka font-700 text-3xl text-white">
-              Turnier-Admin <span className="text-[#D4AF37]">🥒</span>
-            </h1>
-            <p className="font-nunito text-sm text-white/40 mt-1">
-              {regs.length} {regs.length === 1 ? 'Team' : 'Teams'} · {regs.length * 3} Spieler·innen
-            </p>
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <h1 className="font-fredoka font-700 text-3xl text-white">
+            Turnier-Admin <span className="text-[#D4AF37]">🥒</span>
+          </h1>
           <div className="flex items-center gap-3">
             <a
-              href="/api/admin/export"
-              className="btn-gold px-5 py-2.5 rounded-full text-sm whitespace-nowrap"
+              href="/beamer"
+              target="_blank"
+              rel="noreferrer"
+              className="font-nunito text-sm text-[#52B788] hover:text-white px-4 py-2.5 rounded-full border border-[#52B788]/30 hover:border-[#52B788] transition-all"
             >
-              ⬇ Excel exportieren
+              Beamer ↗
             </a>
             <button
               onClick={handleLogout}
@@ -218,107 +140,28 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Search */}
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Team, Spieler oder E-Mail suchen…"
-          className="w-full md:max-w-md rounded-xl bg-[#111E13] border border-[#1E4028] px-4 py-3 font-nunito text-white text-sm outline-none focus:border-[#D4AF37]/50 transition-colors mb-5"
-        />
+        {/* Tabs */}
+        <div className="flex flex-wrap gap-2 mb-7 border-b border-[#1E4028] pb-3">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`font-fredoka font-600 text-sm px-4 py-2 rounded-full transition-all ${
+                tab === t.id
+                  ? 'bg-[#D4AF37] text-[#0A1F12]'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-        {listError && (
-          <div className="rounded-xl border border-red-500/30 bg-red-900/15 px-4 py-3 mb-5">
-            <p className="font-nunito text-sm text-red-300">{listError}</p>
-          </div>
-        )}
+        {/* Panel */}
+        {tab === 'registrations' && <RegistrationsPanel />}
+        {tab === 'checkin' && <CheckInPanel />}
 
-        {loading ? (
-          <p className="font-nunito text-white/40 text-sm py-10 text-center">Lädt…</p>
-        ) : filtered.length === 0 ? (
-          <p className="font-nunito text-white/40 text-sm py-10 text-center">
-            {regs.length === 0 ? 'Noch keine Anmeldungen.' : 'Keine Treffer.'}
-          </p>
-        ) : (
-          <div className="overflow-x-auto rounded-2xl border border-[#1E4028]">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-[#111E13]">
-                  {['#', 'Team', 'Spieler', 'E-Mail', 'Angemeldet', ''].map((h) => (
-                    <th
-                      key={h}
-                      className="font-bebas text-xs tracking-[0.15em] text-[#52B788] text-left px-4 py-3 whitespace-nowrap"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((r, i) => (
-                  <tr
-                    key={r.id}
-                    className="border-t border-[#1E4028]/60 hover:bg-white/[0.02] transition-colors"
-                  >
-                    <td className="px-4 py-3 font-bebas text-[#D4AF37] align-top">{i + 1}</td>
-                    <td className="px-4 py-3 align-top">
-                      <span className="font-fredoka font-600 text-white">{r.team_name}</span>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <div className="font-nunito text-sm text-white/75 leading-relaxed">
-                        {r.player1}
-                        <br />
-                        {r.player2}
-                        <br />
-                        {r.player3}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 align-top">
-                      <a
-                        href={`mailto:${r.email}`}
-                        className="font-nunito text-sm text-[#52B788] hover:underline break-all"
-                      >
-                        {r.email}
-                      </a>
-                    </td>
-                    <td className="px-4 py-3 align-top font-nunito text-xs text-white/40 whitespace-nowrap">
-                      {fmt(r.created_at)}
-                    </td>
-                    <td className="px-4 py-3 align-top text-right whitespace-nowrap">
-                      {confirmId === r.id ? (
-                        <span className="inline-flex items-center gap-2">
-                          <button
-                            onClick={() => handleDelete(r.id)}
-                            disabled={deletingId === r.id}
-                            className="font-bebas text-xs tracking-wide px-3 py-1.5 rounded-full bg-red-600 text-white hover:bg-red-500 transition-colors disabled:opacity-50"
-                          >
-                            {deletingId === r.id ? 'Löscht…' : 'Ja, löschen'}
-                          </button>
-                          <button
-                            onClick={() => setConfirmId(null)}
-                            disabled={deletingId === r.id}
-                            className="font-nunito text-xs text-white/50 hover:text-white px-2 py-1.5"
-                          >
-                            Abbrechen
-                          </button>
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => setConfirmId(r.id)}
-                          className="font-nunito text-xs text-red-400/70 hover:text-red-400 px-3 py-1.5 rounded-full border border-red-500/20 hover:border-red-500/50 transition-all"
-                        >
-                          Löschen
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        <p className="font-nunito text-xs text-white/20 mt-6 text-center">
+        <p className="font-nunito text-xs text-white/20 mt-10 text-center">
           Personenbezogene Daten · vertraulich behandeln · nach dem Event löschen (DSGVO)
         </p>
       </div>
