@@ -45,8 +45,8 @@ export default function BeamerHeading({
       initial={{ opacity: 0, y: -24, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={`font-pacifico font-400 text-gold-gradient text-center leading-[1.1] ${className}`}
-      style={{ fontSize: 'min(7vw, 4.6rem)', filter: 'drop-shadow(0 0 28px rgba(212,175,55,0.35))' }}
+      className={`font-pacifico font-400 text-gold-gradient text-center leading-[1.45] ${className}`}
+      style={{ fontSize: 'min(7vw, 4.6rem)', paddingBottom: '0.22em', paddingTop: '0.08em', filter: 'drop-shadow(0 0 28px rgba(212,175,55,0.35))' }}
     >
       {accent ? `${title} ${accent}` : title}
     </motion.h1>
