@@ -6,8 +6,10 @@ import CheckInPanel from '@/components/admin/CheckInPanel';
 import PresenterPanel from '@/components/admin/PresenterPanel';
 import ScoreMatrix from '@/components/admin/ScoreMatrix';
 import PointsEditor from '@/components/admin/PointsEditor';
+import PrintExportPanel from '@/components/admin/PrintExportPanel';
+import TestResetPanel from '@/components/admin/TestResetPanel';
 
-type TabId = 'registrations' | 'checkin' | 'presenter' | 'scores' | 'points';
+type TabId = 'registrations' | 'checkin' | 'presenter' | 'scores' | 'points' | 'print' | 'tools';
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'registrations', label: 'Anmeldungen' },
@@ -15,6 +17,8 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'presenter', label: 'Steuerung' },
   { id: 'scores', label: 'Wertung' },
   { id: 'points', label: 'Punkte' },
+  { id: 'print', label: 'Druck/Export' },
+  { id: 'tools', label: 'Test/Reset' },
 ];
 
 export default function AdminPage() {
@@ -169,6 +173,8 @@ export default function AdminPage() {
         {tab === 'presenter' && <PresenterPanel />}
         {tab === 'scores' && <ScoreMatrix />}
         {tab === 'points' && <PointsEditor />}
+        {tab === 'print' && <PrintExportPanel />}
+        {tab === 'tools' && <TestResetPanel />}
 
         <p className="font-nunito text-xs text-white/20 mt-10 text-center">
           Personenbezogene Daten · vertraulich behandeln · nach dem Event löschen (DSGVO)
