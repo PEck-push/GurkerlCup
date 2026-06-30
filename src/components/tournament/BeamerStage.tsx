@@ -31,10 +31,16 @@ export default function BeamerStage() {
   const sceneKey = useMemo(() => {
     if (!config) return 'loading';
     if (config.phase === 'setup' || config.phase === 'phase_a') {
+      // Spritzer läuft als eigene Szene in der Rotation mit (blockt nichts).
       if (config.beamer_rotation === 'logo') return 'logo';
       if (config.beamer_rotation === 'progress') return 'progress';
       if (config.beamer_rotation === 'countdown') return 'countdown';
-      const scenes = ['logo', 'progress', ...(config.countdown_target ? ['countdown'] : [])];
+      const scenes = [
+        'logo',
+        'progress',
+        ...(config.countdown_target ? ['countdown'] : []),
+        ...(config.spritzer_revealed ? ['spritzer'] : []),
+      ];
       return scenes[rotIdx % scenes.length];
     }
     if (config.phase === 'opening') return config.opening_revealed ? 'opening' : 'logo';
@@ -61,29 +67,25 @@ export default function BeamerStage() {
         return <PhaseBBars teams={teams} scores={scores} config={config!} />;
       case 'podium':
         return <Podium teams={teams} scores={scores} config={config!} />;
+      case 'spritzer':
+        return <SpritzerReveal teams={teams} scores={scores} />;
       default:
         return <BeamerLogoLoop />;
     }
   }
 
   return (
-    <>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={sceneKey}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-0"
-        >
-          {renderScene()}
-        </motion.div>
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {config.spritzer_revealed && <SpritzerReveal key="spritzer" teams={teams} scores={scores} />}
-      </AnimatePresence>
-    </>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={sceneKey}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.6 }}
+        className="absolute inset-0"
+      >
+        {renderScene()}
+      </motion.div>
+    </AnimatePresence>
   );
 }

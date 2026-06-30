@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import BeamerStage from '@/components/tournament/BeamerStage';
+import BeamerBackground from '@/components/tournament/BeamerBackground';
 import MuteButton from '@/components/tournament/MuteButton';
+import FullscreenButton from '@/components/tournament/FullscreenButton';
 import { unlockAudio } from '@/lib/sounds';
 
 export default function BeamerPage() {
@@ -97,8 +99,12 @@ export default function BeamerPage() {
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-[#0A1A0C] noise-overlay select-none">
+      <BeamerBackground />
+      <FullscreenButton />
       <MuteButton />
-      <BeamerStage />
+      <div className="absolute inset-0 z-10">
+        <BeamerStage />
+      </div>
     </main>
   );
 }

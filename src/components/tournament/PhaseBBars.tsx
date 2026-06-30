@@ -4,6 +4,8 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { liveStandings } from '@/lib/scoring';
 import type { GcConfig, GcScore, GcTeam } from '@/lib/tournamentTypes';
+import BeamerHeading from './BeamerHeading';
+import TeamAvatar from './TeamAvatar';
 
 export default function PhaseBBars({
   teams,
@@ -31,50 +33,43 @@ export default function PhaseBBars({
   const max = Math.max(1, ...ordered.map(metric));
 
   return (
-    <div className="w-full h-full flex flex-col px-[3vw] py-[3vh]">
-      <div className="text-center mb-[2vh]">
-        <p className="font-bebas tracking-[0.3em] text-[#FB923C] text-2xl">PHASE B · LIVE</p>
-        <h1 className="font-fredoka font-700 text-white" style={{ fontSize: 'min(5vw, 3.4rem)' }}>
-          {finaleView ? 'Finale-Wertung' : 'Gesamtwertung'}
-        </h1>
-      </div>
-
-      <div className="flex-1 flex flex-col justify-center gap-[1vh] max-w-6xl w-full mx-auto">
+    <div className="w-full h-full flex flex-col px-[3vw] py-[2.5vh] overflow-hidden">
+      <BeamerHeading
+        kicker="PHASE B · LIVE"
+        title={finaleView ? 'Finale' : 'Aufholjagd'}
+        accent={finaleView ? 'Wertung' : 'live'}
+        className="mb-[2vh]"
+      />
+      <div className="flex-1 min-h-0 flex flex-col justify-center gap-[0.8vh] max-w-6xl w-full mx-auto">
         {ordered.map((row, i) => {
           const t = teamById.get(row.teamId);
           if (!t) return null;
           const val = metric(row);
-          const pct = Math.max(6, Math.round((val / max) * 100));
+          const pct = Math.max(8, Math.round((val / max) * 100));
+          const isLead = i === 0;
           return (
             <motion.div
               key={row.teamId}
               layout
               transition={{ type: 'spring', stiffness: 220, damping: 28 }}
-              className="relative h-[7vh] min-h-[48px] rounded-xl overflow-hidden bg-white/[0.04] border border-white/10 flex items-center"
+              className="relative flex-1 min-h-[42px] max-h-[64px] rounded-xl overflow-hidden bg-white/[0.04] border flex items-center"
+              style={{ borderColor: isLead ? '#D4AF37' : 'rgba(255,255,255,0.1)' }}
             >
-              {/* Balken */}
               <motion.div
-                className="absolute inset-y-0 left-0 rounded-xl"
-                style={{ background: `linear-gradient(90deg, ${t.color}cc, ${t.color}77)` }}
+                className="absolute inset-y-0 left-0"
+                style={{ background: `linear-gradient(90deg, ${t.color}dd, ${t.color}55)` }}
                 animate={{ width: `${pct}%` }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               />
-              {/* Inhalt */}
-              <div className="relative flex items-center gap-3 px-4 w-full">
-                <span className="font-bebas text-white/90 w-8 text-center" style={{ fontSize: 'min(2.6vw, 1.6rem)' }}>
+              <div className="relative flex items-center gap-3 px-3 w-full">
+                <span className="font-bebas text-white/90 w-7 text-center" style={{ fontSize: 'min(2.4vw, 1.5rem)' }}>
                   {i + 1}
                 </span>
-                <span style={{ fontSize: 'min(3vw, 2rem)' }}>{t.emoji}</span>
-                <span
-                  className="flex-1 font-fredoka font-700 text-white truncate drop-shadow"
-                  style={{ fontSize: 'min(3vw, 2rem)' }}
-                >
+                <TeamAvatar color={t.color} emoji={t.emoji} size={38} glow={false} ring={2} />
+                <span className="flex-1 font-fredoka font-700 text-white truncate drop-shadow" style={{ fontSize: 'min(2.8vw, 1.8rem)' }}>
                   {t.team_name}
                 </span>
-                <span
-                  className="font-bebas text-white tabular-nums drop-shadow"
-                  style={{ fontSize: 'min(3.4vw, 2.3rem)' }}
-                >
+                <span className="font-bebas text-white tabular-nums drop-shadow" style={{ fontSize: 'min(3.2vw, 2.1rem)' }}>
                   {val}
                 </span>
               </div>
