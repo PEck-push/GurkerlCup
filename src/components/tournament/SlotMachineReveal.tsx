@@ -6,9 +6,10 @@ import { phaseAStandings } from '@/lib/scoring';
 import type { GcConfig, GcScore, GcTeam } from '@/lib/tournamentTypes';
 import { playDrumroll, playFanfare } from '@/lib/sounds';
 import SlotName from './SlotName';
-import TeamAvatar from './TeamAvatar';
+import CharAvatar from './CharAvatar';
 import BeamerHeading from './BeamerHeading';
 import LeaderboardView, { type LbEntry } from './LeaderboardView';
+import { chunky, nameOutline, COMIC_OUTLINE, COMIC_CREAM } from '@/lib/comicStyles';
 
 const ROW_H = 76;
 const rankColor = (r: number) =>
@@ -80,24 +81,20 @@ export default function SlotMachineReveal({
                 <div
                   className="flex items-center gap-4 w-full rounded-2xl px-4 py-2 transition-all"
                   style={{
-                    background: revealed ? `linear-gradient(90deg, ${col}2e, transparent 85%)` : 'transparent',
-                    border: `1px solid ${revealed ? `${col}66` : 'transparent'}`,
-                    boxShadow: revealed ? `0 0 24px ${col}33` : 'none',
-                    opacity: revealed ? 1 : 0.5,
+                    background: revealed ? `linear-gradient(90deg, ${col}3a, rgba(255,255,255,0.03) 80%)` : 'transparent',
+                    boxShadow: revealed ? `0 0 0 3px ${COMIC_OUTLINE}` : 'none',
+                    opacity: revealed ? 1 : 0.45,
                   }}
                 >
-                  <span
-                    className="font-bebas w-[3.5vw] min-w-[52px] text-center"
-                    style={{ fontSize: 'min(3.8vw, 2.6rem)', WebkitTextStroke: '2px rgba(6,15,9,0.75)', color: col, textShadow: `0 0 16px ${col}88` }}
-                  >
+                  <span className="font-fredoka font-700 w-[3.5vw] min-w-[56px] text-center" style={chunky('min(3.8vw, 2.6rem)', col, 5)}>
                     {row.finalRank}
                   </span>
                   {revealed ? (
-                    <TeamAvatar color={t.color} emoji={t.emoji} size={54} />
+                    <CharAvatar startNumber={t.start_number} color={t.color} size={56} />
                   ) : (
-                    <span className="w-[54px] h-[54px] rounded-full bg-white/10 flex-shrink-0" />
+                    <span className="w-[56px] h-[56px] rounded-full bg-white/10 flex-shrink-0" style={{ boxShadow: `0 0 0 4px ${COMIC_CREAM}33` }} />
                   )}
-                  <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3.4vw, 2.1rem)' }}>
+                  <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3.4vw, 2.1rem)', ...(revealed ? nameOutline : {}) }}>
                     {revealed ? (
                       <SlotName text={t.team_name.toUpperCase()} perChar={170} />
                     ) : (
@@ -109,10 +106,7 @@ export default function SlotMachineReveal({
                       />
                     )}
                   </span>
-                  <span
-                    className="font-bebas tabular-nums"
-                    style={{ fontSize: 'min(3.6vw, 2.4rem)', WebkitTextStroke: revealed ? '2px rgba(6,15,9,0.7)' : '0', color: revealed ? '#F0CE67' : '#fff', textShadow: revealed ? '0 0 16px rgba(240,206,103,0.5)' : 'none' }}
-                  >
+                  <span className="font-fredoka font-700" style={revealed ? chunky('min(3.6vw, 2.4rem)', '#F0CE67', 5) : { fontSize: 'min(3.6vw, 2.4rem)', color: '#fff' }}>
                     {row.total}
                   </span>
                 </div>

@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import { liveStandings } from '@/lib/scoring';
 import type { GcConfig, GcScore, GcTeam } from '@/lib/tournamentTypes';
 import BeamerHeading from './BeamerHeading';
-import TeamAvatar from './TeamAvatar';
+import CharAvatar from './CharAvatar';
+import { chunky, nameOutline, COMIC_OUTLINE } from '@/lib/comicStyles';
 
 export default function PhaseBBars({
   teams,
@@ -47,24 +48,24 @@ export default function PhaseBBars({
               key={row.teamId}
               layout
               transition={{ type: 'spring', stiffness: 220, damping: 28 }}
-              className="relative flex-1 min-h-[42px] max-h-[64px] rounded-xl overflow-hidden bg-white/[0.04] border flex items-center"
-              style={{ borderColor: isLead ? '#D4AF37' : 'rgba(255,255,255,0.1)' }}
+              className="relative flex-1 min-h-[44px] max-h-[68px] rounded-2xl overflow-hidden flex items-center"
+              style={{ boxShadow: `0 0 0 ${isLead ? 4 : 3}px ${isLead ? '#D4AF37' : COMIC_OUTLINE}` }}
             >
               <motion.div
                 className="absolute inset-y-0 left-0"
-                style={{ background: `linear-gradient(90deg, ${t.color}dd, ${t.color}55)` }}
+                style={{ background: `linear-gradient(90deg, ${t.color}, ${t.color}66)` }}
                 animate={{ width: `${pct}%` }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               />
               <div className="relative flex items-center gap-3 px-3 w-full">
-                <span className="font-bebas text-white/90 w-7 text-center" style={{ fontSize: 'min(2.4vw, 1.5rem)' }}>
+                <span className="font-fredoka font-700 w-9 text-center" style={chunky('min(2.6vw, 1.6rem)', '#FDF6E3', 4)}>
                   {i + 1}
                 </span>
-                <TeamAvatar color={t.color} emoji={t.emoji} size={38} glow={false} ring={2} />
-                <span className="flex-1 font-fredoka font-700 text-white truncate drop-shadow" style={{ fontSize: 'min(2.8vw, 1.8rem)' }}>
+                <CharAvatar startNumber={t.start_number} color={t.color} size={42} />
+                <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(2.8vw, 1.8rem)', ...nameOutline }}>
                   {t.team_name}
                 </span>
-                <span className="font-bebas text-white tabular-nums drop-shadow" style={{ fontSize: 'min(3.2vw, 2.1rem)' }}>
+                <span className="font-fredoka font-700 tabular-nums" style={chunky('min(3.2vw, 2.1rem)', '#FDF6E3', 5)}>
                   {val}
                 </span>
               </div>

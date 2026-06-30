@@ -5,8 +5,9 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { spritzerRanking } from '@/lib/scoring';
 import type { GcScore, GcTeam } from '@/lib/tournamentTypes';
-import TeamAvatar from './TeamAvatar';
+import CharAvatar from './CharAvatar';
 import BeamerHeading from './BeamerHeading';
+import { COMIC_OUTLINE, nameOutline } from '@/lib/comicStyles';
 
 const rankColor = (r: number) =>
   r === 1 ? '#D4AF37' : r === 2 ? '#C8CBD0' : r === 3 ? '#CD7F32' : '#52B788';
@@ -64,14 +65,14 @@ export default function SpritzerReveal({ teams, scores }: { teams: GcTeam[]; sco
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.12 }}
-                className="flex items-center gap-4 rounded-xl px-4"
-                style={{ background: `${col}14`, border: `1px solid ${col}55`, height: 'min(8vh, 60px)' }}
+                className="flex items-center gap-4 rounded-2xl px-4"
+                style={{ background: `linear-gradient(90deg, ${col}33, rgba(255,255,255,0.03) 80%)`, boxShadow: `0 0 0 3px ${COMIC_OUTLINE}`, height: 'min(8vh, 62px)' }}
               >
-                <span className="font-bebas w-[42px] text-center" style={{ fontSize: 'min(3vw, 2rem)', color: col }}>
+                <span className="font-fredoka font-700 w-[44px] text-center" style={{ fontSize: 'min(3vw, 2rem)', color: col, WebkitTextStroke: `4px ${COMIC_OUTLINE}`, paintOrder: 'stroke fill' }}>
                   {row.rank}
                 </span>
-                <TeamAvatar color={t.color} emoji={t.emoji} size={44} glow={false} />
-                <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3vw, 1.9rem)' }}>
+                <CharAvatar startNumber={t.start_number} color={t.color} size={46} />
+                <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3vw, 1.9rem)', ...nameOutline }}>
                   {t.team_name}
                 </span>
                 <span className="text-right leading-none" style={{ color: col }}>

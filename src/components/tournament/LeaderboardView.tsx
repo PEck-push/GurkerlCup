@@ -1,25 +1,48 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import BeamerHeading from './BeamerHeading';
-import TeamAvatar from './TeamAvatar';
-import FillList from './FillList';
+import CharAvatar from './CharAvatar';
+import { chunky, nameOutline, COMIC_OUTLINE, COMIC_CREAM } from '@/lib/comicStyles';
 
 export interface LbEntry {
-  team: { id: string; team_name: string; color: string; emoji: string };
+  team: { id: string; team_name: string; color: string; emoji: string; start_number: number };
   rank: number;
   value: string;
 }
 
-const ROW_H = 72;
+const ROW_H = 84;
 
-const numberStroke = (color: string) => ({
-  WebkitTextStroke: '2px rgba(6,15,9,0.75)',
-  color,
-  textShadow: `0 0 16px ${color}88`,
-});
+const TOP = [
+  { rank: 2, c: '#C8CBD0', medal: '🥈', z: 20, rot: -2 },
+  { rank: 1, c: '#D4AF37', medal: '', z: 30, rot: -1 }, // Krone schwebt bereits über der Card
+  { rank: 3, c: '#CD7F32', medal: '🥉', z: 10, rot: 2 },
+];
 
-/** 2-Spalten-Arcade-Leaderboard: links Top-3-Pills, rechts Liste 4..N (höhen-adaptiv). */
+function Row({ e, unit }: { e: LbEntry; unit: string }) {
+  return (
+    <div
+      className="flex items-center gap-4 rounded-2xl pr-5"
+      style={{ height: ROW_H - 8, background: `linear-gradient(90deg, ${e.team.color}33, rgba(255,255,255,0.03) 75%)`, boxShadow: `0 0 0 3px ${COMIC_OUTLINE}` }}
+    >
+      <div
+        className="flex items-center justify-center font-fredoka font-700 flex-shrink-0 ml-[-3px] rounded-2xl"
+        style={{ width: 62, height: ROW_H - 8, background: e.team.color, boxShadow: `inset 0 0 0 4px ${COMIC_OUTLINE}`, ...chunky(32, COMIC_CREAM, 0) }}
+      >
+        {e.rank}
+      </div>
+      <CharAvatar startNumber={e.team.start_number} color={e.team.color} size={54} />
+      <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 26, ...nameOutline }}>
+        {e.team.team_name}
+      </span>
+      <span className="font-fredoka font-700" style={chunky(38, '#F0CE67', 5)}>
+        {e.value}
+        {unit && <span className="font-bebas align-top ml-1" style={{ fontSize: 16, WebkitTextStroke: '0', color: '#ffffff80' }}>{unit}</span>}
+      </span>
+    </div>
+  );
+}
+
+/** Cartoon-Meme-Leaderboard: Header-Sticker + Top-3-Cards + Liste (4–8 starr, ab 9 rotierend). */
 export default function LeaderboardView({
   entries,
   unit = 'Pkt',
@@ -33,115 +56,96 @@ export default function LeaderboardView({
   accent?: string;
   variant?: 'gold' | 'eyebrow';
 }) {
-  const top3 = entries.filter((e) => e.rank <= 3);
-  const rest = entries.filter((e) => e.rank >= 4);
-
-  const SLOT = {
-    1: { c: '#D4AF37', medal: '👑', av: 104 },
-    2: { c: '#C8CBD0', medal: '🥈', av: 84 },
-    3: { c: '#CD7F32', medal: '🥉', av: 80 },
-  } as const;
-
-  const restRows = rest.map((e) => (
-    <div
-      key={e.team.id}
-      className="flex items-center gap-3 h-full pr-3 rounded-2xl"
-      style={{ background: `linear-gradient(90deg, ${e.team.color}1f, transparent 80%)`, border: `1px solid ${e.team.color}33` }}
-    >
-      <span
-        className="flex-none w-[58px] h-[58px] ml-1 rounded-xl flex items-center justify-center font-bebas"
-        style={{ background: 'rgba(255,255,255,0.05)', border: `1px solid ${e.team.color}44`, fontSize: 'min(3vw,2rem)', ...numberStroke('#ffffff') }}
-      >
-        {e.rank}
-      </span>
-      <TeamAvatar color={e.team.color} emoji={e.team.emoji} size={44} glow={false} ring={2} />
-      <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(2.6vw,1.7rem)' }}>
-        {e.team.team_name}
-      </span>
-      <span className="font-bebas tabular-nums" style={{ fontSize: 'min(3vw,2rem)', ...numberStroke('#F0CE67') }}>
-        {e.value}
-        <span className="text-white/40 text-[0.5em] ml-1" style={{ WebkitTextStroke: '0', textShadow: 'none' }}>{unit}</span>
-      </span>
-    </div>
-  ));
+  const label = (accent ? `${title} ${accent}` : title).toUpperCase();
+  const headBg = variant === 'eyebrow' ? 'linear-gradient(120deg,#52B788,#9be7c4)' : 'linear-gradient(120deg,#D4AF37,#F0CE67)';
+  const byRank = (r: number) => entries.find((e) => e.rank === r);
+  const mid = entries.filter((e) => e.rank >= 4 && e.rank <= 8);
+  const rot = entries.filter((e) => e.rank >= 9);
 
   return (
-    <div className="w-full h-full flex flex-col px-[3vw] py-[2vh] overflow-hidden">
-      <BeamerHeading title={title} accent={accent} variant={variant} className="flex-none mb-[2vh]" />
+    <div className="relative w-full h-full flex flex-col px-[4vw] py-[3.5vh]">
+      {/* Header-Sticker */}
+      <div className="flex-none flex justify-center mb-[2vh]">
+        <motion.div
+          initial={{ rotate: -5, scale: 0.85, opacity: 0 }}
+          animate={{ rotate: -3, scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 180, damping: 12 }}
+          className="px-9 py-2 rounded-2xl"
+          style={{ background: headBg, boxShadow: `0 0 0 5px ${COMIC_OUTLINE}` }}
+        >
+          <span className="font-fredoka font-700" style={chunky('min(4vw,2.4rem)', COMIC_OUTLINE, 0)}>
+            {label}
+          </span>
+        </motion.div>
+      </div>
 
       <div className="flex-1 min-h-0 flex gap-[2.5vw]">
         {/* LINKS: Top 3 */}
-        <div className="flex flex-col justify-center gap-[2vh]" style={{ width: '42%' }}>
-          {[1, 2, 3].map((r) => {
-            const e = top3.find((x) => x.rank === r);
-            const s = SLOT[r as 1 | 2 | 3];
-            const first = r === 1;
+        <div className="relative flex flex-col justify-center gap-[2vh]" style={{ width: '44%' }}>
+          {/* Burst */}
+          <div
+            className="absolute left-1/2 top-1/2 -z-0 pointer-events-none"
+            style={{ width: 760, height: 760, marginLeft: -380, marginTop: -380, background: 'repeating-conic-gradient(from 0deg, rgba(212,175,55,0.12) 0deg 10deg, transparent 10deg 20deg)', borderRadius: '50%' }}
+          />
+          {TOP.map((s, idx) => {
+            const e = byRank(s.rank);
+            const first = s.rank === 1;
             return (
               <motion.div
-                key={r}
-                initial={{ opacity: 0, x: -50, scale: 0.9 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ delay: 0.15 * (3 - r), type: 'spring', stiffness: 140, damping: 15 }}
-                className="relative flex items-center gap-4 rounded-[2rem] pl-3 pr-5"
-                style={{
-                  marginLeft: `${(r - 1) * 3}%`,
-                  height: first ? 'min(22vh,170px)' : 'min(17vh,128px)',
-                  background: `linear-gradient(120deg, ${s.c}33, ${s.c}0d 70%)`,
-                  border: `2px solid ${s.c}`,
-                  boxShadow: `0 0 ${first ? 60 : 34}px ${s.c}66, inset 0 0 30px ${s.c}1a`,
-                }}
+                key={s.rank}
+                initial={{ x: -60, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, rotate: s.rot }}
+                transition={{ delay: 0.12 * idx, type: 'spring', stiffness: 130, damping: 13 }}
+                className="relative flex items-center gap-5 rounded-[2.2rem] pl-4 pr-6"
+                style={{ zIndex: s.z, height: first ? '23vh' : '17vh', background: `linear-gradient(125deg, ${s.c}, ${s.c}aa)`, boxShadow: `0 0 0 5px ${COMIC_OUTLINE}, 0 0 0 9px ${COMIC_CREAM}` }}
               >
                 {first && (
                   <motion.span
-                    className="absolute -top-[3.2vh] left-1/2 -translate-x-1/2 leading-none"
-                    style={{ fontSize: 'min(5vw,3.4rem)' }}
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute -top-[4.5vh] left-1/2 -translate-x-1/2"
+                    style={{ fontSize: '6vh' }}
+                    animate={{ y: [0, -8, 0], rotate: [-6, 6, -6] }}
+                    transition={{ duration: 2.4, repeat: Infinity }}
                   >
                     👑
                   </motion.span>
                 )}
-                <TeamAvatar
-                  color={e?.team.color ?? s.c}
-                  emoji={e?.team.emoji ?? '❓'}
-                  size={s.av}
-                  ring={first ? 5 : 4}
-                />
+                <CharAvatar startNumber={e?.team.start_number} color={e?.team.color ?? s.c} size={first ? 150 : 110} />
                 <div className="flex-1 min-w-0">
-                  <span
-                    className="font-bebas leading-none block"
-                    style={{ fontSize: first ? 'min(4vw,2.6rem)' : 'min(3vw,2rem)', ...numberStroke(s.c) }}
-                  >
-                    {s.medal} {r}.
-                  </span>
-                  <span
-                    className="font-fredoka font-700 text-white block truncate"
-                    style={{ fontSize: first ? 'min(3vw,2rem)' : 'min(2.4vw,1.6rem)' }}
-                  >
+                  <div className="font-fredoka font-700" style={chunky(first ? 44 : 32, COMIC_CREAM, first ? 5 : 4)}>
+                    {s.medal}{s.rank}
+                  </div>
+                  <div className="font-fredoka font-700 text-white truncate mt-1" style={{ fontSize: first ? '3vh' : '2.3vh', ...nameOutline }}>
                     {e?.team.team_name ?? '—'}
-                  </span>
+                  </div>
                 </div>
-                <span
-                  className="flex-none font-bebas tabular-nums leading-none"
-                  style={{ fontSize: first ? 'min(4.5vw,3rem)' : 'min(3.4vw,2.3rem)', ...numberStroke('#F0CE67') }}
-                >
-                  {e?.value ?? '—'}
-                  <span className="text-white/40 block text-center" style={{ fontSize: '0.4em', WebkitTextStroke: '0', textShadow: 'none' }}>
-                    {unit}
-                  </span>
-                </span>
+                <div className="text-right flex-none">
+                  <div className="font-fredoka font-700" style={chunky(first ? 56 : 42, '#F0CE67', first ? 7 : 6)}>
+                    {e?.value ?? '—'}
+                  </div>
+                  {unit && <div className="font-bebas tracking-widest text-white/90" style={{ fontSize: '1.6vh' }}>{unit}</div>}
+                </div>
               </motion.div>
             );
           })}
         </div>
 
-        {/* RECHTS: Plätze 4..N */}
-        <div className="flex-1 min-h-0">
-          {rest.length > 0 ? (
-            <FillList rows={restRows} rowH={ROW_H} />
-          ) : (
-            <div className="h-full flex items-center justify-center text-white/30 font-nunito text-xl">
-              Nur drei Teams am Start 🥒
+        {/* RECHTS: 4–8 starr, ab 9 rotierend */}
+        <div className="flex-1 min-h-0 flex flex-col gap-2">
+          {mid.map((e) => (
+            <Row key={e.team.id} e={e} unit={unit} />
+          ))}
+          {rot.length > 0 && (
+            <div className="flex-1 min-h-0 overflow-hidden mt-1 pt-2" style={{ borderTop: `2px dashed ${COMIC_OUTLINE}` }}>
+              <motion.div
+                animate={{ y: [0, -(rot.length * ROW_H)] }}
+                transition={{ duration: rot.length * 2, repeat: Infinity, ease: 'linear' }}
+              >
+                {[...rot, ...rot].map((e, i) => (
+                  <div key={i} style={{ height: ROW_H, paddingTop: 4, paddingBottom: 4 }}>
+                    <Row e={e} unit={unit} />
+                  </div>
+                ))}
+              </motion.div>
             </div>
           )}
         </div>
