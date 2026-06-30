@@ -59,8 +59,8 @@ export default function LeaderboardView({
   const label = (accent ? `${title} ${accent}` : title).toUpperCase();
   const headBg = variant === 'eyebrow' ? 'linear-gradient(120deg,#52B788,#9be7c4)' : 'linear-gradient(120deg,#D4AF37,#F0CE67)';
   const byRank = (r: number) => entries.find((e) => e.rank === r);
-  const mid = entries.filter((e) => e.rank >= 4 && e.rank <= 8);
-  const rot = entries.filter((e) => e.rank >= 9);
+  const mid = entries.filter((e) => e.rank >= 4 && e.rank <= 6);
+  const rot = entries.filter((e) => e.rank >= 7);
 
   return (
     <div className="relative w-full h-full flex flex-col px-[4vw] pt-[3.5vh] pb-[6vh]">
@@ -82,10 +82,12 @@ export default function LeaderboardView({
       <div className="flex-1 min-h-0 flex gap-[2.5vw]">
         {/* LINKS: Top 3 */}
         <div className="relative flex flex-col justify-center gap-[2vh]" style={{ width: '44%' }}>
-          {/* Burst */}
-          <div
+          {/* Burst – langsam rotierend, hinter Rang 1 */}
+          <motion.div
             className="absolute left-1/2 top-1/2 -z-0 pointer-events-none"
-            style={{ width: 760, height: 760, marginLeft: -380, marginTop: -380, background: 'repeating-conic-gradient(from 0deg, rgba(212,175,55,0.12) 0deg 10deg, transparent 10deg 20deg)', borderRadius: '50%' }}
+            style={{ width: 820, height: 820, marginLeft: -410, marginTop: -410, background: 'repeating-conic-gradient(from 0deg, rgba(212,175,55,0.14) 0deg 10deg, transparent 10deg 20deg)', borderRadius: '50%' }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 42, repeat: Infinity, ease: 'linear' }}
           />
           {TOP.map((s, idx) => {
             const e = byRank(s.rank);
@@ -94,21 +96,17 @@ export default function LeaderboardView({
               <motion.div
                 key={s.rank}
                 initial={{ x: -60, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, rotate: s.rot }}
-                transition={{ delay: 0.12 * idx, type: 'spring', stiffness: 130, damping: 13 }}
+                animate={{ x: 0, opacity: 1, rotate: s.rot, scale: first ? [1, 1.035, 1] : 1 }}
+                transition={{
+                  delay: 0.12 * idx,
+                  type: 'spring',
+                  stiffness: 130,
+                  damping: 13,
+                  ...(first ? { scale: { duration: 3.4, repeat: Infinity, ease: 'easeInOut' } } : {}),
+                }}
                 className="relative flex items-center gap-5 rounded-[2.2rem] pl-4 pr-6"
-                style={{ zIndex: s.z, height: first ? '23vh' : '17vh', background: `linear-gradient(125deg, ${s.c}, ${s.c}aa)`, boxShadow: `0 0 0 5px ${COMIC_OUTLINE}, 0 0 0 9px ${COMIC_CREAM}` }}
+                style={{ zIndex: s.z, height: first ? '23vh' : '17vh', background: `linear-gradient(125deg, ${s.c}, ${s.c}aa)`, boxShadow: `0 0 0 5px ${COMIC_OUTLINE}, 0 0 0 9px ${COMIC_CREAM}${first ? ', 0 0 50px rgba(212,175,55,0.5)' : ''}` }}
               >
-                {first && (
-                  <motion.span
-                    className="absolute -top-[4.5vh] left-1/2 -translate-x-1/2"
-                    style={{ fontSize: '6vh' }}
-                    animate={{ y: [0, -8, 0], rotate: [-6, 6, -6] }}
-                    transition={{ duration: 2.4, repeat: Infinity }}
-                  >
-                    👑
-                  </motion.span>
-                )}
                 <CharAvatar startNumber={e?.team.start_number} color={e?.team.color ?? s.c} size={first ? 150 : 110} />
                 <div className="flex-1 min-w-0">
                   <div className="font-fredoka font-700" style={chunky(first ? 44 : 32, COMIC_CREAM, first ? 5 : 4)}>
@@ -145,7 +143,7 @@ export default function LeaderboardView({
               >
                 <motion.div
                   animate={{ y: [0, -(rot.length * ROW_H)] }}
-                  transition={{ duration: rot.length * 2, repeat: Infinity, ease: 'linear' }}
+                  transition={{ duration: rot.length * 3.4, repeat: Infinity, ease: 'linear' }}
                 >
                   {[...rot, ...rot].map((e, i) => (
                     <div key={i} style={{ height: ROW_H, paddingTop: 4, paddingBottom: 4 }}>

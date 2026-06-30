@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS gc_config (
   beamer_rotation   text NOT NULL DEFAULT 'auto',      -- auto|logo|progress|countdown
   beamer_view       text NOT NULL DEFAULT 'total',     -- total|finale (Phase-B-Balken)
   countdown_target  timestamptz,                       -- Ziel für "Countdown bis 19:30"
+  slide_seconds     int NOT NULL DEFAULT 12,           -- Dauer pro Beamer-Slide (Rotation)
   test_mode         boolean NOT NULL DEFAULT false,    -- Probemodus-Badge
   points_table      jsonb NOT NULL DEFAULT '{
     "phase_a":              [12,10,8,6,4,2],

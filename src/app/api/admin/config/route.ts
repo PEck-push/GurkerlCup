@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 const MISSING_KEY = 'Service-Role-Key fehlt (SUPABASE_SERVICE_ROLE_KEY).';
 
 const PHASES: Phase[] = ['setup', 'opening', 'phase_a', 'reveal', 'phase_b', 'podium'];
-const ROTATIONS = ['auto', 'logo', 'progress', 'countdown'];
+const ROTATIONS = ['auto', 'logo', 'progress', 'countdown', 'spritzer'];
 const VIEWS = ['total', 'finale'];
 
 export async function GET() {
@@ -62,6 +62,9 @@ export async function POST(request: NextRequest) {
     patch.beamer_view = body.beamer_view;
   }
   if (body.countdown_target !== undefined) patch.countdown_target = body.countdown_target;
+  if (body.slide_seconds !== undefined) {
+    patch.slide_seconds = Math.min(120, Math.max(3, Number(body.slide_seconds) || 12));
+  }
   if (body.test_mode !== undefined) patch.test_mode = !!body.test_mode;
   if (body.points_table !== undefined) patch.points_table = body.points_table;
 

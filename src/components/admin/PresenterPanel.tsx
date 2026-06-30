@@ -97,7 +97,7 @@ export default function PresenterPanel() {
       {config.phase === 'phase_a' && (
         <ControlCard title="BEAMER PHASE A">
           <div className="flex flex-wrap gap-2 mb-4">
-            {(['auto', 'logo', 'progress', 'countdown'] as const).map((r) => (
+            {(['auto', 'logo', 'progress', 'countdown', 'spritzer'] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => post({ beamer_rotation: r })}
@@ -107,9 +107,29 @@ export default function PresenterPanel() {
                     : 'border-[#1E4028] text-white/60 hover:text-white'
                 }`}
               >
-                {r === 'auto' ? 'Rotierend' : r === 'logo' ? 'Logo' : r === 'progress' ? 'Fortschritt' : 'Countdown'}
+                {r === 'auto' ? 'Rotierend' : r === 'logo' ? 'Logo' : r === 'progress' ? 'Fortschritt' : r === 'countdown' ? 'Countdown' : '🍷 Spritzer'}
               </button>
             ))}
+          </div>
+          <div className="mb-4">
+            <label className="block font-nunito text-xs text-white/50 mb-2">
+              Slide-Dauer beim Rotieren: <b className="text-white">{config.slide_seconds}s</b>
+            </label>
+            <div className="flex items-center gap-2">
+              {[6, 10, 15, 20, 30].map((sec) => (
+                <button
+                  key={sec}
+                  onClick={() => post({ slide_seconds: sec })}
+                  className={`font-nunito text-sm px-3 py-1.5 rounded-full border transition-all ${
+                    config.slide_seconds === sec
+                      ? 'border-[#52B788] bg-[#52B788]/10 text-[#52B788]'
+                      : 'border-[#1E4028] text-white/60 hover:text-white'
+                  }`}
+                >
+                  {sec}s
+                </button>
+              ))}
+            </div>
           </div>
           <CountdownSetter
             current={config.countdown_target}
@@ -180,10 +200,14 @@ export default function PresenterPanel() {
       {/* Spritzer immer steuerbar */}
       <ControlCard title="SPRITZERWERTUNG">
         <Toggle
-          label="Spritzer-Reveal am Beamer einblenden"
+          label="Spritzer in die Beamer-Rotation aufnehmen"
           on={config.spritzer_revealed}
           onClick={() => post({ spritzer_revealed: !config.spritzer_revealed })}
         />
+        <p className="font-nunito text-xs text-white/40 mt-2">
+          In Phase A: bei „Rotierend" wird die Spritzerwertung mit eingeblendet. Zum dauerhaften
+          Anzeigen oben bei „Beamer Phase A" auf <b className="text-white/70">🍷 Spritzer</b> stellen.
+        </p>
       </ControlCard>
     </div>
   );

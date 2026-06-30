@@ -7,6 +7,9 @@ import LeaderboardView, { type LbEntry } from '@/components/tournament/Leaderboa
 import SpritzerReveal from '@/components/tournament/SpritzerReveal';
 import PhaseBBars from '@/components/tournament/PhaseBBars';
 import BeamerBackground from '@/components/tournament/BeamerBackground';
+import BeamerLogoLoop from '@/components/tournament/BeamerLogoLoop';
+import BeamerProgressGrid from '@/components/tournament/BeamerProgressGrid';
+import BeamerCountdown from '@/components/tournament/BeamerCountdown';
 import { DEFAULT_POINTS_TABLE, type GcConfig, type GcScore, type GcTeam } from '@/lib/tournamentTypes';
 
 const COLORS = ['#D4AF37', '#52B788', '#38BDF8', '#FB923C', '#EF4444', '#A855F7', '#84CC16', '#F472B6', '#2DD4BF', '#FBBF24', '#60A5FA', '#FB7185', '#C084FC', '#4ADE80'];
@@ -20,6 +23,17 @@ const config = { points_table: DEFAULT_POINTS_TABLE, beamer_view: 'total' } as u
 
 function Inner() {
   const s = useSearchParams().get('s') ?? 'lb';
+  if (s === 'logo') return <BeamerLogoLoop />;
+  if (s === 'progress') {
+    const scores: GcScore[] = [];
+    teams.forEach((t, i) => {
+      for (let d = 0; d < ((i * 3) % 9); d++) {
+        scores.push({ id: `p${i}-${d}`, team_id: t.id, discipline_id: ['mutter-stapeln', 'hasbro-simon', 'cornhole', 'schwammstaffel', 'kazoomeister', 'gurkerl-biathlon', 'wasserbomben', 'gurkerlglasl'][d % 8], raw_value: 1, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: '' });
+      }
+    });
+    return <BeamerProgressGrid teams={teams} scores={scores} />;
+  }
+  if (s === 'countdown') return <BeamerCountdown target={new Date(Date.now() + 3 * 3600_000 + 25 * 60_000).toISOString()} />;
   if (s === 'spritzer') {
     const scores: GcScore[] = teams.map((t, i) => ({ id: `s${i}`, team_id: t.id, discipline_id: 'spritzer', raw_value: 4 - i * 0.25, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: '' }));
     return <SpritzerReveal teams={teams} scores={scores} />;

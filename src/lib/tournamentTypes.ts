@@ -4,7 +4,7 @@
  */
 
 export type Phase = 'setup' | 'opening' | 'phase_a' | 'reveal' | 'phase_b' | 'podium';
-export type BeamerRotation = 'auto' | 'logo' | 'progress' | 'countdown';
+export type BeamerRotation = 'auto' | 'logo' | 'progress' | 'countdown' | 'spritzer';
 export type BeamerView = 'total' | 'finale';
 
 /** Punktetabelle: pro Gruppe ein Array + "<gruppe>_floor" als Mindestpunkte ab dem letzten Listeneintrag. */
@@ -30,6 +30,7 @@ export interface GcConfig {
   beamer_rotation: BeamerRotation;
   beamer_view: BeamerView;
   countdown_target: string | null;
+  slide_seconds: number;
   test_mode: boolean;
   points_table: PointsTable;
   updated_at: string;

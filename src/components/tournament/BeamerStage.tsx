@@ -21,20 +21,23 @@ export default function BeamerStage() {
 
   const rotating =
     config?.beamer_rotation === 'auto' && (config.phase === 'setup' || config.phase === 'phase_a');
+  const slideMs = Math.max(3, config?.slide_seconds ?? 12) * 1000;
 
   useEffect(() => {
     if (!rotating) return;
-    const id = setInterval(() => setRotIdx((i) => i + 1), 12000);
+    const id = setInterval(() => setRotIdx((i) => i + 1), slideMs);
     return () => clearInterval(id);
-  }, [rotating]);
+  }, [rotating, slideMs]);
 
   const sceneKey = useMemo(() => {
     if (!config) return 'loading';
     if (config.phase === 'setup' || config.phase === 'phase_a') {
-      // Spritzer läuft als eigene Szene in der Rotation mit (blockt nichts).
+      // Feste Beamer-Ansicht (Pin) – inkl. Spritzer.
       if (config.beamer_rotation === 'logo') return 'logo';
       if (config.beamer_rotation === 'progress') return 'progress';
       if (config.beamer_rotation === 'countdown') return 'countdown';
+      if (config.beamer_rotation === 'spritzer') return 'spritzer';
+      // auto: rotiert durch alle aktiven Slides (Spritzer mit, wenn aktiviert)
       const scenes = [
         'logo',
         'progress',
