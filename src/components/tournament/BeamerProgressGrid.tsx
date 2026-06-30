@@ -20,7 +20,7 @@ export default function BeamerProgressGrid({ teams, scores }: { teams: GcTeam[];
     <div className="w-full h-full flex flex-col px-[4vw] pt-[3vh] pb-[5vh] overflow-hidden">
       <BeamerHeading variant="eyebrow" title="Fortschritt" className="flex-none mb-[2vh]" />
       <div
-        className="grid gap-3 flex-1 min-h-0 content-center"
+        className="grid gap-3 flex-1 min-h-0 auto-rows-fr"
         style={{ gridTemplateColumns: `repeat(${active.length > 8 ? 3 : 2}, minmax(0, 1fr))` }}
       >
         {active.map((t) => {

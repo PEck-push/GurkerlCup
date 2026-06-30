@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { chunky, COMIC_OUTLINE } from '@/lib/comicStyles';
 
 /**
  * Beamer-Headline.
- *  - variant 'gold'   : große goldene Schreibschrift (Pacifico) – z.B. Spritzerwertung, Eröffnung, Goldene Gurke
- *  - variant 'eyebrow': kleines grünes Label (z.B. "Zwischenstand") – Leaderboard & Phase B
+ *  - variant 'gold'   : große goldene Schreibschrift (Pacifico) – z.B. Spritzerwertung, Eröffnung
+ *  - variant 'eyebrow': grünes Sticker-Label in den neuen Block-Buchstaben (Fredoka + Outline)
  */
 export default function BeamerHeading({
   title,
@@ -22,20 +23,17 @@ export default function BeamerHeading({
   if (variant === 'eyebrow') {
     return (
       <div className={`text-center ${className}`}>
-        <motion.span
-          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85, rotate: -5 }}
           animate={{ opacity: 1, scale: 1, rotate: -2 }}
           transition={{ duration: 0.5, type: 'spring', stiffness: 200, damping: 12 }}
-          className="inline-block font-bebas tracking-[0.35em] text-[#0A1F12] rounded-full px-7 py-1"
-          style={{
-            fontSize: 'min(2.8vw, 1.7rem)',
-            background: 'linear-gradient(120deg, #52B788, #9be7c4)',
-            border: '2px solid #d6f5e4',
-            boxShadow: '0 0 26px rgba(82,183,136,0.65), 0 4px 0 rgba(6,15,9,0.4)',
-          }}
+          className="inline-block px-9 py-2 rounded-2xl"
+          style={{ background: 'linear-gradient(120deg, #52B788, #9be7c4)', boxShadow: `0 0 0 5px ${COMIC_OUTLINE}` }}
         >
-          {title}
-        </motion.span>
+          <span className="font-fredoka font-700" style={chunky('min(3.4vw, 2.1rem)', COMIC_OUTLINE, 0)}>
+            {title.toUpperCase()}
+          </span>
+        </motion.div>
       </div>
     );
   }

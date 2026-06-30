@@ -49,7 +49,7 @@ export default function BeamerCountdown({ target }: { target: string | null }) {
         animate={over ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 1.2, repeat: Infinity }}
         className="font-fredoka font-700 tabular-nums"
-        style={chunky('min(30vw, 24rem)', over ? '#EF4444' : '#F0CE67', 14)}
+        style={chunky('min(31vw, 25rem)', over ? '#EF4444' : '#F0CE67', 20)}
       >
         {h > 0 ? `${pad(h)}:` : ''}{pad(m)}:{pad(s)}
       </motion.div>
