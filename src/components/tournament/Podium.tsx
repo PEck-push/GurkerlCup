@@ -55,7 +55,7 @@ export default function Podium({
           </p>
         </div>
       )}
-      <LeaderboardView entries={entries} unit="Pkt" kicker="SIEGEREHRUNG" title="Goldene" accent="Gurke 🥒" />
+      <LeaderboardView entries={entries} unit="Pkt" title="Goldene" accent="Gurke 🥒" />
     </div>
   );
 }

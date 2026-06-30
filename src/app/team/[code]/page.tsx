@@ -27,6 +27,7 @@ export default function TeamSelfView() {
   function valueLabel(disciplineId: string, s?: GcScore): string {
     const meta = SCORING_META[disciplineId];
     if (!s || (s.raw_value == null && s.manual_rank == null)) return '—';
+    if (disciplineId === SPRITZER_ID) return `${s.raw_value} m`;
     if (meta?.inputMode === 'elimination') return s.manual_rank ? `Platz ${s.manual_rank}` : '—';
     if (meta?.inputMode === 'time') return formatSeconds(s.raw_value);
     return `${s.raw_value} ${meta?.inputUnit ?? ''}`.trim();

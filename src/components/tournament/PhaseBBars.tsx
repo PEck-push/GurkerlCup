@@ -34,12 +34,7 @@ export default function PhaseBBars({
 
   return (
     <div className="w-full h-full flex flex-col px-[3vw] py-[2.5vh] overflow-hidden">
-      <BeamerHeading
-        kicker="PHASE B · LIVE"
-        title={finaleView ? 'Finale' : 'Aufholjagd'}
-        accent={finaleView ? 'Wertung' : 'live'}
-        className="mb-[2vh]"
-      />
+      <BeamerHeading variant="eyebrow" title="Zwischenstand" className="mb-[2vh]" />
       <div className="flex-1 min-h-0 flex flex-col justify-center gap-[0.8vh] max-w-6xl w-full mx-auto">
         {ordered.map((row, i) => {
           const t = teamById.get(row.teamId);

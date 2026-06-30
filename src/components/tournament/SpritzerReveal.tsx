@@ -49,7 +49,7 @@ export default function SpritzerReveal({ teams, scores }: { teams: GcTeam[]; sco
 
       {/* Wertung */}
       <div className="flex-1 max-w-2xl">
-        <BeamerHeading title="Spritzer" accent="wertung" className="!text-left mb-[2vh]" />
+        <BeamerHeading title="Spritzerwertung" className="!text-left mb-[2vh]" />
         <div className="flex flex-col gap-[1vh]">
           {ranked.length === 0 && (
             <p className="font-nunito text-white/40 text-2xl">Noch keine Wertung.</p>
@@ -74,8 +74,13 @@ export default function SpritzerReveal({ teams, scores }: { teams: GcTeam[]; sco
                 <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3vw, 1.9rem)' }}>
                   {t.team_name}
                 </span>
-                <span className="font-bebas tabular-nums" style={{ fontSize: 'min(3vw, 1.9rem)', color: col }}>
-                  {row.rawValue} 🍷
+                <span className="text-right leading-none" style={{ color: col }}>
+                  <span className="font-bebas tabular-nums" style={{ fontSize: 'min(3vw, 1.9rem)' }}>
+                    {row.rawValue} m
+                  </span>
+                  <span className="block font-nunito text-white/40" style={{ fontSize: 'min(1.5vw, 0.9rem)' }}>
+                    {Math.round((row.rawValue ?? 0) * 10)} 🍷
+                  </span>
                 </span>
               </motion.div>
             );

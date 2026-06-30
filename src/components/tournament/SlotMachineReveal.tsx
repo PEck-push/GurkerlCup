@@ -56,15 +56,7 @@ export default function SlotMachineReveal({
       rank: r.finalRank,
       value: String(r.total),
     }));
-    return (
-      <LeaderboardView
-        entries={entries}
-        unit="Pkt"
-        kicker="ZWISCHENSTAND"
-        title="Nach"
-        accent="Phase A"
-      />
-    );
+    return <LeaderboardView entries={entries} unit="Pkt" variant="eyebrow" title="Zwischenstand" />;
   }
 
   // ── Reveal-Lauf: von unten nach oben, mitscrollend ──
@@ -74,7 +66,7 @@ export default function SlotMachineReveal({
 
   return (
     <div className="w-full h-full flex flex-col items-center px-[3vw] py-[2.5vh]">
-      <BeamerHeading kicker="GROSSE ENTHÜLLUNG" title="Zwischenstand nach" accent="Phase A" className="mb-[1.5vh]" />
+      <BeamerHeading variant="eyebrow" title="Zwischenstand" className="mb-[1.5vh]" />
 
       <div ref={viewportRef} className="relative flex-1 min-h-0 w-full max-w-3xl overflow-hidden">
         {/* Fokus-Linie */}

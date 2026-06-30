@@ -37,5 +37,5 @@ export default function OpeningReveal({
     );
   }
 
-  return <LeaderboardView entries={entries} unit="" kicker="ERÖFFNUNG · 🔩" title="Bleib" accent="ruhig!" />;
+  return <LeaderboardView entries={entries} unit="" title="Bleib" accent="ruhig!" />;
 }
