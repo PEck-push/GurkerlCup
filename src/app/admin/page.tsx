@@ -3,12 +3,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import RegistrationsPanel from '@/components/admin/RegistrationsPanel';
 import CheckInPanel from '@/components/admin/CheckInPanel';
+import PresenterPanel from '@/components/admin/PresenterPanel';
+import ScoreMatrix from '@/components/admin/ScoreMatrix';
+import PointsEditor from '@/components/admin/PointsEditor';
 
-type TabId = 'registrations' | 'checkin';
+type TabId = 'registrations' | 'checkin' | 'presenter' | 'scores' | 'points';
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'registrations', label: 'Anmeldungen' },
   { id: 'checkin', label: 'Check-In' },
+  { id: 'presenter', label: 'Steuerung' },
+  { id: 'scores', label: 'Wertung' },
+  { id: 'points', label: 'Punkte' },
 ];
 
 export default function AdminPage() {
@@ -160,6 +166,9 @@ export default function AdminPage() {
         {/* Panel */}
         {tab === 'registrations' && <RegistrationsPanel />}
         {tab === 'checkin' && <CheckInPanel />}
+        {tab === 'presenter' && <PresenterPanel />}
+        {tab === 'scores' && <ScoreMatrix />}
+        {tab === 'points' && <PointsEditor />}
 
         <p className="font-nunito text-xs text-white/20 mt-10 text-center">
           Personenbezogene Daten · vertraulich behandeln · nach dem Event löschen (DSGVO)
