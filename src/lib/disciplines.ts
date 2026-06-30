@@ -181,3 +181,49 @@ export const disciplines: Discipline[] = [
     badge: 'FINALE ×2',
   },
 ];
+
+/* ───────────────────────── Scoring-Metadaten ─────────────────────────
+   Trennt die Wertungs-Logik von der Präsentation oben. Wird von der
+   Scoring-Engine (scoring.ts) sowie /score & /beamer genutzt. */
+
+export type ScoreDirection = 'asc' | 'desc'; // asc = kleiner besser (Zeit), desc = größer besser
+export type PointsGroup = 'phase_a' | 'opening' | 'riesen-ringerl' | 'baelle-chaos';
+export type GamePhase = 'opening' | 'a' | 'b';
+export type InputMode = 'number' | 'time' | 'elimination';
+
+export interface DisciplineMeta {
+  direction: ScoreDirection;
+  pointsGroup: PointsGroup;
+  gamePhase: GamePhase;
+  cardsAllowed: boolean; // Gurkerl-Karten nur auf den 7 Phase-A-Stationen
+  inputUnit: string; // Anzeige-Einheit für die Eingabe
+  inputMode: InputMode;
+}
+
+export const SCORING_META: Record<string, DisciplineMeta> = {
+  'mutter-stapeln': { direction: 'asc', pointsGroup: 'opening', gamePhase: 'opening', cardsAllowed: false, inputUnit: 'Zeit', inputMode: 'time' },
+  'hasbro-simon': { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Punkte', inputMode: 'number' },
+  cornhole: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Punkte', inputMode: 'number' },
+  schwammstaffel: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Gramm', inputMode: 'number' },
+  kazoomeister: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Songs', inputMode: 'number' },
+  'gurkerl-biathlon': { direction: 'asc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Zeit', inputMode: 'time' },
+  wasserbomben: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Meter', inputMode: 'number' },
+  gurkerlglasl: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Treffer', inputMode: 'number' },
+  'riesen-ringerl': { direction: 'desc', pointsGroup: 'riesen-ringerl', gamePhase: 'b', cardsAllowed: false, inputUnit: 'Platz', inputMode: 'elimination' },
+  'baelle-chaos': { direction: 'desc', pointsGroup: 'baelle-chaos', gamePhase: 'b', cardsAllowed: false, inputUnit: 'Punkte', inputMode: 'number' },
+};
+
+/** Disziplin-IDs in Anzeige-Reihenfolge, die in die Wertung einfließen. */
+export const SCORED_DISCIPLINE_IDS: string[] = disciplines
+  .filter((d) => SCORING_META[d.id])
+  .map((d) => d.id);
+
+/** IDs einer bestimmten Spielphase (in Reihenfolge). */
+export function disciplineIdsByPhase(phase: GamePhase): string[] {
+  return SCORED_DISCIPLINE_IDS.filter((id) => SCORING_META[id].gamePhase === phase);
+}
+
+/** Schnellzugriff auf Disziplin-Stammdaten per id. */
+export function getDiscipline(id: string): Discipline | undefined {
+  return disciplines.find((d) => d.id === id);
+}
