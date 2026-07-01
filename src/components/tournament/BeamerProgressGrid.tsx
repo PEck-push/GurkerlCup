@@ -32,7 +32,7 @@ export default function BeamerProgressGrid({ teams, scores }: { teams: GcTeam[];
               className="rounded-2xl px-4 py-2 flex items-center gap-3"
               style={{ background: `linear-gradient(90deg, ${t.color}26, rgba(255,255,255,0.03) 85%)`, boxShadow: `0 0 0 3px ${COMIC_OUTLINE}` }}
             >
-              <CharAvatar startNumber={t.start_number} color={t.color} size={44} />
+              <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={44} />
               <div className="flex-1 min-w-0">
                 <p className="font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(2vw,1.4rem)', ...nameOutline }}>
                   {t.team_name}

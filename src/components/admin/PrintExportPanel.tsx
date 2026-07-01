@@ -4,6 +4,22 @@ export default function PrintExportPanel() {
   return (
     <div className="space-y-4 max-w-2xl">
       <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
+        <h3 className="font-fredoka font-600 text-white mb-1">Team-QR-Codes</h3>
+        <p className="font-nunito text-sm text-white/50 mb-4">
+          Druckbare Blätter mit QR-Code + Link zur persönlichen Team-Seite (eigene Ergebnisse) –
+          zum Verteilen an die Teams nach dem Check-In.
+        </p>
+        <a
+          href="/admin/print-qr"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-gold px-5 py-2.5 rounded-full text-sm inline-block"
+        >
+          🖨 QR-Codes öffnen / drucken
+        </a>
+      </div>
+
+      <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
         <h3 className="font-fredoka font-600 text-white mb-1">Notfall-Rangliste</h3>
         <p className="font-nunito text-sm text-white/50 mb-4">
           Druckbare Gesamtrangliste (inkl. Punkte je Disziplin & Spritzerwertung) – funktioniert

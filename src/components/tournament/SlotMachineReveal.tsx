@@ -90,7 +90,7 @@ export default function SlotMachineReveal({
                     {row.finalRank}
                   </span>
                   {revealed ? (
-                    <CharAvatar startNumber={t.start_number} color={t.color} size={56} />
+                    <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={56} />
                   ) : (
                     <span className="w-[56px] h-[56px] rounded-full bg-white/10 flex-shrink-0" style={{ boxShadow: `0 0 0 4px ${COMIC_CREAM}33` }} />
                   )}

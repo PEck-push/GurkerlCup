@@ -6,6 +6,7 @@ import { SCORED_DISCIPLINE_IDS, SCORING_META, getDiscipline } from '@/lib/discip
 import { SPRITZER_ID, type GcScore } from '@/lib/tournamentTypes';
 import { formatSeconds } from '@/lib/timeFormat';
 import { useGcScores, useGcTeams } from '@/lib/useRealtime';
+import CharAvatar from '@/components/tournament/CharAvatar';
 
 export default function TeamSelfView() {
   const params = useParams<{ code: string }>();
@@ -64,7 +65,9 @@ export default function TeamSelfView() {
           className="rounded-3xl p-6 mb-6 text-center"
           style={{ background: `${team.color}14`, border: `2px solid ${team.color}` }}
         >
-          <div className="text-6xl mb-2">{team.emoji}</div>
+          <div className="flex justify-center mb-3">
+            <CharAvatar startNumber={team.start_number} img={team.avatar ?? undefined} color={team.color} size={112} />
+          </div>
           <p className="font-bebas tracking-[0.2em] text-sm" style={{ color: team.color }}>
             STARTNUMMER {team.start_number}
           </p>

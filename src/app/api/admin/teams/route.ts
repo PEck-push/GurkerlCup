@@ -122,7 +122,7 @@ export async function PATCH(request: NextRequest) {
   const supabase = getSupabaseAdmin();
   if (!supabase) return NextResponse.json({ error: MISSING_KEY }, { status: 500 });
 
-  let body: { id?: string; team_name?: string; color?: string; emoji?: string; checked_in?: boolean };
+  let body: { id?: string; team_name?: string; color?: string; emoji?: string; avatar?: string | null; checked_in?: boolean };
   try {
     body = await request.json();
   } catch {
@@ -134,6 +134,7 @@ export async function PATCH(request: NextRequest) {
   if (body.team_name !== undefined) patch.team_name = body.team_name.trim();
   if (body.color !== undefined) patch.color = body.color;
   if (body.emoji !== undefined) patch.emoji = body.emoji;
+  if (body.avatar !== undefined) patch.avatar = body.avatar;
   if (body.checked_in !== undefined) patch.checked_in = body.checked_in;
 
   const { data, error } = await supabase

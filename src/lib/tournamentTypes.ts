@@ -43,6 +43,7 @@ export interface GcTeam {
   start_number: number;
   color: string;
   emoji: string;
+  avatar: string | null;
   self_code: string;
   checked_in: boolean;
   is_dummy: boolean;

@@ -5,7 +5,7 @@ import CharAvatar from './CharAvatar';
 import { chunky, nameOutline, COMIC_OUTLINE, COMIC_CREAM } from '@/lib/comicStyles';
 
 export interface LbEntry {
-  team: { id: string; team_name: string; color: string; emoji: string; start_number: number };
+  team: { id: string; team_name: string; color: string; emoji: string; start_number: number; avatar?: string | null };
   rank: number;
   value: string;
 }
@@ -30,7 +30,7 @@ function Row({ e, unit }: { e: LbEntry; unit: string }) {
       >
         {e.rank}
       </div>
-      <CharAvatar startNumber={e.team.start_number} color={e.team.color} size={54} />
+      <CharAvatar startNumber={e.team.start_number} img={e.team.avatar ?? undefined} color={e.team.color} size={54} />
       <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 26, ...nameOutline }}>
         {e.team.team_name}
       </span>
@@ -107,7 +107,7 @@ export default function LeaderboardView({
                 className="relative flex items-center gap-5 rounded-[2.2rem] pl-4 pr-6"
                 style={{ zIndex: s.z, height: first ? '23vh' : '17vh', background: `linear-gradient(125deg, ${s.c}, ${s.c}aa)`, boxShadow: `0 0 0 5px ${COMIC_OUTLINE}, 0 0 0 9px ${COMIC_CREAM}${first ? ', 0 0 50px rgba(212,175,55,0.5)' : ''}` }}
               >
-                <CharAvatar startNumber={e?.team.start_number} color={e?.team.color ?? s.c} size={first ? 150 : 110} />
+                <CharAvatar startNumber={e?.team.start_number} img={e?.team.avatar ?? undefined} color={e?.team.color ?? s.c} size={first ? 150 : 110} />
                 <div className="flex-1 min-w-0">
                   <div className="font-fredoka font-700" style={chunky(first ? 44 : 32, COMIC_CREAM, first ? 5 : 4)}>
                     {s.medal}{s.rank}

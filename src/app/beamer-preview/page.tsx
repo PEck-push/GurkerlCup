@@ -16,7 +16,7 @@ const COLORS = ['#D4AF37', '#52B788', '#38BDF8', '#FB923C', '#EF4444', '#A855F7'
 const NAMES = ['Knackige Kerle', 'Dill-Dynastie', 'Saure Spitzen', 'Senf-Squad', 'Essig-Elite', 'Krokodile', 'Gurken-Gang', 'Salzlake-Stars', 'Cornichon-Crew', 'Spreewald-Spezis', 'Pöttsching Power', 'Die Eingelegten', 'Gemüse-Garde', 'Joker-Gurken'];
 const teams: GcTeam[] = NAMES.map((name, i) => ({
   id: `t${i}`, registration_id: null, team_name: name, start_number: i + 1,
-  color: COLORS[i % COLORS.length], emoji: '🥒', self_code: `C${i}`,
+  color: COLORS[i % COLORS.length], emoji: '🥒', avatar: null, self_code: `C${i}`,
   checked_in: true, is_dummy: true, card_double_used: null, card_second_used: null, created_at: '',
 }));
 const config = { points_table: DEFAULT_POINTS_TABLE, beamer_view: 'total' } as unknown as GcConfig;

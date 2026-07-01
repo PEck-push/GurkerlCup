@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS gc_teams (
   start_number     int  NOT NULL,
   color            text NOT NULL,
   emoji            text NOT NULL,
+  avatar           text,                     -- gewähltes Charakterbild (Pfad), sonst Fallback per Startnummer
   self_code        text NOT NULL,
   checked_in       boolean NOT NULL DEFAULT true,
   is_dummy         boolean NOT NULL DEFAULT false,

@@ -59,7 +59,7 @@ export default function PhaseBBars({
                 <motion.div className="absolute inset-y-0 left-0" style={{ background: `linear-gradient(90deg, ${t.color}, ${t.color}55)` }} animate={{ width: `${pct}%` }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} />
                 <div className="relative flex items-center gap-3 px-4 w-full">
                   <span className="font-fredoka font-700 w-10 text-center" style={chunky('min(3vw,2rem)', COMIC_CREAM, 5)}>{i + 1}</span>
-                  <CharAvatar startNumber={t.start_number} color={t.color} size={54} />
+                  <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={54} />
                   <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3vw,2rem)', ...nameOutline }}>{t.team_name}</span>
                   <span className="font-fredoka font-700 tabular-nums" style={chunky('min(3.6vw,2.4rem)', COMIC_CREAM, 5)}>{val}</span>
                 </div>
@@ -83,7 +83,7 @@ export default function PhaseBBars({
                 style={{ background: `linear-gradient(90deg, ${t.color}2e, rgba(255,255,255,0.03) 80%)`, boxShadow: `0 0 0 3px ${COMIC_OUTLINE}` }}
               >
                 <span className="font-fredoka font-700 w-9 text-center flex-shrink-0" style={chunky('min(2.4vw,1.5rem)', COMIC_CREAM, 4)}>{i + 6}</span>
-                <CharAvatar startNumber={t.start_number} color={t.color} size={38} />
+                <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={38} />
                 <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(2.4vw,1.5rem)', ...nameOutline }}>{t.team_name}</span>
                 <span className="font-fredoka font-700 tabular-nums" style={chunky('min(2.6vw,1.7rem)', '#F0CE67', 4)}>{val}</span>
               </motion.div>

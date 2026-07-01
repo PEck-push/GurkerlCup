@@ -71,7 +71,7 @@ export default function SpritzerReveal({ teams, scores }: { teams: GcTeam[]; sco
                 <span className="font-fredoka font-700 w-[44px] text-center" style={{ fontSize: 'min(3vw, 2rem)', color: col, WebkitTextStroke: `4px ${COMIC_OUTLINE}`, paintOrder: 'stroke fill' }}>
                   {row.rank}
                 </span>
-                <CharAvatar startNumber={t.start_number} color={t.color} size={46} />
+                <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={46} />
                 <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(3vw, 1.9rem)', ...nameOutline }}>
                   {t.team_name}
                 </span>
