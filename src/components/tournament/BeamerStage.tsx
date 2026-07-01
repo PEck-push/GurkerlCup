@@ -11,6 +11,7 @@ import SlotMachineReveal from './SlotMachineReveal';
 import PhaseBBars from './PhaseBBars';
 import Podium from './Podium';
 import SpritzerReveal from './SpritzerReveal';
+import BeamerBackground from './BeamerBackground';
 
 /** Zentrale Beamer-Bühne: wählt die Szene anhand von gc_config (Realtime). */
 export default function BeamerStage() {
@@ -77,18 +78,44 @@ export default function BeamerStage() {
     }
   }
 
+  // Spritzer kann in Reveal/Phase-B/Podest/Eröffnung als Overlay eingeblendet werden
+  // (in Setup/Phase A läuft er stattdessen in der Rotation mit).
+  const spritzerOverlay =
+    config.spritzer_revealed &&
+    (config.phase === 'reveal' || config.phase === 'phase_b' || config.phase === 'podium' || config.phase === 'opening');
+
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={sceneKey}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="absolute inset-0"
-      >
-        {renderScene()}
-      </motion.div>
-    </AnimatePresence>
+    <>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={sceneKey}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0"
+        >
+          {renderScene()}
+        </motion.div>
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {spritzerOverlay && (
+          <motion.div
+            key="spritzer-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 z-40"
+          >
+            <BeamerBackground />
+            <div className="absolute inset-0">
+              <SpritzerReveal teams={teams} scores={scores} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

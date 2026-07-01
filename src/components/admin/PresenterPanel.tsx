@@ -205,8 +205,10 @@ export default function PresenterPanel() {
           onClick={() => post({ spritzer_revealed: !config.spritzer_revealed })}
         />
         <p className="font-nunito text-xs text-white/40 mt-2">
-          In Phase A: bei „Rotierend" wird die Spritzerwertung mit eingeblendet. Zum dauerhaften
-          Anzeigen oben bei „Beamer Phase A" auf <b className="text-white/70">🍷 Spritzer</b> stellen.
+          Zwischenstand, Phase B & Siegerehrung: einblenden = die Spritzerwertung legt sich als
+          Overlay darüber; ausschalten blendet sie wieder aus.<br />
+          In Phase A läuft sie stattdessen in der Rotation mit (oder oben auf{' '}
+          <b className="text-white/70">🍷 Spritzer</b> pinnen).
         </p>
       </ControlCard>
     </div>
