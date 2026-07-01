@@ -144,14 +144,24 @@ export default function CheckInPanel() {
         <Stat label="Eingecheckt" value={teams.filter((t) => t.checked_in).length} accent="#52B788" />
         <Stat label="Angemeldet" value={regs.length} accent="#D4AF37" />
         <Stat label="Offen" value={openRegs.length} accent="#FB923C" />
-        <a
-          href="/admin/print-qr"
-          target="_blank"
-          rel="noreferrer"
-          className="btn-gold px-5 py-3 rounded-full text-sm whitespace-nowrap ml-auto"
-        >
-          🖨 QR-Codes drucken
-        </a>
+        <div className="ml-auto flex flex-wrap gap-2">
+          <a
+            href="/admin/print-sheets"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-gold px-5 py-3 rounded-full text-sm whitespace-nowrap"
+          >
+            🖨 Team-Laufblätter
+          </a>
+          <a
+            href="/admin/print-qr"
+            target="_blank"
+            rel="noreferrer"
+            className="font-nunito text-sm text-[#52B788] hover:text-white border border-[#52B788]/30 hover:border-[#52B788] rounded-full px-5 py-3 whitespace-nowrap transition-all"
+          >
+            🖨 Nur QR-Codes
+          </a>
+        </div>
       </div>
 
       {/* Walk-In */}

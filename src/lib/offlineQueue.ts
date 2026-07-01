@@ -10,6 +10,9 @@ export interface ScoreWriteBody {
   team_id: string;
   discipline_id: string;
   raw_value?: number | null;
+  p1?: number | null;
+  p2?: number | null;
+  p3?: number | null;
   finished?: boolean;
   card_double?: boolean;
   card_second?: boolean;

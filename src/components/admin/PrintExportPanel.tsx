@@ -4,6 +4,22 @@ export default function PrintExportPanel() {
   return (
     <div className="space-y-4 max-w-2xl">
       <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
+        <h3 className="font-fredoka font-600 text-white mb-1">Team-Laufblätter (A4)</h3>
+        <p className="font-nunito text-sm text-white/50 mb-4">
+          Pro Team ein A4-Blatt: Mitglieder, alle Phase-A-Stationen mit Kurzregeln & Wertung,
+          Joker-Hinweis und persönlicher QR-Code.
+        </p>
+        <a
+          href="/admin/print-sheets"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-gold px-5 py-2.5 rounded-full text-sm inline-block"
+        >
+          🖨 Laufblätter öffnen / drucken
+        </a>
+      </div>
+
+      <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
         <h3 className="font-fredoka font-600 text-white mb-1">Team-QR-Codes</h3>
         <p className="font-nunito text-sm text-white/50 mb-4">
           Druckbare Blätter mit QR-Code + Link zur persönlichen Team-Seite (eigene Ergebnisse) –

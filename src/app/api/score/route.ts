@@ -13,6 +13,9 @@ interface Body {
   team_id?: string;
   discipline_id?: string;
   raw_value?: number | null;
+  p1?: number | null;
+  p2?: number | null;
+  p3?: number | null;
   finished?: boolean;
   card_double?: boolean;
   card_second?: boolean;
@@ -68,11 +71,20 @@ export async function POST(request: NextRequest) {
 
   const final = {
     raw_value: body.raw_value !== undefined ? body.raw_value : existing?.raw_value ?? null,
+    p1: body.p1 !== undefined ? body.p1 : existing?.p1 ?? null,
+    p2: body.p2 !== undefined ? body.p2 : existing?.p2 ?? null,
+    p3: body.p3 !== undefined ? body.p3 : existing?.p3 ?? null,
     finished: body.finished !== undefined ? body.finished : existing?.finished ?? false,
     card_double: body.card_double !== undefined ? body.card_double : existing?.card_double ?? false,
     card_second: body.card_second !== undefined ? body.card_second : existing?.card_second ?? false,
     manual_rank: body.manual_rank !== undefined ? body.manual_rank : existing?.manual_rank ?? null,
   };
+
+  // Per-Spieler-Disziplinen: Rohwert = Summe der 3 Spieler (Server-seitig, konsistent)
+  if (meta?.perPlayer && (body.p1 !== undefined || body.p2 !== undefined || body.p3 !== undefined)) {
+    const hasAny = final.p1 != null || final.p2 != null || final.p3 != null;
+    final.raw_value = hasAny ? (final.p1 ?? 0) + (final.p2 ?? 0) + (final.p3 ?? 0) : null;
+  }
 
   // ── Karten-Validierung (nur Phase A, max 1 Karte/Station, Inventar) ──
   if ((final.card_double || final.card_second) && !cardsAllowed) {

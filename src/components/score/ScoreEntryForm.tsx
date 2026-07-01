@@ -23,11 +23,19 @@ export default function ScoreEntryForm({
   const disc = getDiscipline(disciplineId);
   const meta = SCORING_META[disciplineId];
   const isTime = meta?.inputMode === 'time';
+  const perPlayer = !!meta?.perPlayer;
 
   const [value, setValue] = useState(() => {
     if (existing?.raw_value == null) return '';
     return isTime ? formatSeconds(existing.raw_value) : String(existing.raw_value);
   });
+  const [players, setPlayers] = useState<string[]>(() =>
+    [existing?.p1, existing?.p2, existing?.p3].map((v) => (v == null ? '' : String(v)))
+  );
+  const playerSum = players.reduce((a, v) => {
+    const n = v.trim() === '' ? 0 : Number(v.replace(',', '.'));
+    return a + (Number.isFinite(n) ? n : 0);
+  }, 0);
   const [finished, setFinished] = useState(existing?.finished ?? false);
   const [dbl, setDbl] = useState(existing?.card_double ?? false);
   const [second, setSecond] = useState(existing?.card_second ?? false);
@@ -39,23 +47,37 @@ export default function ScoreEntryForm({
 
   async function save() {
     setError('');
-    let raw: number | null = null;
-    if (value.trim() !== '') {
-      raw = isTime ? parseTimeToSeconds(value) : Number(value.replace(',', '.'));
-      if (raw == null || !Number.isFinite(raw)) {
-        setError(isTime ? 'Zeit ungültig (z.B. 4:32 oder 4:32.50).' : 'Zahl ungültig.');
-        return;
-      }
-    }
-    setStatus('saving');
-    const res = await saveScore({
+    const body: Parameters<typeof saveScore>[0] = {
       team_id: team.id,
       discipline_id: disciplineId,
-      raw_value: raw,
       finished,
       card_double: dbl,
       card_second: second,
-    });
+    };
+
+    if (perPlayer) {
+      const nums = players.map((v) => (v.trim() === '' ? null : Number(v.replace(',', '.'))));
+      if (nums.some((n) => n !== null && !Number.isFinite(n))) {
+        setError('Zahl ungültig.');
+        return;
+      }
+      body.p1 = nums[0];
+      body.p2 = nums[1];
+      body.p3 = nums[2];
+    } else {
+      let raw: number | null = null;
+      if (value.trim() !== '') {
+        raw = isTime ? parseTimeToSeconds(value) : Number(value.replace(',', '.'));
+        if (raw == null || !Number.isFinite(raw)) {
+          setError(isTime ? 'Zeit ungültig (z.B. 4:32 oder 4:32.50).' : 'Zahl ungültig.');
+          return;
+        }
+      }
+      body.raw_value = raw;
+    }
+
+    setStatus('saving');
+    const res = await saveScore(body);
     if (res.status === 'ok') {
       setStatus('saved');
       setTimeout(onSaved, 600);
@@ -100,16 +122,46 @@ export default function ScoreEntryForm({
 
       {/* Wert */}
       <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
-        <label className="block font-bebas text-xs tracking-[0.2em] text-[#52B788] mb-2">
-          {meta?.inputUnit?.toUpperCase() ?? 'WERT'} {isTime && '(z.B. 4:32.50)'}
-        </label>
-        <input
-          inputMode={isTime ? 'text' : 'decimal'}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder={isTime ? 'm:ss.cs' : '0'}
-          className="w-full rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-4 py-4 font-bebas text-3xl tracking-wide text-white outline-none focus:border-[#D4AF37]/60 text-center"
-        />
+        {perPlayer ? (
+          <>
+            <label className="block font-bebas text-xs tracking-[0.2em] text-[#52B788] mb-2">
+              {meta?.inputUnit?.toUpperCase() ?? 'WERT'} PRO SPIELER
+            </label>
+            <div className="space-y-2">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="font-nunito text-sm text-white/60 w-24 flex-shrink-0">Spieler {i + 1}</span>
+                  <input
+                    inputMode="decimal"
+                    value={players[i] ?? ''}
+                    onChange={(e) => setPlayers((p) => p.map((v, j) => (j === i ? e.target.value : v)))}
+                    placeholder="0"
+                    className="flex-1 rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-4 py-3 font-bebas text-2xl text-white outline-none focus:border-[#D4AF37]/60 text-center"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 flex items-center justify-between rounded-xl bg-[#0A1A0C] border border-[#D4AF37]/30 px-4 py-3">
+              <span className="font-bebas text-xs tracking-[0.2em] text-[#52B788]">GESAMT (automatisch)</span>
+              <span className="font-bebas text-2xl text-[#F0CE67]">
+                {playerSum} <span className="text-sm text-white/40">{meta?.inputUnit}</span>
+              </span>
+            </div>
+          </>
+        ) : (
+          <>
+            <label className="block font-bebas text-xs tracking-[0.2em] text-[#52B788] mb-2">
+              {meta?.inputUnit?.toUpperCase() ?? 'WERT'} {isTime && '(z.B. 4:32.50)'}
+            </label>
+            <input
+              inputMode={isTime ? 'text' : 'decimal'}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder={isTime ? 'm:ss.cs' : '0'}
+              className="w-full rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-4 py-4 font-bebas text-3xl tracking-wide text-white outline-none focus:border-[#D4AF37]/60 text-center"
+            />
+          </>
+        )}
 
         {/* Gurkerl-Karten */}
         {meta?.cardsAllowed && (

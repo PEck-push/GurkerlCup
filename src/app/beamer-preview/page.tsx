@@ -28,21 +28,21 @@ function Inner() {
     const scores: GcScore[] = [];
     teams.forEach((t, i) => {
       for (let d = 0; d < ((i * 3) % 9); d++) {
-        scores.push({ id: `p${i}-${d}`, team_id: t.id, discipline_id: ['mutter-stapeln', 'hasbro-simon', 'cornhole', 'schwammstaffel', 'kazoomeister', 'gurkerl-biathlon', 'wasserbomben', 'gurkerlglasl'][d % 8], raw_value: 1, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: '' });
+        scores.push({ id: `p${i}-${d}`, team_id: t.id, discipline_id: ['mutter-stapeln', 'hasbro-simon', 'cornhole', 'schwammstaffel', 'kazoomeister', 'gurkerl-biathlon', 'wasserbomben', 'gurkerlglasl'][d % 8], raw_value: 1, p1: null, p2: null, p3: null, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: ''});
       }
     });
     return <BeamerProgressGrid teams={teams} scores={scores} />;
   }
   if (s === 'countdown') return <BeamerCountdown target={new Date(Date.now() + 3 * 3600_000 + 25 * 60_000).toISOString()} />;
   if (s === 'spritzer') {
-    const scores: GcScore[] = teams.map((t, i) => ({ id: `s${i}`, team_id: t.id, discipline_id: 'spritzer', raw_value: 4 - i * 0.25, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: '' }));
+    const scores: GcScore[] = teams.map((t, i) => ({ id: `s${i}`, team_id: t.id, discipline_id: 'spritzer', raw_value: 4 - i * 0.25, p1: null, p2: null, p3: null, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: ''}));
     return <SpritzerReveal teams={teams} scores={scores} />;
   }
   if (s === 'phaseb') {
     const scores: GcScore[] = [];
     teams.forEach((t, i) => {
-      scores.push({ id: `a${i}`, team_id: t.id, discipline_id: 'cornhole', raw_value: 50 - i * 3, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: '' });
-      scores.push({ id: `b${i}`, team_id: t.id, discipline_id: 'baelle-chaos', raw_value: 100 - i * 6, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: '' });
+      scores.push({ id: `a${i}`, team_id: t.id, discipline_id: 'cornhole', raw_value: 50 - i * 3, p1: null, p2: null, p3: null, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: ''});
+      scores.push({ id: `b${i}`, team_id: t.id, discipline_id: 'baelle-chaos', raw_value: 100 - i * 6, p1: null, p2: null, p3: null, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: ''});
     });
     return <PhaseBBars teams={teams} scores={scores} config={config} />;
   }

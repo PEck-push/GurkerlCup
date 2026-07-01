@@ -20,14 +20,14 @@ CREATE TABLE IF NOT EXISTS gc_config (
   slide_seconds     int NOT NULL DEFAULT 12,           -- Dauer pro Beamer-Slide (Rotation)
   test_mode         boolean NOT NULL DEFAULT false,    -- Probemodus-Badge
   points_table      jsonb NOT NULL DEFAULT '{
-    "phase_a":              [12,10,8,6,4,2],
+    "phase_a":              [12,10,8,7,6,5,4,3,2,1],
     "phase_a_floor":        1,
-    "opening":              [12,10,8,6,4,2],
+    "opening":              [12,10,8,7,6,5,4,3,2,1],
     "opening_floor":        1,
-    "riesen-ringerl":       [20,18,16,14,12,10,8,6,4,2],
-    "riesen-ringerl_floor": 1,
-    "baelle-chaos":         [40,36,32,28,24,20,16,12,8,4],
-    "baelle-chaos_floor":   2
+    "riesen-ringerl":       [20,15,12,8,8,8],
+    "riesen-ringerl_floor": 4,
+    "baelle-chaos":         [40,30,24,16,16,16],
+    "baelle-chaos_floor":   8
   }'::jsonb,
   updated_at        timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT gc_config_singleton CHECK (id = 1)
@@ -61,6 +61,9 @@ CREATE TABLE IF NOT EXISTS gc_scores (
   team_id       uuid NOT NULL REFERENCES gc_teams(id) ON DELETE CASCADE,
   discipline_id text NOT NULL,           -- id aus disciplines.ts ODER 'spritzer'
   raw_value     numeric,                 -- Rohwert (Zeit Sek., Gramm, Treffer, Punkte…); null = leer
+  p1            numeric,                 -- Per-Spieler-Werte (Simon/Cornhole/Wasserbomben/Gurkerlglasl)
+  p2            numeric,
+  p3            numeric,
   finished      boolean NOT NULL DEFAULT false,
   card_double   boolean NOT NULL DEFAULT false,
   card_second   boolean NOT NULL DEFAULT false,

@@ -57,6 +57,9 @@ export interface GcScore {
   team_id: string;
   discipline_id: string;
   raw_value: number | null;
+  p1: number | null;
+  p2: number | null;
+  p3: number | null;
   finished: boolean;
   card_double: boolean;
   card_second: boolean;
@@ -69,12 +72,12 @@ export const SPRITZER_ID = 'spritzer';
 
 /** Default-Punktetabelle (entspricht gc_config-Default in der Migration). */
 export const DEFAULT_POINTS_TABLE: PointsTable = {
-  phase_a: [12, 10, 8, 6, 4, 2],
+  phase_a: [12, 10, 8, 7, 6, 5, 4, 3, 2, 1],
   phase_a_floor: 1,
-  opening: [12, 10, 8, 6, 4, 2],
+  opening: [12, 10, 8, 7, 6, 5, 4, 3, 2, 1],
   opening_floor: 1,
-  'riesen-ringerl': [20, 18, 16, 14, 12, 10, 8, 6, 4, 2],
-  'riesen-ringerl_floor': 1,
-  'baelle-chaos': [40, 36, 32, 28, 24, 20, 16, 12, 8, 4],
-  'baelle-chaos_floor': 2,
+  'riesen-ringerl': [20, 15, 12, 8, 8, 8],
+  'riesen-ringerl_floor': 4,
+  'baelle-chaos': [40, 30, 24, 16, 16, 16],
+  'baelle-chaos_floor': 8,
 };
