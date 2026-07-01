@@ -6,6 +6,8 @@
 export type Phase = 'setup' | 'opening' | 'phase_a' | 'reveal' | 'phase_b' | 'podium';
 export type BeamerRotation = 'auto' | 'logo' | 'progress' | 'countdown' | 'spritzer';
 export type BeamerView = 'total' | 'finale';
+/** Zustand des Auftakt-Timers (Teams stoppen selbst am eigenen Handy). */
+export type TimerState = 'idle' | 'armed' | 'running' | 'stopped';
 
 /** Punktetabelle: pro Gruppe ein Array + "<gruppe>_floor" als Mindestpunkte ab dem letzten Listeneintrag. */
 export interface PointsTable {
@@ -33,6 +35,10 @@ export interface GcConfig {
   slide_seconds: number;
   test_mode: boolean;
   points_table: PointsTable;
+  /** Auftakt-Timer: Zustand, betroffene Station und synchroner Startzeitpunkt (ISO). */
+  timer_state: TimerState;
+  timer_discipline_id: string | null;
+  timer_start_at: string | null;
   updated_at: string;
 }
 

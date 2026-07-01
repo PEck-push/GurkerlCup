@@ -7,6 +7,7 @@ import BeamerLogoLoop from './BeamerLogoLoop';
 import BeamerCountdown from './BeamerCountdown';
 import BeamerProgressGrid from './BeamerProgressGrid';
 import OpeningReveal from './OpeningReveal';
+import BeamerTimer from './BeamerTimer';
 import SlotMachineReveal from './SlotMachineReveal';
 import PhaseBBars from './PhaseBBars';
 import Podium from './Podium';
@@ -47,7 +48,10 @@ export default function BeamerStage() {
       ];
       return scenes[rotIdx % scenes.length];
     }
-    if (config.phase === 'opening') return config.opening_revealed ? 'opening' : 'logo';
+    if (config.phase === 'opening') {
+      if (config.timer_state && config.timer_state !== 'idle') return 'timer';
+      return config.opening_revealed ? 'opening' : 'logo';
+    }
     return config.phase; // reveal | phase_b | podium
   }, [config, rotIdx]);
 
@@ -65,6 +69,8 @@ export default function BeamerStage() {
         return <BeamerCountdown target={config!.countdown_target} />;
       case 'opening':
         return <OpeningReveal teams={teams} scores={scores} config={config!} />;
+      case 'timer':
+        return <BeamerTimer teams={teams} scores={scores} config={config!} />;
       case 'reveal':
         return <SlotMachineReveal teams={teams} scores={scores} config={config!} />;
       case 'phase_b':

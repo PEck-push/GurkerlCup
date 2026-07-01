@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS gc_config (
   countdown_target  timestamptz,                       -- Ziel für "Countdown bis 19:30"
   slide_seconds     int NOT NULL DEFAULT 12,           -- Dauer pro Beamer-Slide (Rotation)
   test_mode         boolean NOT NULL DEFAULT false,    -- Probemodus-Badge
+  timer_state       text NOT NULL DEFAULT 'idle',      -- Auftakt-Timer: idle|armed|running|stopped
+  timer_discipline_id text,                            -- betroffene Station (i.d.R. 'mutter-stapeln')
+  timer_start_at    timestamptz,                       -- synchroner GO-Zeitpunkt (Teams stoppen selbst)
   points_table      jsonb NOT NULL DEFAULT '{
     "phase_a":              [12,10,8,7,6,5,4,3,2,1],
     "phase_a_floor":        1,
@@ -33,6 +36,12 @@ CREATE TABLE IF NOT EXISTS gc_config (
   CONSTRAINT gc_config_singleton CHECK (id = 1)
 );
 INSERT INTO gc_config (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+
+-- Nachträglich für bestehende DBs (idempotent): Auftakt-Timer-Spalten ergänzen.
+ALTER TABLE gc_config
+  ADD COLUMN IF NOT EXISTS timer_state         text NOT NULL DEFAULT 'idle',
+  ADD COLUMN IF NOT EXISTS timer_discipline_id text,
+  ADD COLUMN IF NOT EXISTS timer_start_at      timestamptz;
 
 -- ---------- gc_teams: eingecheckte Turnier-Teams (aus Registrierung ODER Walk-In) ----------
 CREATE TABLE IF NOT EXISTS gc_teams (

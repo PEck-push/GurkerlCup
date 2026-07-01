@@ -10,6 +10,7 @@ import BeamerBackground from '@/components/tournament/BeamerBackground';
 import BeamerLogoLoop from '@/components/tournament/BeamerLogoLoop';
 import BeamerProgressGrid from '@/components/tournament/BeamerProgressGrid';
 import BeamerCountdown from '@/components/tournament/BeamerCountdown';
+import BeamerTimer from '@/components/tournament/BeamerTimer';
 import { DEFAULT_POINTS_TABLE, type GcConfig, type GcScore, type GcTeam } from '@/lib/tournamentTypes';
 
 const COLORS = ['#D4AF37', '#52B788', '#38BDF8', '#FB923C', '#EF4444', '#A855F7', '#84CC16', '#F472B6', '#2DD4BF', '#FBBF24', '#60A5FA', '#FB7185', '#C084FC', '#4ADE80'];
@@ -34,6 +35,16 @@ function Inner() {
     return <BeamerProgressGrid teams={teams} scores={scores} />;
   }
   if (s === 'countdown') return <BeamerCountdown target={new Date(Date.now() + 3 * 3600_000 + 25 * 60_000).toISOString()} />;
+  if (s === 'timer') {
+    const tConfig = {
+      ...config,
+      timer_state: 'running',
+      timer_discipline_id: 'mutter-stapeln',
+      timer_start_at: new Date(Date.now() - 8000).toISOString(),
+    } as unknown as GcConfig;
+    const scores: GcScore[] = teams.slice(0, 6).map((t, i) => ({ id: `t${i}`, team_id: t.id, discipline_id: 'mutter-stapeln', raw_value: 7.2 + i * 1.6, p1: null, p2: null, p3: null, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: '' }));
+    return <BeamerTimer teams={teams} scores={scores} config={tConfig} />;
+  }
   if (s === 'spritzer') {
     const scores: GcScore[] = teams.map((t, i) => ({ id: `s${i}`, team_id: t.id, discipline_id: 'spritzer', raw_value: 4 - i * 0.25, p1: null, p2: null, p3: null, finished: true, card_double: false, card_second: false, manual_rank: null, updated_at: ''}));
     return <SpritzerReveal teams={teams} scores={scores} />;

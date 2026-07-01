@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { useGcConfig, useGcTeams } from '@/lib/useRealtime';
-import type { Phase } from '@/lib/tournamentTypes';
+import { useEffect, useState } from 'react';
+import { useGcConfig, useGcScores, useGcTeams } from '@/lib/useRealtime';
+import { getDiscipline } from '@/lib/disciplines';
+import type { GcConfig, GcScore, GcTeam, Phase } from '@/lib/tournamentTypes';
 
 const PHASES: { id: Phase; label: string; hint: string }[] = [
   { id: 'setup', label: 'Setup', hint: 'Vor dem Start · Beamer zeigt Logo' },
@@ -16,6 +17,7 @@ const PHASES: { id: Phase; label: string; hint: string }[] = [
 export default function PresenterPanel() {
   const { config } = useGcConfig();
   const { data: teams } = useGcTeams();
+  const { data: scores } = useGcScores();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -86,11 +88,20 @@ export default function PresenterPanel() {
       {/* Kontext-Steuerung je Phase */}
       {config.phase === 'opening' && (
         <ControlCard title="ERÖFFNUNG">
-          <Toggle
-            label="Eröffnungs-Ergebnis am Beamer zeigen"
-            on={config.opening_revealed}
-            onClick={() => post({ opening_revealed: !config.opening_revealed })}
-          />
+          <div className="mb-4">
+            <p className="font-nunito text-xs text-white/50 mb-2">
+              ⏱ <b className="text-white/80">Auftakt-Timer</b> – zentraler Start, jedes Team stoppt selbst am eigenen
+              Handy (auf seiner Team-Seite). Zeiten laufen automatisch in die Wertung.
+            </p>
+            <TimerControls config={config} teams={teams} scores={scores} post={post} busy={busy} />
+          </div>
+          <div className="border-t border-[#1E4028] pt-4">
+            <Toggle
+              label="Eröffnungs-Ergebnis am Beamer zeigen (nach dem Timer)"
+              on={config.opening_revealed}
+              onClick={() => post({ opening_revealed: !config.opening_revealed })}
+            />
+          </div>
         </ControlCard>
       )}
 
@@ -211,6 +222,112 @@ export default function PresenterPanel() {
           <b className="text-white/70">🍷 Spritzer</b> pinnen).
         </p>
       </ControlCard>
+    </div>
+  );
+}
+
+function fmtT(sec: number): string {
+  if (!Number.isFinite(sec) || sec < 0) sec = 0;
+  const m = Math.floor(sec / 60);
+  const r = sec - m * 60;
+  return `${m}:${r.toFixed(1).padStart(4, '0')}`;
+}
+
+function TimerControls({
+  config,
+  teams,
+  scores,
+  post,
+  busy,
+}: {
+  config: GcConfig;
+  teams: GcTeam[];
+  scores: GcScore[];
+  post: (patch: Record<string, unknown>) => Promise<void>;
+  busy: boolean;
+}) {
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(id);
+  }, []);
+
+  const state = config.timer_state ?? 'idle';
+  const discId = config.timer_discipline_id ?? 'mutter-stapeln';
+  const disc = getDiscipline(discId);
+  const active = teams.filter((t) => t.checked_in);
+  const startMs = config.timer_start_at ? new Date(config.timer_start_at).getTime() : null;
+
+  const finishers = scores
+    .filter((s) => s.discipline_id === discId && s.finished && s.raw_value != null)
+    .map((s) => ({ team: active.find((t) => t.id === s.team_id), sec: Number(s.raw_value) }))
+    .filter((r): r is { team: GcTeam; sec: number } => !!r.team)
+    .sort((a, b) => a.sec - b.sec);
+
+  const preStart = state === 'running' && startMs !== null && now !== null && now < startMs;
+  const secsToGo = preStart ? Math.ceil((startMs! - now!) / 1000) : 0;
+  const elapsed = state === 'running' && startMs !== null && now !== null ? (now - startMs) / 1000 : 0;
+
+  const stateLabel =
+    state === 'idle' ? 'Bereit' :
+    state === 'armed' ? 'Scharf – wartet auf Start' :
+    state === 'running' ? (preStart ? `Countdown: ${secsToGo}` : `Läuft: ${fmtT(elapsed)}`) :
+    'Runde beendet';
+
+  return (
+    <div className="rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/5 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="font-nunito text-sm text-white/70">
+          Station: <b className="text-[#F0CE67]">{disc?.name ?? discId}</b>
+        </span>
+        <span className="font-bebas tracking-[0.15em] text-xs text-[#52B788]">{stateLabel.toUpperCase()}</span>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {state === 'idle' && (
+          <button onClick={() => post({ timer_action: 'arm' })} disabled={busy} className="btn-gold px-5 py-2.5 rounded-full text-sm">
+            ⏱ Timer scharfschalten
+          </button>
+        )}
+        {state === 'armed' && (
+          <>
+            <button onClick={() => post({ timer_action: 'start', lead_seconds: 5 })} disabled={busy} className="btn-gold px-6 py-2.5 rounded-full text-sm">
+              ▶ START (5-4-3-2-1)
+            </button>
+            <button onClick={() => post({ timer_action: 'reset' })} disabled={busy} className="font-nunito text-sm px-4 py-2.5 rounded-full border border-white/10 text-white/60 hover:text-white">
+              Abbrechen
+            </button>
+          </>
+        )}
+        {state === 'running' && (
+          <button onClick={() => post({ timer_action: 'stop' })} disabled={busy} className="font-nunito text-sm px-6 py-2.5 rounded-full border border-red-500/40 text-red-300 hover:bg-red-900/20">
+            ■ Runde beenden
+          </button>
+        )}
+        {state === 'stopped' && (
+          <button onClick={() => post({ timer_action: 'reset' })} disabled={busy} className="btn-gold px-5 py-2.5 rounded-full text-sm">
+            ↺ Neue Runde / Zurücksetzen
+          </button>
+        )}
+      </div>
+
+      <p className="font-nunito text-xs text-white/50 mt-3">
+        Im Ziel: <b className="text-white">{finishers.length}</b> / {active.length}
+      </p>
+
+      {finishers.length > 0 && (
+        <ol className="mt-2 space-y-1">
+          {finishers.map((r, i) => (
+            <li key={r.team.id} className="flex items-center justify-between font-nunito text-sm">
+              <span className="text-white/80">
+                <b className="text-white/50 w-5 inline-block">{i + 1}.</b> {r.team.team_name}
+              </span>
+              <span className="font-bebas text-base text-[#F0CE67] tabular-nums">{fmtT(r.sec)}</span>
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }

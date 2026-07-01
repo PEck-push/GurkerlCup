@@ -5,8 +5,9 @@ import { useParams } from 'next/navigation';
 import { SCORED_DISCIPLINE_IDS, SCORING_META, getDiscipline } from '@/lib/disciplines';
 import { SPRITZER_ID, type GcScore } from '@/lib/tournamentTypes';
 import { formatSeconds } from '@/lib/timeFormat';
-import { useGcScores, useGcTeams } from '@/lib/useRealtime';
+import { useGcConfig, useGcScores, useGcTeams } from '@/lib/useRealtime';
 import CharAvatar from '@/components/tournament/CharAvatar';
+import TeamTimer from '@/components/tournament/TeamTimer';
 
 export default function TeamSelfView() {
   const params = useParams<{ code: string }>();
@@ -14,6 +15,7 @@ export default function TeamSelfView() {
 
   const { data: teams, loading: teamsLoading } = useGcTeams();
   const { data: scores } = useGcScores();
+  const { config } = useGcConfig();
 
   const team = useMemo(
     () => teams.find((t) => t.self_code?.toLowerCase() === code.toLowerCase()),
@@ -73,6 +75,23 @@ export default function TeamSelfView() {
           </p>
           <h1 className="font-fredoka font-700 text-3xl text-white">{team.team_name}</h1>
         </div>
+
+        {/* Auftakt-Timer: nur wenn scharfgeschaltet/laufend */}
+        {config && config.timer_state && config.timer_state !== 'idle' && config.timer_discipline_id && (
+          <TeamTimer
+            team={team}
+            config={config}
+            code={team.self_code}
+            finishedSeconds={
+              (() => {
+                const ts = myScores.find(
+                  (s) => s.discipline_id === config.timer_discipline_id && s.finished
+                );
+                return ts?.raw_value ?? null;
+              })()
+            }
+          />
+        )}
 
         <p className="font-nunito text-sm text-white/50 text-center mb-4">
           Deine Stationsergebnisse – live aktualisiert. Die Gesamtwertung gibt&apos;s beim großen Reveal! 🤫
