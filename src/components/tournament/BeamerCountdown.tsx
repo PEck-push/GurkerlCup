@@ -33,7 +33,7 @@ export default function BeamerCountdown({ target }: { target: string | null }) {
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-[3vh]">
+    <div className="w-full h-full flex flex-col items-center justify-center gap-[3vh] px-[4vw]">
       <motion.div
         initial={{ rotate: -3, scale: 0.9 }}
         animate={{ rotate: -2, scale: 1 }}
@@ -48,8 +48,8 @@ export default function BeamerCountdown({ target }: { target: string | null }) {
       <motion.div
         animate={over ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 1.2, repeat: Infinity }}
-        className="font-fredoka font-700 tabular-nums"
-        style={chunky('min(31vw, 25rem)', over ? '#EF4444' : '#F0CE67', 20)}
+        className="font-fredoka font-700 tabular-nums whitespace-nowrap max-w-full"
+        style={chunky('min(17vw, 19rem)', over ? '#EF4444' : '#F0CE67', 16)}
       >
         {h > 0 ? `${pad(h)}:` : ''}{pad(m)}:{pad(s)}
       </motion.div>
