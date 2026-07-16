@@ -22,8 +22,41 @@ export default function CheckInPanel() {
   const [confirmDel, setConfirmDel] = useState<string | null>(null);
   const [origin, setOrigin] = useState('');
   const [avatarPick, setAvatarPick] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const [renaming, setRenaming] = useState(false);
 
   useEffect(() => setOrigin(window.location.origin), []);
+
+  function startEdit(t: GcTeam) {
+    setEditId(t.id);
+    setEditName(t.team_name);
+  }
+
+  async function saveEdit(teamId: string) {
+    const name = editName.trim();
+    if (!name) return;
+    setRenaming(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/teams', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: teamId, team_name: name }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? 'Umbenennen fehlgeschlagen.');
+        return;
+      }
+      setTeams((prev) => prev.map((x) => (x.id === teamId ? { ...x, team_name: name } : x)));
+      setEditId(null);
+    } catch {
+      setError('Netzwerkfehler.');
+    } finally {
+      setRenaming(false);
+    }
+  }
 
   async function chooseAvatar(teamId: string, src: string) {
     setTeams((prev) => prev.map((x) => (x.id === teamId ? { ...x, avatar: src } : x)));
@@ -225,13 +258,41 @@ export default function CheckInPanel() {
             {teams.map((t) => (
               <div key={t.id} className="rounded-xl border border-[#1E4028] bg-[#0F1A0D] px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-3 min-w-0">
+                  <span className="inline-flex items-center gap-3 min-w-0 flex-1">
                     <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={44} />
-                    <span className="min-w-0">
+                    <span className="min-w-0 flex-1">
                       <span className="block font-bebas tracking-wide text-[11px]" style={{ color: t.color }}>
                         #{t.start_number}
                       </span>
-                      <span className="block font-fredoka font-600 text-white truncate">{t.team_name}</span>
+                      {editId === t.id ? (
+                        <span className="flex items-center gap-2 mt-0.5">
+                          <input
+                            autoFocus
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') saveEdit(t.id);
+                              if (e.key === 'Escape') setEditId(null);
+                            }}
+                            className="min-w-0 flex-1 rounded-lg bg-[#0A1A0C] border border-[#D4AF37]/50 px-2.5 py-1 font-fredoka font-600 text-white text-sm outline-none focus:border-[#D4AF37]"
+                          />
+                          <button
+                            onClick={() => saveEdit(t.id)}
+                            disabled={renaming || !editName.trim()}
+                            className="font-nunito text-xs text-[#0a1f12] bg-[#52B788] hover:bg-[#3f9a6f] rounded-full px-3 py-1.5 disabled:opacity-50 whitespace-nowrap"
+                          >
+                            {renaming ? '…' : 'Sichern'}
+                          </button>
+                          <button
+                            onClick={() => setEditId(null)}
+                            className="font-nunito text-xs text-white/50 hover:text-white px-1.5 py-1.5"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ) : (
+                        <span className="block font-fredoka font-600 text-white truncate">{t.team_name}</span>
+                      )}
                     </span>
                   </span>
                   <div className="flex items-center gap-2 flex-shrink-0">
@@ -239,6 +300,14 @@ export default function CheckInPanel() {
                       <span className="font-bebas text-[10px] tracking-wide text-[#FB923C] border border-[#FB923C]/40 rounded-full px-2 py-0.5">
                         TEST
                       </span>
+                    )}
+                    {editId !== t.id && (
+                      <button
+                        onClick={() => startEdit(t)}
+                        className="font-nunito text-xs text-[#D4AF37] hover:text-white border border-[#D4AF37]/30 hover:border-[#D4AF37] rounded-full px-3 py-1.5 transition-all"
+                      >
+                        ✏️ Name
+                      </button>
                     )}
                     <button
                       onClick={() => setAvatarPick(avatarPick === t.id ? null : t.id)}
