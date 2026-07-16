@@ -49,6 +49,13 @@ interface RankInputRow {
   manualRank: number | null;
 }
 
+/** Durchschnitt der vorhandenen Durchgangs-Werte (p1/p2/p3); null wenn keiner vorhanden. */
+function averageOfRounds(values: (number | null | undefined)[]): number | null {
+  const present = values.filter((v): v is number => v != null);
+  if (present.length === 0) return null;
+  return present.reduce((a, b) => a + b, 0) / present.length;
+}
+
 /** Punkte für einen 1-basierten Platz: Tabellenwert, sonst Floor. */
 export function pointsForRank(rank: number, table: number[], floor: number): number {
   if (rank < 1) return 0;
@@ -147,6 +154,22 @@ export function rankDisciplines(
     const meta = SCORING_META[did];
     if (!meta) continue;
     const { table, floor } = tableFor(pointsTable, meta.pointsGroup);
+
+    if (meta.roundsAveraged) {
+      // z.B. Riesen-Ringerl: Platzierung je Durchgang in p1/p2/p3 → Durchschnitt → Rang.
+      const rows: RankInputRow[] = teams.map((t) => {
+        const s = scoreMap.get(`${t.id}|${did}`);
+        return {
+          teamId: t.id,
+          rawValue: averageOfRounds([s?.p1, s?.p2, s?.p3]),
+          cardDouble: !!s?.card_double,
+          manualRank: null,
+        };
+      });
+      out[did] = rankByValue(rows, 'asc', table, floor); // kleinerer Ø-Platz = besser
+      continue;
+    }
+
     const rows: RankInputRow[] = teams.map((t) => {
       const s = scoreMap.get(`${t.id}|${did}`);
       return {
@@ -157,7 +180,7 @@ export function rankDisciplines(
       };
     });
     out[did] =
-      meta.inputMode === 'elimination'
+      meta.inputMode === 'elimination' || meta.inputMode === 'manual-place'
         ? rankByManual(rows, table, floor)
         : rankByValue(rows, meta.direction, table, floor);
   }

@@ -189,7 +189,7 @@ export const disciplines: Discipline[] = [
 export type ScoreDirection = 'asc' | 'desc'; // asc = kleiner besser (Zeit), desc = größer besser
 export type PointsGroup = 'phase_a' | 'opening' | 'riesen-ringerl' | 'baelle-chaos';
 export type GamePhase = 'opening' | 'a' | 'b';
-export type InputMode = 'number' | 'time' | 'elimination';
+export type InputMode = 'number' | 'time' | 'elimination' | 'manual-place';
 
 export interface DisciplineMeta {
   direction: ScoreDirection;
@@ -199,10 +199,11 @@ export interface DisciplineMeta {
   inputUnit: string; // Anzeige-Einheit für die Eingabe
   inputMode: InputMode;
   perPlayer?: boolean; // 3 Spieler-Werte werden zur Team-Summe addiert
+  roundsAveraged?: number; // Riesen-Ringerl: Platzierung aus N Durchgängen (p1/p2/p3) gemittelt
 }
 
 export const SCORING_META: Record<string, DisciplineMeta> = {
-  'mutter-stapeln': { direction: 'asc', pointsGroup: 'opening', gamePhase: 'opening', cardsAllowed: false, inputUnit: 'Zeit', inputMode: 'time' },
+  'mutter-stapeln': { direction: 'asc', pointsGroup: 'opening', gamePhase: 'opening', cardsAllowed: false, inputUnit: 'Platz', inputMode: 'manual-place' },
   'hasbro-simon': { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Punkte', inputMode: 'number', perPlayer: true },
   cornhole: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Punkte', inputMode: 'number', perPlayer: true },
   schwammstaffel: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Gramm', inputMode: 'number' },
@@ -210,7 +211,7 @@ export const SCORING_META: Record<string, DisciplineMeta> = {
   'gurkerl-biathlon': { direction: 'asc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Zeit', inputMode: 'time' },
   wasserbomben: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Meter', inputMode: 'number', perPlayer: true },
   gurkerlglasl: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Treffer', inputMode: 'number', perPlayer: true },
-  'riesen-ringerl': { direction: 'desc', pointsGroup: 'riesen-ringerl', gamePhase: 'b', cardsAllowed: false, inputUnit: 'Platz', inputMode: 'elimination' },
+  'riesen-ringerl': { direction: 'asc', pointsGroup: 'riesen-ringerl', gamePhase: 'b', cardsAllowed: false, inputUnit: 'Platz', inputMode: 'elimination', roundsAveraged: 3 },
   'baelle-chaos': { direction: 'desc', pointsGroup: 'baelle-chaos', gamePhase: 'b', cardsAllowed: false, inputUnit: 'Punkte', inputMode: 'number' },
 };
 

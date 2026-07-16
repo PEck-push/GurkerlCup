@@ -129,13 +129,6 @@ export default function ScorePage() {
         {view === 'pick' && (
           <div className="space-y-6">
             <DisciplineGroup
-              title="ERÖFFNUNG"
-              ids={disciplineIdsByPhase('opening')}
-              teams={activeTeams}
-              scores={scores}
-              onPick={openDiscipline}
-            />
-            <DisciplineGroup
               title="PHASE A – STATIONEN"
               ids={disciplineIdsByPhase('a')}
               teams={activeTeams}

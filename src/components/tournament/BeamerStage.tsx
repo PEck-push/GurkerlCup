@@ -7,7 +7,6 @@ import BeamerLogoLoop from './BeamerLogoLoop';
 import BeamerCountdown from './BeamerCountdown';
 import BeamerProgressGrid from './BeamerProgressGrid';
 import OpeningReveal from './OpeningReveal';
-import BeamerTimer from './BeamerTimer';
 import SlotMachineReveal from './SlotMachineReveal';
 import PhaseBBars from './PhaseBBars';
 import Podium from './Podium';
@@ -49,11 +48,12 @@ export default function BeamerStage() {
       return scenes[rotIdx % scenes.length];
     }
     if (config.phase === 'opening') {
-      if (config.timer_state && config.timer_state !== 'idle') return 'timer';
-      return config.opening_revealed ? 'opening' : 'logo';
+      // Live-Platzierungsliste, sobald die Turnierleitung das erste Team einträgt.
+      const anyEntered = scores.some((s) => s.discipline_id === 'mutter-stapeln' && s.manual_rank != null);
+      return anyEntered ? 'opening' : 'logo';
     }
     return config.phase; // reveal | phase_b | podium
-  }, [config, rotIdx]);
+  }, [config, rotIdx, scores]);
 
   if (!config) {
     return <div className="w-full h-full flex items-center justify-center text-white/30 font-nunito">Lädt…</div>;
@@ -69,8 +69,6 @@ export default function BeamerStage() {
         return <BeamerCountdown target={config!.countdown_target} />;
       case 'opening':
         return <OpeningReveal teams={teams} scores={scores} config={config!} />;
-      case 'timer':
-        return <BeamerTimer teams={teams} scores={scores} config={config!} />;
       case 'reveal':
         return <SlotMachineReveal teams={teams} scores={scores} config={config!} />;
       case 'phase_b':

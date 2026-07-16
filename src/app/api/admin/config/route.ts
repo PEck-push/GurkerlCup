@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAuthed } from '@/lib/adminAuth';
 import { getSupabaseAdmin } from '@/lib/supabaseAdmin';
-import { SCORING_META } from '@/lib/disciplines';
 import type { Phase } from '@/lib/tournamentTypes';
 
 export const runtime = 'nodejs';
@@ -11,7 +10,6 @@ const MISSING_KEY = 'Service-Role-Key fehlt (SUPABASE_SERVICE_ROLE_KEY).';
 const PHASES: Phase[] = ['setup', 'opening', 'phase_a', 'reveal', 'phase_b', 'podium'];
 const ROTATIONS = ['auto', 'logo', 'progress', 'countdown', 'spritzer'];
 const VIEWS = ['total', 'finale'];
-const TIMER_DISC_DEFAULT = 'mutter-stapeln'; // Auftakt „Bleib ruhig!"
 
 export async function GET() {
   if (!(await isAuthed())) {
@@ -69,35 +67,6 @@ export async function POST(request: NextRequest) {
   }
   if (body.test_mode !== undefined) patch.test_mode = !!body.test_mode;
   if (body.points_table !== undefined) patch.points_table = body.points_table;
-
-  // Auftakt-Timer-Steuerung (Teams stoppen selbst am Handy).
-  if (body.timer_action !== undefined) {
-    const action = String(body.timer_action);
-    if (action === 'arm') {
-      const disc =
-        typeof body.timer_discipline_id === 'string' && SCORING_META[body.timer_discipline_id]
-          ? body.timer_discipline_id
-          : TIMER_DISC_DEFAULT;
-      patch.timer_state = 'armed';
-      patch.timer_discipline_id = disc;
-      patch.timer_start_at = null;
-    } else if (action === 'start') {
-      const lead = Math.min(20, Math.max(3, Number(body.lead_seconds) || 5));
-      patch.timer_state = 'running';
-      patch.timer_start_at = new Date(Date.now() + lead * 1000).toISOString();
-      if (typeof body.timer_discipline_id === 'string' && SCORING_META[body.timer_discipline_id]) {
-        patch.timer_discipline_id = body.timer_discipline_id;
-      }
-    } else if (action === 'stop') {
-      patch.timer_state = 'stopped';
-    } else if (action === 'reset') {
-      patch.timer_state = 'idle';
-      patch.timer_discipline_id = null;
-      patch.timer_start_at = null;
-    } else {
-      return NextResponse.json({ error: 'Ungültige Timer-Aktion.' }, { status: 400 });
-    }
-  }
 
   if (Object.keys(patch).length === 0) {
     return NextResponse.json({ error: 'Nichts zu ändern.' }, { status: 400 });

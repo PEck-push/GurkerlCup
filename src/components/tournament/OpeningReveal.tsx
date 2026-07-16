@@ -2,12 +2,16 @@
 
 import { useMemo } from 'react';
 import { rankDisciplines } from '@/lib/scoring';
-import { formatSeconds } from '@/lib/timeFormat';
 import type { GcConfig, GcScore, GcTeam } from '@/lib/tournamentTypes';
 import LeaderboardView, { type LbEntry } from './LeaderboardView';
 
 const OPENING_ID = 'mutter-stapeln';
 
+/**
+ * Auftakt-Ergebnis am Beamer: live, sobald die Turnierleitung erste Plätze
+ * einträgt (Fähnchen-Zahl, die Teams selbst melden) – füllt sich Platz für
+ * Platz mit den daraus resultierenden Punkten.
+ */
 export default function OpeningReveal({
   teams,
   scores,
@@ -25,7 +29,7 @@ export default function OpeningReveal({
     return ranked
       .filter((x) => x.rank != null)
       .sort((a, b) => a.rank! - b.rank!)
-      .map((r) => ({ team: teamById.get(r.teamId)!, rank: r.rank!, value: formatSeconds(r.rawValue) }))
+      .map((r) => ({ team: teamById.get(r.teamId)!, rank: r.rank!, value: String(r.points) }))
       .filter((e) => e.team);
   }, [active, scores, config.points_table, teamById]);
 
@@ -37,5 +41,5 @@ export default function OpeningReveal({
     );
   }
 
-  return <LeaderboardView entries={entries} unit="" title="Bleib" accent="ruhig!" />;
+  return <LeaderboardView entries={entries} unit="Pkt" title="Bleib" accent="ruhig!" />;
 }
