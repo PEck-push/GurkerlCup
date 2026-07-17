@@ -72,18 +72,18 @@ export const SPRITZER_ID = 'spritzer';
 
 /**
  * Default-Punktetabelle (entspricht gc_config-Default in der Migration).
- * Ausgelegt auf bis zu 25 Teams, Gewichtung wie im Regelwerk
- * (Station : Ringerl : Finale ≈ 3 : 5 : 10, Finale = 2× Ringerl):
- *  - Eröffnung/Phase A: linear, Punkte = 26 − Platz (Platz 1 = 25 … Platz 25 = 1)
- *  - Phase B: gestufte Gruppen wie im Regelwerk
+ * Hybrid-System (bis 25 Teams, Gewichtung wie Regelwerk, Finale = 2× Ringerl):
+ *  - Eröffnung/Phase A: Podium in 2er-Schritten (14·12·10), dann 1er-Schritte
+ *    bis Platz 10, ab Platz 11 fixer Boden von 2 Punkten
+ *  - Ringerl/Finale: gestufte Gruppen, Sieg ≈ 1,7× bzw. 3,4× Stationssieg
  */
 export const DEFAULT_POINTS_TABLE: PointsTable = {
-  phase_a: [25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-  phase_a_floor: 1,
-  opening: [25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-  opening_floor: 1,
-  'riesen-ringerl': [40, 30, 24, 16, 16, 16, 12, 12, 12, 12, 8, 8, 8, 8, 8],
-  'riesen-ringerl_floor': 6,
-  'baelle-chaos': [80, 60, 48, 32, 32, 32, 24, 24, 24, 24, 16, 16, 16, 16, 16],
-  'baelle-chaos_floor': 12,
+  phase_a: [14, 12, 10, 9, 8, 7, 6, 5, 4, 3],
+  phase_a_floor: 2,
+  opening: [14, 12, 10, 9, 8, 7, 6, 5, 4, 3],
+  opening_floor: 2,
+  'riesen-ringerl': [24, 18, 14, 10, 10, 10, 7, 7, 7, 7],
+  'riesen-ringerl_floor': 4,
+  'baelle-chaos': [48, 36, 28, 20, 20, 20, 14, 14, 14, 14],
+  'baelle-chaos_floor': 8,
 };

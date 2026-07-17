@@ -19,7 +19,7 @@
       *(ohne SCORE_/BEAMER_PASSWORD schlägt der Login auf `/score` und `/beamer` fehl!)*
 - [ ] **Supabase „aufwecken"** 1–2 Tage vorher (Free-Tier pausiert nach Inaktivität) – kurz die Live-Seite/Admin öffnen
 - [ ] Migration ist eingespielt ✅ (bereits erledigt: `gc_config/gc_teams/gc_scores`)
-- [ ] **Punkte-Raster prüfen** im Admin (auf 25 Teams ausgelegt: Eröffnung/Stationen linear „26 − Platz" = 25…1 · Ringerl 40·30·24, 4.–6. je 16, 7.–10. je 12, 11.–15. je 8, ab 16. je 6 · Bälle Chaos exakt das Doppelte)
+- [ ] **Punkte-Raster prüfen** im Admin (Hybrid, bis 25 Teams: Eröffnung/Stationen 14·12·10·9·8·7·6·5·4·3, ab Platz 11 je 2 · Ringerl 24·18·14, 4.–6. je 10, 7.–10. je 7, ab 11. je 4 · Bälle Chaos exakt das Doppelte · max. 184 Pkt)
 - [ ] **Probelauf** mit Dummy-Teams (Admin → Test/Reset), alle Phasen einmal durchklicken → danach **Reset**
 - [ ] **Passwörter** an Koordinatoren / Beamer-Betreuer verteilen
 
