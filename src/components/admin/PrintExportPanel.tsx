@@ -36,6 +36,38 @@ export default function PrintExportPanel() {
       </div>
 
       <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
+        <h3 className="font-fredoka font-600 text-white mb-1">Stationsschilder (A4)</h3>
+        <p className="font-nunito text-sm text-white/50 mb-4">
+          Ein Schild pro Spiel (10 Seiten) zum Ausdrucken/Laminieren und am Stationstisch
+          aufkleben: großes Gurkerl-Bild, Spielname, Regeln &amp; Punkteraster – im Beamer-Look.
+        </p>
+        <a
+          href="/downloads/gurkerl-cup-stationsschilder.pdf"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-gold px-5 py-2.5 rounded-full text-sm inline-block"
+        >
+          ⬇ Stationsschilder (PDF)
+        </a>
+      </div>
+
+      <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
+        <h3 className="font-fredoka font-600 text-white mb-1">Spiele-Übersicht (kompakt)</h3>
+        <p className="font-nunito text-sm text-white/50 mb-4">
+          Alle 10 Spiele auf 2 Seiten: Ablauf, Wertung &amp; Punkteraster auf einen Blick –
+          ideal für Turnierleitung &amp; Helfer-Briefing.
+        </p>
+        <a
+          href="/downloads/gurkerl-cup-spieleuebersicht.pdf"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-gold px-5 py-2.5 rounded-full text-sm inline-block"
+        >
+          ⬇ Spiele-Übersicht (PDF)
+        </a>
+      </div>
+
+      <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
         <h3 className="font-fredoka font-600 text-white mb-1">Notfall-Rangliste</h3>
         <p className="font-nunito text-sm text-white/50 mb-4">
           Druckbare Gesamtrangliste (inkl. Punkte je Disziplin & Spritzerwertung) – funktioniert
