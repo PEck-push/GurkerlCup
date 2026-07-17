@@ -7,8 +7,14 @@ import {
   SCORING_META,
   getDiscipline,
 } from '@/lib/disciplines';
-import { liveStandings } from '@/lib/scoring';
-import { DEFAULT_POINTS_TABLE, type GcScore, type GcTeam } from '@/lib/tournamentTypes';
+import { liveStandings, rankDisciplines, spritzerRanking } from '@/lib/scoring';
+import {
+  DEFAULT_POINTS_TABLE,
+  SPRITZER_ID,
+  type GcScore,
+  type GcTeam,
+  type PointsTable,
+} from '@/lib/tournamentTypes';
 import { formatSeconds, parseTimeToSeconds } from '@/lib/timeFormat';
 import { saveScore } from '@/lib/offlineQueue';
 import { useGcConfig, useGcScores, useGcTeams } from '@/lib/useRealtime';
@@ -116,8 +122,155 @@ export default function ScoreMatrix() {
         </p>
       </div>
 
+      {/* Kontroll-Ansicht: Rangfolge + Rohwerte je Spiel */}
+      <DisciplineDetail teams={activeTeams} scores={scores} pointsTable={pointsTable} />
+
       {/* Korrektur */}
       <CorrectionEditor teams={activeTeams} scores={scores} onSaved={refetch} />
+    </div>
+  );
+}
+
+/** Rangfolge + Rohwerte eines einzelnen Spiels – zur Live-Kontrolle der Eingaben. */
+export function DisciplineDetail({
+  teams,
+  scores,
+  pointsTable,
+}: {
+  teams: GcTeam[];
+  scores: GcScore[];
+  pointsTable: PointsTable;
+}) {
+  const [discId, setDiscId] = useState<string>(SCORED_DISCIPLINE_IDS[0]);
+  const isSpritzer = discId === SPRITZER_ID;
+  const meta = SCORING_META[discId];
+
+  const teamById = useMemo(() => new Map(teams.map((t) => [t.id, t])), [teams]);
+  const scoreFor = (teamId: string): GcScore | undefined =>
+    scores.find((s) => s.team_id === teamId && s.discipline_id === discId);
+
+  const rows = useMemo(() => {
+    if (isSpritzer) {
+      return spritzerRanking(teams, scores).map((r) => ({
+        teamId: r.teamId,
+        rank: r.rank,
+        rawValue: r.rawValue,
+        points: null as number | null,
+      }));
+    }
+    const ranked = rankDisciplines(teams, scores, pointsTable, [discId])[discId] ?? [];
+    return ranked.map((r) => ({ teamId: r.teamId, rank: r.rank, rawValue: r.rawValue, points: r.points }));
+  }, [teams, scores, pointsTable, discId, isSpritzer]);
+
+  const sorted = useMemo(
+    () => [...rows].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999)),
+    [rows]
+  );
+
+  function wertLabel(row: (typeof rows)[number], s?: GcScore): string {
+    if (isSpritzer) return row.rawValue != null ? `${row.rawValue} m` : '–';
+    if (meta?.roundsAveraged) {
+      return row.rawValue != null ? `Ø ${(Math.round(Number(row.rawValue) * 100) / 100).toLocaleString('de-AT')}` : '–';
+    }
+    if (meta?.inputMode === 'manual-place') return s?.manual_rank != null ? `Fähnchen ${s.manual_rank}` : '–';
+    if (meta?.inputMode === 'time') return row.rawValue != null ? formatSeconds(Number(row.rawValue)) : '–';
+    return row.rawValue != null ? `${row.rawValue} ${meta?.inputUnit ?? ''}`.trim() : '–';
+  }
+
+  function detailLabel(s?: GcScore): string {
+    if (!s) return '';
+    if (meta?.roundsAveraged) {
+      return `Runden: ${s.p1 ?? '–'} / ${s.p2 ?? '–'} / ${s.p3 ?? '–'}`;
+    }
+    if (meta?.perPlayer && (s.p1 != null || s.p2 != null || s.p3 != null)) {
+      return `Spieler: ${s.p1 ?? '–'} · ${s.p2 ?? '–'} · ${s.p3 ?? '–'}`;
+    }
+    return '';
+  }
+
+  const pickerIds = [...SCORED_DISCIPLINE_IDS, SPRITZER_ID];
+
+  return (
+    <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
+      <h3 className="font-bebas text-sm tracking-[0.15em] text-[#52B788] mb-3">
+        KONTROLLE JE SPIEL – RANGFOLGE & ROHWERTE
+      </h3>
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        {pickerIds.map((id) => {
+          const d = id === SPRITZER_ID ? undefined : getDiscipline(id);
+          const label = id === SPRITZER_ID ? '🍷 Spritzer' : `${d?.emoji} ${d?.name}`;
+          return (
+            <button
+              key={id}
+              onClick={() => setDiscId(id)}
+              className={`font-nunito text-xs px-3 py-1.5 rounded-full border transition-all ${
+                discId === id
+                  ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-[#F0CE67]'
+                  : 'border-[#1E4028] text-white/60 hover:text-white'
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="overflow-x-auto rounded-xl border border-[#1E4028]">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-[#0F1A0D]">
+              <th className="font-bebas text-xs tracking-wide text-[#52B788] px-3 py-2.5 text-left">Rang</th>
+              <th className="font-bebas text-xs tracking-wide text-[#52B788] px-3 py-2.5 text-left">Team</th>
+              <th className="font-bebas text-xs tracking-wide text-[#52B788] px-3 py-2.5 text-right">Wert</th>
+              <th className="font-bebas text-xs tracking-wide text-[#52B788] px-3 py-2.5 text-left">Details</th>
+              {!isSpritzer && (
+                <th className="font-bebas text-xs tracking-wide text-[#D4AF37] px-3 py-2.5 text-right">Punkte</th>
+              )}
+              <th className="font-bebas text-xs tracking-wide text-[#52B788] px-3 py-2.5 text-center">🃏</th>
+              <th className="font-bebas text-xs tracking-wide text-[#52B788] px-3 py-2.5 text-center">✓</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((row) => {
+              const t = teamById.get(row.teamId);
+              if (!t) return null;
+              const s = scoreFor(row.teamId);
+              return (
+                <tr key={row.teamId} className="border-t border-[#1E4028]/60">
+                  <td className="px-3 py-2 font-bebas text-lg text-[#D4AF37]">
+                    {row.rank != null ? row.rank : '–'}
+                  </td>
+                  <td className="px-3 py-2">
+                    <TeamBadge color={t.color} emoji={t.emoji} name={t.team_name} startNumber={t.start_number} size="sm" />
+                  </td>
+                  <td className="px-3 py-2 text-right font-bebas text-lg text-white whitespace-nowrap">
+                    {wertLabel(row, s)}
+                  </td>
+                  <td className="px-3 py-2 font-nunito text-xs text-white/50 whitespace-nowrap">
+                    {detailLabel(s)}
+                  </td>
+                  {!isSpritzer && (
+                    <td className="px-3 py-2 text-right font-bebas text-lg text-[#F0CE67]">
+                      {row.rank != null ? row.points : '·'}
+                    </td>
+                  )}
+                  <td className="px-3 py-2 text-center font-nunito text-xs">
+                    {s?.card_double && <span className="text-[#F0CE67]" title="Doppel Gurkerl">2×</span>}
+                    {s?.card_second && <span className="text-[#52B788] ml-1" title="2nd Chance">2nd</span>}
+                  </td>
+                  <td className="px-3 py-2 text-center">
+                    {s?.finished && <span className="text-[#52B788]">✓</span>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="font-nunito text-xs text-white/30 mt-2">
+        Ohne Rang = noch kein Wert erfasst. Punkte hier bereits inkl. Doppel-Gurkerl.
+        Beim Riesen-Ringerl zählt der Ø der 3 Durchgänge, bei der Eröffnung die Fähnchen-Nummer.
+      </p>
     </div>
   );
 }

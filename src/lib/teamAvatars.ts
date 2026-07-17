@@ -11,6 +11,14 @@ export const TEAM_AVATARS = [
   '/images/teams/hippie1.webp',
   '/images/teams/ninja.webp',
   '/images/teams/aperol.webp',
+  '/images/teams/astro.webp',
+  '/images/teams/baby.webp',
+  '/images/teams/bier.webp',
+  '/images/teams/kasperl.webp',
+  '/images/teams/pensi.webp',
+  '/images/teams/sauna.webp',
+  '/images/teams/senf.webp',
+  '/images/teams/spice.webp',
   '/images/teams/kick1.webp',
   '/images/teams/kick2.webp',
   '/images/teams/pobsch.webp',
@@ -30,4 +38,19 @@ export const TEAM_AVATARS = [
 export function avatarFor(startNumber: number | undefined): string {
   const i = Math.max(0, (startNumber ?? 1) - 1);
   return TEAM_AVATARS[i % TEAM_AVATARS.length];
+}
+
+/**
+ * Ausschnitt je Avatar: Standard ist der enge Gesichts-Crop (Zoom 230 %,
+ * Fokus oben). Motive ohne Gesicht (die beiden Po-Charaktere) bekommen
+ * weniger Zoom, damit das ganze Motiv im Kreis sichtbar ist.
+ */
+const DEFAULT_CROP = { size: '230%', position: '50% 14%' };
+const AVATAR_CROPS: Record<string, { size: string; position: string }> = {
+  '/images/teams/pobsch.webp': { size: '170%', position: '50% 28%' },
+  '/images/teams/pobsch2.webp': { size: '170%', position: '50% 28%' },
+};
+
+export function avatarCrop(src?: string): { size: string; position: string } {
+  return (src && AVATAR_CROPS[src]) || DEFAULT_CROP;
 }

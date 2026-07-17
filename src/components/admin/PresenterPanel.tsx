@@ -11,7 +11,7 @@ const PHASES: { id: Phase; label: string; hint: string }[] = [
   { id: 'phase_a', label: 'Phase A', hint: '7 Stationen · Fortschritt am Beamer' },
   { id: 'reveal', label: 'Zwischenstand-Reveal', hint: '19:45 · Plätze einzeln enthüllen' },
   { id: 'phase_b', label: 'Phase B (Finale)', hint: 'Live-Aufholjagd · Balken' },
-  { id: 'podium', label: 'Siegerehrung', hint: 'Top-3-Podest' },
+  { id: 'podium', label: 'Siegerehrung', hint: 'Podium Schritt für Schritt: 3 → 2 → 1' },
 ];
 
 export default function PresenterPanel() {
@@ -64,7 +64,10 @@ export default function PresenterPanel() {
             return (
               <button
                 key={p.id}
-                onClick={() => post({ phase: p.id })}
+                onClick={() =>
+                  // Beim Wechsel in Reveal/Siegerehrung den Enthüllungs-Zähler zurücksetzen.
+                  post(p.id === 'reveal' || p.id === 'podium' ? { phase: p.id, reveal_step: 0 } : { phase: p.id })
+                }
                 disabled={busy}
                 className={`text-left rounded-xl border p-4 transition-all ${
                   active
@@ -198,6 +201,53 @@ export default function PresenterPanel() {
                 {v === 'total' ? 'Gesamtpunkte' : 'Nur Finale'}
               </button>
             ))}
+          </div>
+        </ControlCard>
+      )}
+
+      {config.phase === 'podium' && (
+        <ControlCard title="SIEGEREHRUNG">
+          <p className="font-nunito text-sm text-white/60 mb-3">
+            Beamer zeigt die Plätze ab 4 sofort – das Podium enthüllst du Schritt für Schritt:{' '}
+            <b className="text-white">
+              {config.reveal_step <= 0
+                ? 'Podium noch verdeckt'
+                : config.reveal_step === 1
+                  ? 'Platz 3 enthüllt'
+                  : config.reveal_step === 2
+                    ? 'Platz 3 + 2 enthüllt'
+                    : '🏆 Sieger enthüllt'}
+            </b>
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => post({ reveal_step: 1 })}
+              disabled={busy || config.reveal_step >= 1}
+              className="font-nunito text-sm px-4 py-2.5 rounded-full border border-[#CD7F32]/60 text-[#e8a869] hover:bg-[#CD7F32]/10 disabled:opacity-40"
+            >
+              🥉 Platz 3 enthüllen
+            </button>
+            <button
+              onClick={() => post({ reveal_step: 2 })}
+              disabled={busy || config.reveal_step >= 2 || config.reveal_step < 1}
+              className="font-nunito text-sm px-4 py-2.5 rounded-full border border-[#C8CBD0]/60 text-[#dfe3e8] hover:bg-[#C8CBD0]/10 disabled:opacity-40"
+            >
+              🥈 Platz 2 enthüllen
+            </button>
+            <button
+              onClick={() => post({ reveal_step: 3 })}
+              disabled={busy || config.reveal_step >= 3 || config.reveal_step < 2}
+              className="btn-gold px-6 py-2.5 rounded-full text-sm disabled:opacity-40"
+            >
+              🏆 SIEGER enthüllen
+            </button>
+            <button
+              onClick={() => post({ reveal_step: 0 })}
+              disabled={busy}
+              className="font-nunito text-sm px-4 py-2.5 rounded-full border border-white/10 text-white/50 hover:text-white"
+            >
+              Reset
+            </button>
           </div>
         </ControlCard>
       )}

@@ -4,9 +4,14 @@ import { useEffect, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { liveStandings } from '@/lib/scoring';
 import type { GcConfig, GcScore, GcTeam } from '@/lib/tournamentTypes';
-import { playFanfare } from '@/lib/sounds';
+import { playDrumroll, playFanfare } from '@/lib/sounds';
 import LeaderboardView, { type LbEntry } from './LeaderboardView';
 
+/**
+ * Siegerehrung mit gesteuerter Enthüllung (config.reveal_step in Phase 'podium'):
+ *  Stufe 0: Plätze 4+ sichtbar, Podium verdeckt · 1: +Platz 3 · 2: +Platz 2 ·
+ *  Stufe 3: Sieger enthüllt + Konfetti/Fanfare. Steuerung im Admin → Steuerung.
+ */
 export default function Podium({
   teams,
   scores,
@@ -23,9 +28,15 @@ export default function Podium({
     [active, scores, config.points_table]
   );
   const goldTie = standings.goldTie;
+  const step = Math.max(0, Math.min(3, config.reveal_step));
+  const done = step >= 3;
 
   useEffect(() => {
-    if (goldTie) return;
+    if (step === 1 || step === 2) playDrumroll(1400);
+  }, [step]);
+
+  useEffect(() => {
+    if (!done || goldTie) return;
     const t = setTimeout(() => {
       playFanfare();
       const end = Date.now() + 2800;
@@ -35,15 +46,19 @@ export default function Podium({
         if (Date.now() < end) requestAnimationFrame(frame);
       };
       frame();
-    }, 700);
+    }, 500);
     return () => clearTimeout(t);
-  }, [goldTie]);
+  }, [done, goldTie]);
 
-  const entries: LbEntry[] = standings.rows.map((r) => ({
-    team: teamById.get(r.teamId)!,
-    rank: r.finalRank,
-    value: String(r.total),
-  }));
+  // Verdeckte Podiumsplätze werden weggelassen → LeaderboardView zeigt dort '—'-Platzhalter.
+  const revealedFromRank = 4 - step; // Stufe 0 → ab 4 sichtbar, 1 → ab 3, 2 → ab 2, 3 → alle
+  const entries: LbEntry[] = standings.rows
+    .filter((r) => r.finalRank >= revealedFromRank)
+    .map((r) => ({
+      team: teamById.get(r.teamId)!,
+      rank: r.finalRank,
+      value: String(r.total),
+    }));
 
   return (
     <div className="relative w-full h-full">
@@ -52,6 +67,16 @@ export default function Podium({
           <p className="font-fredoka font-700 text-[#F0CE67] text-center" style={{ fontSize: 'min(2.4vw, 1.5rem)' }}>
             ⚔️ Stechen um Platz 1:{' '}
             {standings.goldTieTeamIds.map((id) => teamById.get(id)?.team_name).filter(Boolean).join(' & ')}
+          </p>
+        </div>
+      )}
+      {!done && !goldTie && (
+        <div className="absolute bottom-[3vh] left-1/2 -translate-x-1/2 z-20">
+          <p
+            className="font-bebas tracking-[0.3em] text-[#52B788] animate-pulse"
+            style={{ fontSize: 'min(2vw, 1.2rem)' }}
+          >
+            {step === 0 ? 'GLEICH GEHTS LOS …' : step === 1 ? 'PLATZ 3 STEHT FEST …' : 'WER HOLT DIE GOLDENE GURKE?'}
           </p>
         </div>
       )}

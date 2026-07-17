@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { disciplineIdsByPhase, getDiscipline, SCORING_META } from '@/lib/disciplines';
 import { STATION_RULES } from '@/lib/stationRules';
-import { avatarFor } from '@/lib/teamAvatars';
+import { avatarFor, avatarCrop } from '@/lib/teamAvatars';
 import type { GcTeam } from '@/lib/tournamentTypes';
 import QrCode from '@/components/QrCode';
 
@@ -80,7 +80,13 @@ export default function PrintSheetsPage() {
           <div key={t.id} className="sheet">
             {/* Kopf */}
             <div style={{ display: 'flex', gap: 18, alignItems: 'center', borderBottom: `4px solid ${t.color}`, paddingBottom: 13, marginBottom: 14 }}>
-              <div style={{ width: 86, height: 86, flexShrink: 0, borderRadius: '50%', backgroundImage: `url(${t.avatar || avatarFor(t.start_number)})`, backgroundSize: '230%', backgroundPosition: '50% 14%', border: `4px solid ${t.color}` }} />
+              {(() => {
+                const src = t.avatar || avatarFor(t.start_number);
+                const crop = avatarCrop(src);
+                return (
+                  <div style={{ width: 86, height: 86, flexShrink: 0, borderRadius: '50%', backgroundImage: `url(${src})`, backgroundSize: crop.size, backgroundPosition: crop.position, border: `4px solid ${t.color}` }} />
+                );
+              })()}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: t.color }}>GURKERL CUP 2026 · TEAM #{t.start_number}</div>
                 <div style={{ fontSize: 30, fontWeight: 800, lineHeight: 1.08 }}>{t.team_name}</div>

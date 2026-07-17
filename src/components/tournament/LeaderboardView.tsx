@@ -107,7 +107,21 @@ export default function LeaderboardView({
                 className="relative flex items-center gap-5 rounded-[2.2rem] pl-4 pr-6"
                 style={{ zIndex: s.z, height: first ? '23vh' : '17vh', background: `linear-gradient(125deg, ${s.c}, ${s.c}aa)`, boxShadow: `0 0 0 5px ${COMIC_OUTLINE}, 0 0 0 9px ${COMIC_CREAM}${first ? ', 0 0 50px rgba(212,175,55,0.5)' : ''}` }}
               >
-                <CharAvatar startNumber={e?.team.start_number} img={e?.team.avatar ?? undefined} color={e?.team.color ?? s.c} size={first ? 150 : 110} />
+                {e ? (
+                  <CharAvatar startNumber={e.team.start_number} img={e.team.avatar ?? undefined} color={e.team.color ?? s.c} size={first ? 150 : 110} />
+                ) : (
+                  <div
+                    className="rounded-full flex-shrink-0 flex items-center justify-center"
+                    style={{
+                      width: first ? 150 : 110,
+                      height: first ? 150 : 110,
+                      background: 'rgba(10,31,18,0.45)',
+                      boxShadow: `0 0 0 4px ${COMIC_CREAM}, 0 0 0 8px ${COMIC_OUTLINE}`,
+                    }}
+                  >
+                    <span className="font-fredoka font-700" style={chunky(first ? 64 : 48, COMIC_CREAM, 0)}>?</span>
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="font-fredoka font-700" style={chunky(first ? 44 : 32, COMIC_CREAM, first ? 5 : 4)}>
                     {s.medal}{s.rank}
