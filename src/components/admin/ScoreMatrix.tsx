@@ -133,6 +133,7 @@ function CorrectionEditor({
 }) {
   const [teamId, setTeamId] = useState('');
   const [discId, setDiscId] = useState('');
+  const [round, setRound] = useState(1);
   const [value, setValue] = useState('');
   const [finished, setFinished] = useState(false);
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
@@ -140,9 +141,10 @@ function CorrectionEditor({
 
   const meta = discId ? SCORING_META[discId] : undefined;
   const isTime = meta?.inputMode === 'time';
-  const isElim = meta?.inputMode === 'elimination';
+  const roundsN = meta?.roundsAveraged ?? 0; // Riesen-Ringerl: Platz je Durchgang in p1–p3
+  const isPlace = !roundsN && (meta?.inputMode === 'elimination' || meta?.inputMode === 'manual-place');
 
-  function loadCurrent(tId: string, dId: string) {
+  function loadCurrent(tId: string, dId: string, r: number) {
     const s = scores.find((x) => x.team_id === tId && x.discipline_id === dId);
     const m = SCORING_META[dId];
     if (!s) {
@@ -150,32 +152,50 @@ function CorrectionEditor({
       setFinished(false);
       return;
     }
-    if (m?.inputMode === 'elimination') setValue(s.manual_rank != null ? String(s.manual_rank) : '');
-    else if (m?.inputMode === 'time') setValue(s.raw_value != null ? formatSeconds(s.raw_value) : '');
-    else setValue(s.raw_value != null ? String(s.raw_value) : '');
+    if (m?.roundsAveraged) {
+      const v = r === 1 ? s.p1 : r === 2 ? s.p2 : s.p3;
+      setValue(v != null ? String(v) : '');
+    } else if (m?.inputMode === 'elimination' || m?.inputMode === 'manual-place') {
+      setValue(s.manual_rank != null ? String(s.manual_rank) : '');
+    } else if (m?.inputMode === 'time') {
+      setValue(s.raw_value != null ? formatSeconds(s.raw_value) : '');
+    } else {
+      setValue(s.raw_value != null ? String(s.raw_value) : '');
+    }
     setFinished(s.finished);
   }
 
   async function save() {
     if (!teamId || !discId) return;
     setError('');
-    setStatus('saving');
 
     const body: Record<string, unknown> = { team_id: teamId, discipline_id: discId, finished };
-    if (isElim) {
-      body.manual_rank = value.trim() === '' ? null : Number(value);
+    if (roundsN) {
+      const rank = value.trim() === '' ? null : Number(value);
+      if (rank !== null && (!Number.isFinite(rank) || rank < 1)) {
+        setError('Platz ungültig.');
+        return;
+      }
+      body[`p${round}`] = rank;
+    } else if (isPlace) {
+      const rank = value.trim() === '' ? null : Number(value);
+      if (rank !== null && (!Number.isFinite(rank) || rank < 1)) {
+        setError('Platz ungültig.');
+        return;
+      }
+      body.manual_rank = rank;
     } else if (value.trim() === '') {
       body.raw_value = null;
     } else {
       const raw = isTime ? parseTimeToSeconds(value) : Number(value.replace(',', '.'));
       if (raw == null || !Number.isFinite(raw)) {
         setError('Wert ungültig.');
-        setStatus('idle');
         return;
       }
       body.raw_value = raw;
     }
 
+    setStatus('saving');
     const res = await saveScore(body as never);
     if (res.status === 'ok' || res.status === 'queued') {
       setStatus('saved');
@@ -195,7 +215,7 @@ function CorrectionEditor({
           value={teamId}
           onChange={(e) => {
             setTeamId(e.target.value);
-            if (discId) loadCurrent(e.target.value, discId);
+            if (discId) loadCurrent(e.target.value, discId, round);
           }}
           className="rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-3 py-2.5 font-nunito text-white text-sm outline-none focus:border-[#D4AF37]/50"
         >
@@ -210,7 +230,8 @@ function CorrectionEditor({
           value={discId}
           onChange={(e) => {
             setDiscId(e.target.value);
-            if (teamId) loadCurrent(teamId, e.target.value);
+            setRound(1);
+            if (teamId) loadCurrent(teamId, e.target.value, 1);
           }}
           className="rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-3 py-2.5 font-nunito text-white text-sm outline-none focus:border-[#D4AF37]/50"
         >
@@ -227,10 +248,27 @@ function CorrectionEditor({
 
       {teamId && discId && (
         <div className="flex flex-wrap items-center gap-3">
+          {roundsN > 0 && (
+            <select
+              value={round}
+              onChange={(e) => {
+                const r = Number(e.target.value);
+                setRound(r);
+                loadCurrent(teamId, discId, r);
+              }}
+              className="rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-3 py-2.5 font-nunito text-white text-sm outline-none focus:border-[#D4AF37]/50"
+            >
+              {Array.from({ length: roundsN }, (_, i) => i + 1).map((r) => (
+                <option key={r} value={r}>
+                  Runde {r}
+                </option>
+              ))}
+            </select>
+          )}
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            placeholder={isElim ? 'Platz' : isTime ? 'm:ss.cs' : meta?.inputUnit ?? 'Wert'}
+            placeholder={roundsN || isPlace ? 'Platz' : isTime ? 'm:ss.cs' : meta?.inputUnit ?? 'Wert'}
             className="w-32 rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-3 py-2.5 font-bebas text-lg text-center text-white outline-none focus:border-[#D4AF37]/60"
           />
           <label className="flex items-center gap-2 cursor-pointer">

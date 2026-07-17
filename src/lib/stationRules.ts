@@ -6,8 +6,8 @@ export interface StationRule {
 
 export const STATION_RULES: Record<string, StationRule> = {
   'hasbro-simon': {
-    how: 'Jedes der 3 Teammitglieder tritt einmal am Simon/Senso-Gerät an. Der Betreuer zählt die erreichten Runden/Töne.',
-    scoring: 'Die Punkte aller 3 Spieler werden addiert – höchste Teamsumme gewinnt.',
+    how: 'Jedes der 3 Teammitglieder hat 2 Versuche am Simon/Senso-Gerät. Der Betreuer zählt die erreichten Runden/Töne je Versuch.',
+    scoring: 'Beide Versuche je Spieler und alle 3 Spieler werden addiert – höchste Teamsumme gewinnt.',
   },
   cornhole: {
     how: 'Jeder Spieler wirft auf 4 Ziele in unterschiedlicher Entfernung: Grüner Ring (4 m), zwei Cornhole-Boards (5 m, 9 m) und Reifen (10 m). Vor jedem Wurf das Ziel ansagen.',

@@ -27,7 +27,15 @@ export default function TeamSelfView() {
 
   function valueLabel(disciplineId: string, s?: GcScore): string {
     const meta = SCORING_META[disciplineId];
-    if (!s || (s.raw_value == null && s.manual_rank == null)) return '—';
+    if (!s) return '—';
+    if (meta?.roundsAveraged) {
+      // Riesen-Ringerl: Durchgangs-Plätze in p1–p3, gewertet wird der Durchschnitt.
+      const rounds = [s.p1, s.p2, s.p3].filter((v): v is number => v != null);
+      if (rounds.length === 0) return '—';
+      const avg = rounds.reduce((a, b) => a + b, 0) / rounds.length;
+      return `Ø Platz ${(Math.round(avg * 100) / 100).toLocaleString('de-AT')}`;
+    }
+    if (s.raw_value == null && s.manual_rank == null) return '—';
     if (disciplineId === SPRITZER_ID) return `${s.raw_value} m`;
     if (meta?.inputMode === 'elimination' || meta?.inputMode === 'manual-place') {
       return s.manual_rank ? `Platz ${s.manual_rank}` : '—';

@@ -1,6 +1,6 @@
 # 🥒 Gurkerl Cup 2026 – Checkliste (18. Juli 2026, Pöttsching)
 
-> Alles Spiel-Relevante auf einen Blick. Einkaufsmengen siehe `gurkerl-cup-einkaufsliste.csv` (geplant für **bis zu 16 Teams**).
+> Alles Spiel-Relevante auf einen Blick. Einkaufsmengen siehe `gurkerl-cup-einkaufsliste.csv` (geplant für **bis zu 25 Teams**).
 
 ---
 
@@ -18,8 +18,8 @@
 - [ ] **Vercel Production-Env gesetzt:** `ADMIN_PASSWORD`, `SCORE_PASSWORD`, `BEAMER_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
       *(ohne SCORE_/BEAMER_PASSWORD schlägt der Login auf `/score` und `/beamer` fehl!)*
 - [ ] **Supabase „aufwecken"** 1–2 Tage vorher (Free-Tier pausiert nach Inaktivität) – kurz die Live-Seite/Admin öffnen
-- [ ] Migration ist eingespielt ✅ (bereits erledigt: `gc_config/gc_teams/gc_scores` + Timer-Spalten)
-- [ ] **Punkte-Raster prüfen** im Admin (ist bereits Regelwerk-konform: 12·10·8·7·6·5·4·3·2·1 · Ringerl 20·15·12·8·8·8 · Bälle 40·30·24·16·16·16)
+- [ ] Migration ist eingespielt ✅ (bereits erledigt: `gc_config/gc_teams/gc_scores`)
+- [ ] **Punkte-Raster prüfen** im Admin (auf 25 Teams ausgelegt: Eröffnung/Stationen linear „26 − Platz" = 25…1 · Ringerl 40·30·24, 4.–6. je 16, 7.–10. je 12, 11.–15. je 8, ab 16. je 6 · Bälle Chaos exakt das Doppelte)
 - [ ] **Probelauf** mit Dummy-Teams (Admin → Test/Reset), alle Phasen einmal durchklicken → danach **Reset**
 - [ ] **Passwörter** an Koordinatoren / Beamer-Betreuer verteilen
 
@@ -31,24 +31,24 @@
 - [ ] Koordinator-Handys: bei `/score` einloggen · Beamer: `/beamer` einloggen → **Vollbild** + **Ton entsperren**
 
 ## 4) Aufbau pro Station
-- [ ] **Eröffnung – Mutter Stapeln:** Bänke + je Team 1 Stab & 6 Muttern bereitlegen
-- [ ] **Station 1 – Simon:** Gerät + Batterien testen
-- [ ] **Station 2 – Cornhole:** 3 Boards bei 3 / 5 / 7 m, Zonen markieren, 8 Säckchen
+- [ ] **Eröffnung – Mutter Stapeln:** Bänke + je Team 1 Stab & 6 Muttern bereitlegen · Fähnchen-Station mit nummerierten Fähnchen (1–25) aufstellen
+- [ ] **Station 1 – Simon:** Gerät + Batterien testen (2 Versuche pro Spieler)
+- [ ] **Station 2 – Cornhole:** 4 Ziele markieren – grüner Ring 4 m, Boards bei 5 m & 9 m, Reifen 10 m · Säckchen bereitlegen
 - [ ] **Station 3 – Schwammstaffel:** Eimer voll / Kübel auf Waage / Parcours (Slalom + drunter + drüber)
 - [ ] **Station 4 – Kazoomeister:** Kazoos + Kärtchen-Box + Desinfektion
 - [ ] **Station 5 – Biathlon:** Strecke + Schießstand + Gurken-Ziele + Straf-Hütchen
 - [ ] **Station 6 – Wasserbomben:** ab 3 m markieren, Bomben gefüllt bereit, Handtücher
-- [ ] **Station 7 – Gurkerlglasl:** Gläser als Pyramide, TT-Bälle (5/Person)
-- [ ] **Phase B – Riesen-Ringerl:** Netz + Ball + Feldlinien
+- [ ] **Station 7 – Gurkerlglasl:** Gläser als Pyramide, Aufprall-Linie am Tisch markieren, viele TT-Bälle (1 Min/Spieler, Team sammelt Bälle ein)
+- [ ] **Phase B – Riesen-Ringerl:** Netz + Ball + Feldlinien (3 Durchgänge, Ø-Platz zählt)
 - [ ] **Phase B – Bälle Chaos:** Feld abgegrenzt, Bälle (inkl. gold) verteilt, Augenbinden, Sammelkübel je Team
 
 ## 5) Ablauf / Timeline (aus Regelwerk)
 - [ ] **14:30** Ankunft & Registrierung · Pässe/Joker ausgeben
-- [ ] **15:15** OPENING **Mutter Stapeln** – alle gleichzeitig · **Timer** im Admin scharfschalten → START, Teams stoppen selbst
+- [ ] **15:15** OPENING **Mutter Stapeln** – alle gleichzeitig · Teams sprinten zur Fähnchen-Station, ziehen ihr Platz-Fähnchen und melden sich · Turnierleitung trägt die Plätze im Admin (Steuerung → Eröffnung) ein
 - [ ] **15:30** Phase A Start – 7 Stationen offen, freie Reihenfolge (Beamer: Fortschritt/Logo/Countdown)
 - [ ] **19:30** ⛔ **Phase A ENDE (harte Deadline!)** – offene Stationen = 0 Pkt · Rankings berechnen
 - [ ] **19:45** **Zwischenstand-Reveal** – Beamer Platz für Platz enthüllen (Slot-Machine + Sound)
-- [ ] **20:00** Phase B **Riesen-Ringerl** – Ausgeschiedene live antippen
+- [ ] **20:00** Phase B **Riesen-Ringerl** – 3 Durchgänge, je Durchgang Ausgeschiedene live antippen (Ø-Platz zählt)
 - [ ] **20:45** FINALE **Bälle Chaos** (×2 Punkte!) – Punkte live eingeben, Balken sortieren um
 - [ ] **21:30** **Siegerehrung** – Podest 3→2→1 + Konfetti · **Spritzerwertung** einblenden
 - [ ] Danach: WM-Spiel um Platz 3 / Fest

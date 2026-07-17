@@ -29,7 +29,7 @@ export const disciplines: Discipline[] = [
     teaser:
       'Der Auftakt gehört allen – der Vorsprung nur einem. Was hier entschieden wird, setzt den Ton für den Rest des Tages.',
     time: 'Ca. 10 Min.',
-    scoring: 'Zeitwertung',
+    scoring: 'Fähnchen-Platzierung',
     points: '12',
     image: '/images/mutter-stapeln.webp',
     badge: 'OPENING',

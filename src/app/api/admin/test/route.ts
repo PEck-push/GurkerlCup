@@ -61,16 +61,31 @@ export async function POST(request: NextRequest) {
       nextNo += 1;
     }
 
-    // Riesen-Ringerl: zufällige Platzierungen
-    const ringerlRanks = created.map((_, i) => i + 1).sort(() => Math.random() - 0.5);
+    // Zufällige Platz-Permutationen: Eröffnung (Fähnchen) + je Ringerl-Durchgang eine.
+    const shuffledRanks = () => created.map((_, i) => i + 1).sort(() => Math.random() - 0.5);
+    const openingRanks = shuffledRanks();
+    const ringerlRounds = [shuffledRanks(), shuffledRanks(), shuffledRanks()];
 
     const stationIds = [...disciplineIdsByPhase('opening'), ...disciplineIdsByPhase('a')];
     const rows: Record<string, unknown>[] = [];
     created.forEach((team, idx) => {
       for (const did of SCORED_DISCIPLINE_IDS) {
         const meta = SCORING_META[did];
-        if (meta.inputMode === 'elimination') {
-          rows.push({ team_id: team.id, discipline_id: did, manual_rank: ringerlRanks[idx], finished: true });
+        if (meta.roundsAveraged) {
+          // Riesen-Ringerl: Durchgangs-Plätze in p1–p3, Wertung mittelt.
+          rows.push({
+            team_id: team.id,
+            discipline_id: did,
+            p1: ringerlRounds[0][idx],
+            p2: ringerlRounds[1][idx],
+            p3: ringerlRounds[2][idx],
+            finished: true,
+          });
+        } else if (meta.inputMode === 'manual-place') {
+          // Eröffnung: gezogene Fähnchen-Platzierung.
+          rows.push({ team_id: team.id, discipline_id: did, manual_rank: openingRanks[idx], finished: true });
+        } else if (meta.inputMode === 'elimination') {
+          rows.push({ team_id: team.id, discipline_id: did, manual_rank: ringerlRounds[0][idx], finished: true });
         } else if (meta.inputMode === 'time') {
           rows.push({ team_id: team.id, discipline_id: did, raw_value: ri(60, 300), finished: true });
         } else {

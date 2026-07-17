@@ -70,14 +70,20 @@ export interface GcScore {
 /** Spezielle discipline_id für die Spritzerwertung (fließt NICHT in die Gesamtpunkte). */
 export const SPRITZER_ID = 'spritzer';
 
-/** Default-Punktetabelle (entspricht gc_config-Default in der Migration). */
+/**
+ * Default-Punktetabelle (entspricht gc_config-Default in der Migration).
+ * Ausgelegt auf bis zu 25 Teams, Gewichtung wie im Regelwerk
+ * (Station : Ringerl : Finale ≈ 3 : 5 : 10, Finale = 2× Ringerl):
+ *  - Eröffnung/Phase A: linear, Punkte = 26 − Platz (Platz 1 = 25 … Platz 25 = 1)
+ *  - Phase B: gestufte Gruppen wie im Regelwerk
+ */
 export const DEFAULT_POINTS_TABLE: PointsTable = {
-  phase_a: [12, 10, 8, 7, 6, 5, 4, 3, 2, 1],
+  phase_a: [25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
   phase_a_floor: 1,
-  opening: [12, 10, 8, 7, 6, 5, 4, 3, 2, 1],
+  opening: [25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
   opening_floor: 1,
-  'riesen-ringerl': [20, 15, 12, 8, 8, 8],
-  'riesen-ringerl_floor': 4,
-  'baelle-chaos': [40, 30, 24, 16, 16, 16],
-  'baelle-chaos_floor': 8,
+  'riesen-ringerl': [40, 30, 24, 16, 16, 16, 12, 12, 12, 12, 8, 8, 8, 8, 8],
+  'riesen-ringerl_floor': 6,
+  'baelle-chaos': [80, 60, 48, 32, 32, 32, 24, 24, 24, 24, 16, 16, 16, 16, 16],
+  'baelle-chaos_floor': 12,
 };

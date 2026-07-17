@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS gc_config (
   timer_discipline_id text,                            -- betroffene Station (i.d.R. 'mutter-stapeln')
   timer_start_at    timestamptz,                       -- synchroner GO-Zeitpunkt (Teams stoppen selbst)
   points_table      jsonb NOT NULL DEFAULT '{
-    "phase_a":              [12,10,8,7,6,5,4,3,2,1],
+    "phase_a":              [25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
     "phase_a_floor":        1,
-    "opening":              [12,10,8,7,6,5,4,3,2,1],
+    "opening":              [25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
     "opening_floor":        1,
-    "riesen-ringerl":       [20,15,12,8,8,8],
-    "riesen-ringerl_floor": 4,
-    "baelle-chaos":         [40,30,24,16,16,16],
-    "baelle-chaos_floor":   8
+    "riesen-ringerl":       [40,30,24,16,16,16,12,12,12,12,8,8,8,8,8],
+    "riesen-ringerl_floor": 6,
+    "baelle-chaos":         [80,60,48,32,32,32,24,24,24,24,16,16,16,16,16],
+    "baelle-chaos_floor":   12
   }'::jsonb,
   updated_at        timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT gc_config_singleton CHECK (id = 1)

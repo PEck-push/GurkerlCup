@@ -69,9 +69,22 @@ export default function EliminationInput({
       .sort((a, b) => (a.avg ?? 999) - (b.avg ?? 999));
   }, [teams, scoreByTeam, rounds]);
 
+  /** finished = Team hat alle Runden absolviert (steuert den Fortschrittszähler in der Übersicht). */
+  function isCompleteAfter(teamId: string, patch: Partial<Record<'p1' | 'p2' | 'p3', number | null>>): boolean {
+    const s = scoreByTeam.get(teamId);
+    const after = { p1: s?.p1 ?? null, p2: s?.p2 ?? null, p3: s?.p3 ?? null, ...patch };
+    return [after.p1, after.p2, after.p3].slice(0, rounds).every((v) => v != null);
+  }
+
   async function eliminate(team: GcTeam) {
     setBusy(team.id);
-    await saveScore({ team_id: team.id, discipline_id: DISCIPLINE_ID, [roundField(round)]: nextRank });
+    const field = roundField(round);
+    await saveScore({
+      team_id: team.id,
+      discipline_id: DISCIPLINE_ID,
+      [field]: nextRank,
+      finished: isCompleteAfter(team.id, { [field]: nextRank }),
+    });
     onMutate?.();
     setBusy(null);
   }
@@ -84,7 +97,7 @@ export default function EliminationInput({
     }, null);
     if (!last) return;
     setBusy(last.id);
-    await saveScore({ team_id: last.id, discipline_id: DISCIPLINE_ID, [roundField(round)]: null });
+    await saveScore({ team_id: last.id, discipline_id: DISCIPLINE_ID, [roundField(round)]: null, finished: false });
     onMutate?.();
     setBusy(null);
   }
@@ -92,7 +105,7 @@ export default function EliminationInput({
   async function resetAll() {
     setBusy('reset');
     for (const t of placed) {
-      await saveScore({ team_id: t.id, discipline_id: DISCIPLINE_ID, [roundField(round)]: null });
+      await saveScore({ team_id: t.id, discipline_id: DISCIPLINE_ID, [roundField(round)]: null, finished: false });
     }
     onMutate?.();
     setBusy(null);
