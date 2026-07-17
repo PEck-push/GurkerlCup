@@ -77,7 +77,7 @@ export const disciplines: Discipline[] = [
     glowColor: 'rgba(82,183,136,0.4)',
     teaser:
       'Drei Minuten. Hindernisse. Eine Waage. Was ihr in dieser Zeit schafft, steht danach schwarz auf weiß – Gramm für Gramm.',
-    time: '3 Min. (fix)',
+    time: '2 Min. (fix)',
     scoring: 'Meistes Wasser im Ziel',
     points: '12',
     image: '/images/schwammstaffel.webp',
@@ -142,7 +142,7 @@ export const disciplines: Discipline[] = [
     glowColor: 'rgba(132,204,22,0.4)',
     teaser:
       'Das Glas hat schon Besseres gesehen. Jetzt bekommt es fünf Chancen auf einen neuen Inhalt. Klingt einfach – ist es meistens nicht.',
-    time: 'Ca. 3 Min.',
+    time: 'Ca. 4 Min.',
     scoring: 'Meiste Treffer',
     points: '12',
     image: '/images/jar.webp',
