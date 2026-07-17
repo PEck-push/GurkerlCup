@@ -199,12 +199,13 @@ export interface DisciplineMeta {
   inputUnit: string; // Anzeige-Einheit für die Eingabe
   inputMode: InputMode;
   perPlayer?: boolean; // 3 Spieler-Werte werden zur Team-Summe addiert
+  attemptsPerPlayer?: number; // Simon: 2 Versuche je Spieler, beide zählen zur Spieler-Summe
   roundsAveraged?: number; // Riesen-Ringerl: Platzierung aus N Durchgängen (p1/p2/p3) gemittelt
 }
 
 export const SCORING_META: Record<string, DisciplineMeta> = {
   'mutter-stapeln': { direction: 'asc', pointsGroup: 'opening', gamePhase: 'opening', cardsAllowed: false, inputUnit: 'Platz', inputMode: 'manual-place' },
-  'hasbro-simon': { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Punkte', inputMode: 'number', perPlayer: true },
+  'hasbro-simon': { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Punkte', inputMode: 'number', perPlayer: true, attemptsPerPlayer: 2 },
   cornhole: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Punkte', inputMode: 'number', perPlayer: true },
   schwammstaffel: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Gramm', inputMode: 'number' },
   kazoomeister: { direction: 'desc', pointsGroup: 'phase_a', gamePhase: 'a', cardsAllowed: true, inputUnit: 'Songs', inputMode: 'number' },

@@ -24,18 +24,31 @@ export default function ScoreEntryForm({
   const meta = SCORING_META[disciplineId];
   const isTime = meta?.inputMode === 'time';
   const perPlayer = !!meta?.perPlayer;
+  const attemptsN = meta?.attemptsPerPlayer ?? 1;
 
   const [value, setValue] = useState(() => {
     if (existing?.raw_value == null) return '';
     return isTime ? formatSeconds(existing.raw_value) : String(existing.raw_value);
   });
-  const [players, setPlayers] = useState<string[]>(() =>
-    [existing?.p1, existing?.p2, existing?.p3].map((v) => (v == null ? '' : String(v)))
+
+  // attempts[player][attempt] – bei attemptsN===1 verhält sich das wie ein einzelnes Feld pro Spieler.
+  const [attempts, setAttempts] = useState<string[][]>(() =>
+    [existing?.p1, existing?.p2, existing?.p3].map((v) => {
+      const row = new Array(attemptsN).fill('');
+      if (v != null) row[0] = String(v);
+      return row;
+    })
   );
-  const playerSum = players.reduce((a, v) => {
-    const n = v.trim() === '' ? 0 : Number(v.replace(',', '.'));
-    return a + (Number.isFinite(n) ? n : 0);
-  }, 0);
+
+  function attemptNums(i: number): number[] {
+    return attempts[i]
+      .map((v) => (v.trim() === '' ? null : Number(v.replace(',', '.'))))
+      .filter((n): n is number => n !== null && Number.isFinite(n));
+  }
+  function playerTotal(i: number): number {
+    return attemptNums(i).reduce((a, b) => a + b, 0);
+  }
+  const playerSum = [0, 1, 2].reduce((a, i) => a + playerTotal(i), 0);
   const [finished, setFinished] = useState(existing?.finished ?? false);
   const [dbl, setDbl] = useState(existing?.card_double ?? false);
   const [second, setSecond] = useState(existing?.card_second ?? false);
@@ -56,14 +69,19 @@ export default function ScoreEntryForm({
     };
 
     if (perPlayer) {
-      const nums = players.map((v) => (v.trim() === '' ? null : Number(v.replace(',', '.'))));
-      if (nums.some((n) => n !== null && !Number.isFinite(n))) {
+      // Ungültige (nicht-numerische) Eingaben abfangen, bevor summiert wird.
+      const hasInvalid = attempts.some((row) =>
+        row.some((v) => v.trim() !== '' && !Number.isFinite(Number(v.replace(',', '.'))))
+      );
+      if (hasInvalid) {
         setError('Zahl ungültig.');
         return;
       }
-      body.p1 = nums[0];
-      body.p2 = nums[1];
-      body.p3 = nums[2];
+      // Spieler-Summe = Summe seiner Versuche; kein Versuch eingetragen → null (noch offen).
+      const totals = [0, 1, 2].map((i) => (attemptNums(i).length > 0 ? playerTotal(i) : null));
+      body.p1 = totals[0];
+      body.p2 = totals[1];
+      body.p3 = totals[2];
     } else {
       let raw: number | null = null;
       if (value.trim() !== '') {
@@ -126,18 +144,44 @@ export default function ScoreEntryForm({
           <>
             <label className="block font-bebas text-xs tracking-[0.2em] text-[#52B788] mb-2">
               {meta?.inputUnit?.toUpperCase() ?? 'WERT'} PRO SPIELER
+              {attemptsN > 1 && ` · ${attemptsN} VERSUCHE (werden addiert)`}
             </label>
             <div className="space-y-2">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="font-nunito text-sm text-white/60 w-24 flex-shrink-0">Spieler {i + 1}</span>
-                  <input
-                    inputMode="decimal"
-                    value={players[i] ?? ''}
-                    onChange={(e) => setPlayers((p) => p.map((v, j) => (j === i ? e.target.value : v)))}
-                    placeholder="0"
-                    className="flex-1 rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-4 py-3 font-bebas text-2xl text-white outline-none focus:border-[#D4AF37]/60 text-center"
-                  />
+                  {attemptsN > 1 ? (
+                    <>
+                      {Array.from({ length: attemptsN }, (_, a) => (
+                        <input
+                          key={a}
+                          inputMode="decimal"
+                          value={attempts[i][a] ?? ''}
+                          onChange={(e) =>
+                            setAttempts((prev) =>
+                              prev.map((row, j) => (j === i ? row.map((v, k) => (k === a ? e.target.value : v)) : row))
+                            )
+                          }
+                          placeholder="0"
+                          title={`Versuch ${a + 1}`}
+                          className="w-0 flex-1 rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-2 py-3 font-bebas text-xl text-white outline-none focus:border-[#D4AF37]/60 text-center"
+                        />
+                      ))}
+                      <span className="font-bebas text-lg text-[#F0CE67] w-12 text-right flex-shrink-0">
+                        {playerTotal(i)}
+                      </span>
+                    </>
+                  ) : (
+                    <input
+                      inputMode="decimal"
+                      value={attempts[i][0] ?? ''}
+                      onChange={(e) =>
+                        setAttempts((prev) => prev.map((row, j) => (j === i ? [e.target.value] : row)))
+                      }
+                      placeholder="0"
+                      className="flex-1 rounded-xl bg-[#0A1A0C] border border-[#1E4028] px-4 py-3 font-bebas text-2xl text-white outline-none focus:border-[#D4AF37]/60 text-center"
+                    />
+                  )}
                 </div>
               ))}
             </div>
