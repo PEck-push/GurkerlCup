@@ -1,9 +1,20 @@
 /**
- * Charakter-Avatare pro Team. Aktuell als Platzhalter die vorhandenen Gurkerl-Charaktere.
- * Sobald der Charakter-Pack da ist: Dateien nach /public/images/teams/ legen und diese
- * Liste auf z.B. '/images/teams/team-01.webp' umstellen – sonst ändert sich nichts.
+ * Charakter-Avatare pro Team: zuerst der Charakter-Pack (/images/teams/),
+ * danach die Stations-Charaktere als zusätzliche Auswahl.
  */
 export const TEAM_AVATARS = [
+  '/images/teams/pirat.webp',
+  '/images/teams/wurf.webp',
+  '/images/teams/alien.webp',
+  '/images/teams/cowboy.webp',
+  '/images/teams/god.webp',
+  '/images/teams/hippie1.webp',
+  '/images/teams/ninja.webp',
+  '/images/teams/aperol.webp',
+  '/images/teams/kick1.webp',
+  '/images/teams/kick2.webp',
+  '/images/teams/pobsch.webp',
+  '/images/teams/pobsch2.webp',
   '/images/simon.webp',
   '/images/wasserbomben.webp',
   '/images/cornhole.webp',
