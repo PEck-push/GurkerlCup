@@ -18,8 +18,8 @@ export const STATION_RULES: Record<string, StationRule> = {
     scoring: 'Meiste Gramm Wasser (per Waage) im Zielkübel nach 2 Minuten.',
   },
   kazoomeister: {
-    how: 'Ein Spieler zieht Karten von einem Stapel und summt den jeweiligen Song auf dem Kazoo; die beiden anderen raten. Kennt er den Song nicht oder ist er zu schwer, zieht er die nächste Karte. 1:30 Min.',
-    scoring: 'Jeder richtig erratene Song = 1 Punkt – meiste Songs gewinnt.',
+    how: 'Jedes der 3 Teammitglieder hat eine eigene 90-Sekunden-Runde: Karten vom Stapel ziehen und den Song auf dem Kazoo summen, die beiden anderen raten. Kennt der Spieler den Song nicht oder ist er zu schwer, zieht er die nächste Karte.',
+    scoring: 'Jeder richtig erratene Song = 1 Punkt. Die Songs aller 3 Spieler-Runden werden addiert – höchste Teamsumme gewinnt.',
   },
   'gurkerl-biathlon': {
     how: 'Gemeinsam auf dem Bewegungsgefährt zum Schießstand. Jeder trifft ein Ziel → weiterziehen; Fehler → ganze Strafrunde. Zeit von Start (Spieler 1) bis Ziel (Spieler 3).',
