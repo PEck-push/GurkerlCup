@@ -68,6 +68,22 @@ export default function PrintExportPanel() {
       </div>
 
       <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
+        <h3 className="font-fredoka font-600 text-white mb-1">Moderations-Spickzettel (A4)</h3>
+        <p className="font-nunito text-sm text-white/50 mb-4">
+          Eine Seite für die Begrüßung/Anmoderation: 3 Phasen, Punktesystem, Gurkerl-Karten,
+          Spritzer &amp; Timeline – alles auf einen Blick (inkl. Modus-B-Hinweis 6 von 7–8).
+        </p>
+        <a
+          href="/downloads/gurkerl-cup-moderation-spickzettel.pdf"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-gold px-5 py-2.5 rounded-full text-sm inline-block"
+        >
+          ⬇ Spickzettel (PDF)
+        </a>
+      </div>
+
+      <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
         <h3 className="font-fredoka font-600 text-white mb-1">Notfall-Rangliste</h3>
         <p className="font-nunito text-sm text-white/50 mb-4">
           Druckbare Gesamtrangliste (inkl. Punkte je Disziplin & Spritzerwertung) – funktioniert
