@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
     patch.slide_seconds = Math.min(120, Math.max(3, Number(body.slide_seconds) || 12));
   }
   if (body.test_mode !== undefined) patch.test_mode = !!body.test_mode;
+  if (body.skip_mode !== undefined) patch.skip_mode = !!body.skip_mode;
   if (body.points_table !== undefined) patch.points_table = body.points_table;
 
   if (Object.keys(patch).length === 0) {

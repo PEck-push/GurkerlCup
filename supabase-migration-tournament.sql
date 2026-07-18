@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS gc_config (
   countdown_target  timestamptz,                       -- Ziel für "Countdown bis 19:30"
   slide_seconds     int NOT NULL DEFAULT 12,           -- Dauer pro Beamer-Slide (Rotation)
   test_mode         boolean NOT NULL DEFAULT false,    -- Probemodus-Badge
+  skip_mode         boolean NOT NULL DEFAULT false,    -- Modus B: Team lässt 1 von 7 Phase-A-Stationen aus
   timer_state       text NOT NULL DEFAULT 'idle',      -- Auftakt-Timer: idle|armed|running|stopped
   timer_discipline_id text,                            -- betroffene Station (i.d.R. 'mutter-stapeln')
   timer_start_at    timestamptz,                       -- synchroner GO-Zeitpunkt (Teams stoppen selbst)
@@ -42,6 +43,10 @@ ALTER TABLE gc_config
   ADD COLUMN IF NOT EXISTS timer_state         text NOT NULL DEFAULT 'idle',
   ADD COLUMN IF NOT EXISTS timer_discipline_id text,
   ADD COLUMN IF NOT EXISTS timer_start_at      timestamptz;
+
+-- Modus B (freies Auslassen 1 von 7 Phase-A-Stationen): additiv, idempotent.
+ALTER TABLE gc_config
+  ADD COLUMN IF NOT EXISTS skip_mode boolean NOT NULL DEFAULT false;
 
 -- ---------- gc_teams: eingecheckte Turnier-Teams (aus Registrierung ODER Walk-In) ----------
 CREATE TABLE IF NOT EXISTS gc_teams (

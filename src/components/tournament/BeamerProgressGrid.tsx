@@ -11,8 +11,17 @@ const STATION_IDS = [...disciplineIdsByPhase('opening'), ...disciplineIdsByPhase
 const TOTAL = STATION_IDS.length;
 
 /** Fortschritt je Team (erledigte Stationen) – Cartoon-Look, OHNE Ranking. */
-export default function BeamerProgressGrid({ teams, scores }: { teams: GcTeam[]; scores: GcScore[] }) {
+export default function BeamerProgressGrid({
+  teams,
+  scores,
+  skipMode = false,
+}: {
+  teams: GcTeam[];
+  scores: GcScore[];
+  skipMode?: boolean;
+}) {
   const active = teams.filter((t) => t.checked_in).sort((a, b) => a.start_number - b.start_number);
+  const target = skipMode ? TOTAL - 1 : TOTAL; // Modus B: Eröffnung + 6 von 7 = 7 Stationen
   const finishedCount = (teamId: string) =>
     STATION_IDS.filter((d) => scores.some((s) => s.team_id === teamId && s.discipline_id === d && s.finished)).length;
 
@@ -24,8 +33,8 @@ export default function BeamerProgressGrid({ teams, scores }: { teams: GcTeam[];
         style={{ gridTemplateColumns: `repeat(${active.length > 8 ? 3 : 2}, minmax(0, 1fr))` }}
       >
         {active.map((t) => {
-          const done = finishedCount(t.id);
-          const pct = Math.round((done / TOTAL) * 100);
+          const done = Math.min(finishedCount(t.id), target);
+          const pct = Math.round((done / target) * 100);
           return (
             <div
               key={t.id}
@@ -42,7 +51,7 @@ export default function BeamerProgressGrid({ teams, scores }: { teams: GcTeam[];
                 </div>
               </div>
               <span className="font-fredoka font-700 whitespace-nowrap" style={chunky('min(2.2vw,1.5rem)', '#F0CE67', 4)}>
-                {done}/{TOTAL}
+                {done}/{target}
               </span>
             </div>
           );

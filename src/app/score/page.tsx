@@ -28,6 +28,9 @@ const PHASE_LABEL: Record<string, string> = {
   podium: 'Siegerehrung',
 };
 
+const PHASE_A_IDS = disciplineIdsByPhase('a'); // 7 Stationen
+const SKIP_CAP = PHASE_A_IDS.length - 1; // Modus B: jedes Team spielt 6 von 7
+
 export default function ScorePage() {
   const [checking, setChecking] = useState(true);
   const [authed, setAuthed] = useState(false);
@@ -71,6 +74,14 @@ export default function ScorePage() {
     [scores]
   );
 
+  // Modus B: abgeschlossene Phase-A-Stationen je Team (für die 6/7-Sperre).
+  const skipMode = !!config?.skip_mode;
+  const phaseADone = useCallback(
+    (teamId: string) =>
+      scores.filter((s) => s.team_id === teamId && s.finished && PHASE_A_IDS.includes(s.discipline_id)).length,
+    [scores]
+  );
+
   function fmtValue(disciplineId: string, s?: GcScore): string {
     const meta = SCORING_META[disciplineId];
     if (!s) return '–';
@@ -109,6 +120,11 @@ export default function ScorePage() {
             {config && (
               <p className="font-bebas text-xs tracking-[0.15em] text-[#52B788]">
                 AKTUELL: {PHASE_LABEL[config.phase] ?? config.phase}
+                {skipMode && (
+                  <span className="ml-2 rounded-full bg-[#D4AF37]/15 px-2 py-0.5 text-[#F0CE67] tracking-normal">
+                    Modus B · 6/7
+                  </span>
+                )}
               </p>
             )}
           </div>
@@ -169,9 +185,40 @@ export default function ScorePage() {
               <span className="text-2xl">{getDiscipline(selDisc)?.emoji}</span>
               <h2 className="font-fredoka font-700 text-xl text-white">{getDiscipline(selDisc)?.name}</h2>
             </div>
+
+            {skipMode && SCORING_META[selDisc]?.gamePhase === 'a' && (
+              <div className="rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/5 px-4 py-2.5">
+                <p className="font-nunito text-xs text-[#F0CE67]">
+                  <b>Modus B aktiv:</b> Jedes Team spielt 6 von 7 Stationen. Teams mit 🔒 haben ihre 6
+                  bereits voll – hier nichts mehr eintragen.
+                </p>
+              </div>
+            )}
+
             <div className="space-y-2">
               {activeTeams.map((t) => {
                 const s = scoreFor(t.id, selDisc);
+                const locked =
+                  skipMode &&
+                  SCORING_META[selDisc]?.gamePhase === 'a' &&
+                  !s?.finished &&
+                  phaseADone(t.id) >= SKIP_CAP;
+
+                if (locked) {
+                  return (
+                    <div
+                      key={t.id}
+                      className="w-full flex items-center justify-between gap-3 rounded-xl border border-[#1E4028]/60 bg-[#0F1A0D]/40 px-4 py-3 opacity-60"
+                    >
+                      <TeamBadge color={t.color} emoji={t.emoji} name={t.team_name} startNumber={t.start_number} />
+                      <span className="flex items-center gap-1.5 flex-shrink-0">
+                        <span className="text-sm">🔒</span>
+                        <span className="font-bebas text-sm text-white/50 whitespace-nowrap">6/6 · fertig</span>
+                      </span>
+                    </div>
+                  );
+                }
+
                 return (
                   <button
                     key={t.id}

@@ -252,6 +252,29 @@ export default function PresenterPanel() {
         </ControlCard>
       )}
 
+      {/* Modus B: freies Auslassen von 1 der 7 Phase-A-Stationen */}
+      <ControlCard title="MODUS B · STATIONEN">
+        <Toggle
+          label="Modus B: jedes Team spielt 6 von 7 Stationen"
+          on={config.skip_mode}
+          onClick={() => post({ skip_mode: !config.skip_mode })}
+        />
+        <p className="font-nunito text-xs text-white/40 mt-2">
+          {config.skip_mode ? (
+            <>
+              <b className="text-[#F0CE67]">Aktiv:</b> Sobald ein Team 6 Stationen abgeschlossen hat,
+              ist die 7. (offene) in der Stationseingabe automatisch gesperrt. Nicht gespielte Station
+              = 0 Punkte. Deine Korrekturen hier im Admin bleiben jederzeit möglich.
+            </>
+          ) : (
+            <>
+              Aus = alle 7 Stationen zählen (Standard). Vor Ort jederzeit umschaltbar – die Änderung
+              wirkt sofort auf Eingabe &amp; Beamer-Fortschritt.
+            </>
+          )}
+        </p>
+      </ControlCard>
+
       {/* Spritzer immer steuerbar */}
       <ControlCard title="SPRITZERWERTUNG">
         <Toggle

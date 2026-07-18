@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isScoreAuthed } from '@/lib/scoreAuth';
 import { isAuthed } from '@/lib/adminAuth';
 import { getSupabaseAdmin } from '@/lib/supabaseAdmin';
-import { SCORING_META } from '@/lib/disciplines';
+import { SCORING_META, disciplineIdsByPhase } from '@/lib/disciplines';
 import { SPRITZER_ID, type GcScore, type GcTeam } from '@/lib/tournamentTypes';
 
 export const runtime = 'nodejs';
@@ -23,7 +23,8 @@ interface Body {
 }
 
 export async function POST(request: NextRequest) {
-  if (!((await isScoreAuthed()) || (await isAuthed()))) {
+  const [scoreAuthed, adminAuthed] = await Promise.all([isScoreAuthed(), isAuthed()]);
+  if (!(scoreAuthed || adminAuthed)) {
     return NextResponse.json({ error: 'Nicht autorisiert.' }, { status: 401 });
   }
   const supabase = getSupabaseAdmin();
@@ -68,6 +69,37 @@ export async function POST(request: NextRequest) {
     .eq('team_id', team_id)
     .eq('discipline_id', discipline_id)
     .maybeSingle<GcScore>();
+
+  // ── Modus B: Jedes Team spielt nur 6 von 7 Phase-A-Stationen. Sobald 6 Stationen
+  //    abgeschlossen sind, ist die 7. (offene) gesperrt – schützt vor versehentlichen
+  //    Einträgen ("rutscht zufällig in ein weiteres Ranking"). Gilt nur für die
+  //    Stationseingabe (/score); Admin-Korrekturen sind ausgenommen. ──
+  if (!adminAuthed && meta?.gamePhase === 'a' && !(existing?.finished ?? false)) {
+    const { data: cfg } = await supabase
+      .from('gc_config')
+      .select('skip_mode')
+      .eq('id', 1)
+      .maybeSingle<{ skip_mode: boolean }>();
+    if (cfg?.skip_mode) {
+      const phaseAIds = disciplineIdsByPhase('a');
+      const { data: doneRows } = await supabase
+        .from('gc_scores')
+        .select('discipline_id')
+        .eq('team_id', team_id)
+        .eq('finished', true);
+      const otherFinished = (doneRows ?? []).filter(
+        (r) => r.discipline_id !== discipline_id && phaseAIds.includes(r.discipline_id)
+      ).length;
+      if (otherFinished >= phaseAIds.length - 1) {
+        return NextResponse.json(
+          {
+            error: `Modus B aktiv: Team hat bereits ${phaseAIds.length - 1} Stationen abgeschlossen – die letzte offene Station ist gesperrt.`,
+          },
+          { status: 409 }
+        );
+      }
+    }
+  }
 
   const final = {
     raw_value: body.raw_value !== undefined ? body.raw_value : existing?.raw_value ?? null,
