@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import { useGcConfig, useGcScores, useGcTeams } from '@/lib/useRealtime';
 import type { Phase } from '@/lib/tournamentTypes';
+import { disciplineIdsByPhase } from '@/lib/disciplines';
 import OpeningPlacementPanel from './OpeningPlacementPanel';
+
+const PHASE_A_COUNT = disciplineIdsByPhase('a').length; // verfügbare Stationen (7, mit optionaler 8.)
 
 const PHASES: { id: Phase; label: string; hint: string }[] = [
   { id: 'setup', label: 'Setup', hint: 'Vor dem Start · Beamer zeigt Logo' },
@@ -46,6 +49,9 @@ export default function PresenterPanel() {
   if (!config) {
     return <p className="font-nunito text-white/40 text-sm py-10 text-center">Lädt…</p>;
   }
+
+  const keep = config.skip_keep ?? 6; // Modus B: Pflicht-Stationen je Team (K)
+  const restLocked = Math.max(0, PHASE_A_COUNT - keep); // gesperrte Rest-Stationen (N − K)
 
   return (
     <div className="space-y-7">
@@ -252,24 +258,45 @@ export default function PresenterPanel() {
         </ControlCard>
       )}
 
-      {/* Modus B: freies Auslassen von 1 der 7 Phase-A-Stationen */}
+      {/* Modus B: jedes Team spielt K von N Phase-A-Stationen */}
       <ControlCard title="MODUS B · STATIONEN">
         <Toggle
-          label="Modus B: jedes Team spielt 6 von 7 Stationen"
+          label={`Modus B: jedes Team spielt ${keep} von ${PHASE_A_COUNT} Stationen`}
           on={config.skip_mode}
           onClick={() => post({ skip_mode: !config.skip_mode })}
         />
+        <div className="mt-3 flex items-center justify-between rounded-xl border border-[#1E4028] bg-[#0A1A0C] px-4 py-2.5">
+          <span className="font-nunito text-sm text-white">Pflicht-Stationen je Team</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => post({ skip_keep: Math.max(1, keep - 1) })}
+              disabled={busy || keep <= 1}
+              className="w-8 h-8 rounded-full border border-[#1E4028] text-white text-xl leading-none disabled:opacity-30 hover:border-[#D4AF37]/50"
+            >
+              −
+            </button>
+            <span className="font-fredoka font-700 text-[#F0CE67] w-8 text-center text-lg">{keep}</span>
+            <button
+              onClick={() => post({ skip_keep: Math.min(PHASE_A_COUNT, keep + 1) })}
+              disabled={busy || keep >= PHASE_A_COUNT}
+              className="w-8 h-8 rounded-full border border-[#1E4028] text-white text-xl leading-none disabled:opacity-30 hover:border-[#D4AF37]/50"
+            >
+              +
+            </button>
+          </div>
+        </div>
         <p className="font-nunito text-xs text-white/40 mt-2">
           {config.skip_mode ? (
             <>
-              <b className="text-[#F0CE67]">Aktiv:</b> Sobald ein Team 6 Stationen abgeschlossen hat,
-              ist die 7. (offene) in der Stationseingabe automatisch gesperrt. Nicht gespielte Station
-              = 0 Punkte. Deine Korrekturen hier im Admin bleiben jederzeit möglich.
+              <b className="text-[#F0CE67]">Aktiv:</b> Sobald ein Team {keep} Stationen abgeschlossen hat,{' '}
+              {restLocked === 1 ? 'ist die restliche Station' : `sind die restlichen ${restLocked} Stationen`} in
+              der Stationseingabe automatisch gesperrt. Nicht gespielte Station = 0 Punkte. Deine Korrekturen
+              hier im Admin bleiben jederzeit möglich.
             </>
           ) : (
             <>
-              Aus = alle 7 Stationen zählen (Standard). Vor Ort jederzeit umschaltbar – die Änderung
-              wirkt sofort auf Eingabe &amp; Beamer-Fortschritt.
+              Aus = alle {PHASE_A_COUNT} Stationen zählen (Standard). Zahl oben = wie viele jedes Team spielen
+              muss (funktioniert auch mit einer 8. Station). Vor Ort jederzeit umschaltbar.
             </>
           )}
         </p>

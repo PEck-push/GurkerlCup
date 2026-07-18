@@ -34,6 +34,13 @@ export default function PhaseBBars({
   const max = Math.max(1, ...ordered.map(metric));
   const top5 = ordered.slice(0, 5);
   const rest = ordered.slice(5);
+  // Rechte Liste bei vielen Teams (bis 30) auf 2 Spalten aufteilen, damit nichts abgeschnitten wird.
+  const restCols = rest.length > 12 ? 2 : 1;
+  const restCompact = restCols === 2;
+  const restAv = restCompact ? 30 : 38;
+  const restNumFs = restCompact ? 'min(1.5vw,1.1rem)' : 'min(2.4vw,1.5rem)';
+  const restNameFs = restCompact ? 'min(1.5vw,1.05rem)' : 'min(2.4vw,1.5rem)';
+  const restValFs = restCompact ? 'min(1.7vw,1.2rem)' : 'min(2.6vw,1.7rem)';
 
   return (
     <div className="w-full h-full flex flex-col px-[4vw] pt-[3vh] pb-[5vh] overflow-hidden">
@@ -68,8 +75,11 @@ export default function PhaseBBars({
           })}
         </div>
 
-        {/* RECHTS: Rest eingepasst */}
-        <div className="flex-1 min-h-0 flex flex-col gap-[1vh]">
+        {/* RECHTS: Rest eingepasst – 2 Spalten bei vielen Teams (bis 30) */}
+        <div
+          className="flex-1 min-h-0 grid gap-[0.9vh] auto-rows-fr"
+          style={{ gridTemplateColumns: `repeat(${restCols}, minmax(0, 1fr))` }}
+        >
           {rest.map((row, i) => {
             const t = teamById.get(row.teamId);
             if (!t) return null;
@@ -79,13 +89,13 @@ export default function PhaseBBars({
                 key={row.teamId}
                 layout
                 transition={{ type: 'spring', stiffness: 220, damping: 28 }}
-                className="flex-1 min-h-0 max-h-[68px] flex items-center gap-3 rounded-2xl pr-4"
+                className="min-h-0 max-h-[64px] flex items-center gap-2 rounded-2xl pr-3"
                 style={{ background: `linear-gradient(90deg, ${t.color}2e, rgba(255,255,255,0.03) 80%)`, boxShadow: `0 0 0 3px ${COMIC_OUTLINE}` }}
               >
-                <span className="font-fredoka font-700 w-9 text-center flex-shrink-0" style={chunky('min(2.4vw,1.5rem)', COMIC_CREAM, 4)}>{i + 6}</span>
-                <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={38} />
-                <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: 'min(2.4vw,1.5rem)', ...nameOutline }}>{t.team_name}</span>
-                <span className="font-fredoka font-700 tabular-nums" style={chunky('min(2.6vw,1.7rem)', '#F0CE67', 4)}>{val}</span>
+                <span className="font-fredoka font-700 w-8 text-center flex-shrink-0" style={chunky(restNumFs, COMIC_CREAM, 4)}>{i + 6}</span>
+                <CharAvatar startNumber={t.start_number} img={t.avatar ?? undefined} color={t.color} size={restAv} />
+                <span className="flex-1 font-fredoka font-700 text-white truncate" style={{ fontSize: restNameFs, ...nameOutline }}>{t.team_name}</span>
+                <span className="font-fredoka font-700 tabular-nums" style={chunky(restValFs, '#F0CE67', 4)}>{val}</span>
               </motion.div>
             );
           })}

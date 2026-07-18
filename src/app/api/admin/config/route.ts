@@ -67,6 +67,9 @@ export async function POST(request: NextRequest) {
   }
   if (body.test_mode !== undefined) patch.test_mode = !!body.test_mode;
   if (body.skip_mode !== undefined) patch.skip_mode = !!body.skip_mode;
+  if (body.skip_keep !== undefined) {
+    patch.skip_keep = Math.max(1, Math.min(12, Math.round(Number(body.skip_keep) || 6)));
+  }
   if (body.points_table !== undefined) patch.points_table = body.points_table;
 
   if (Object.keys(patch).length === 0) {

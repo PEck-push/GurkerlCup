@@ -28,8 +28,7 @@ const PHASE_LABEL: Record<string, string> = {
   podium: 'Siegerehrung',
 };
 
-const PHASE_A_IDS = disciplineIdsByPhase('a'); // 7 Stationen
-const SKIP_CAP = PHASE_A_IDS.length - 1; // Modus B: jedes Team spielt 6 von 7
+const PHASE_A_IDS = disciplineIdsByPhase('a'); // Phase-A-Stationen (7, mit optionaler 8.)
 
 export default function ScorePage() {
   const [checking, setChecking] = useState(true);
@@ -74,8 +73,10 @@ export default function ScorePage() {
     [scores]
   );
 
-  // Modus B: abgeschlossene Phase-A-Stationen je Team (für die 6/7-Sperre).
+  // Modus B: abgeschlossene Phase-A-Stationen je Team (für die K-von-N-Sperre).
   const skipMode = !!config?.skip_mode;
+  const skipKeep = config?.skip_keep ?? 6; // Pflicht-Stationen je Team (K)
+  const skipN = PHASE_A_IDS.length; // verfügbare Stationen (N)
   const phaseADone = useCallback(
     (teamId: string) =>
       scores.filter((s) => s.team_id === teamId && s.finished && PHASE_A_IDS.includes(s.discipline_id)).length,
@@ -122,7 +123,7 @@ export default function ScorePage() {
                 AKTUELL: {PHASE_LABEL[config.phase] ?? config.phase}
                 {skipMode && (
                   <span className="ml-2 rounded-full bg-[#D4AF37]/15 px-2 py-0.5 text-[#F0CE67] tracking-normal">
-                    Modus B · 6/7
+                    Modus B · {skipKeep}/{skipN}
                   </span>
                 )}
               </p>
@@ -189,8 +190,8 @@ export default function ScorePage() {
             {skipMode && SCORING_META[selDisc]?.gamePhase === 'a' && (
               <div className="rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/5 px-4 py-2.5">
                 <p className="font-nunito text-xs text-[#F0CE67]">
-                  <b>Modus B aktiv:</b> Jedes Team spielt 6 von 7 Stationen. Teams mit 🔒 haben ihre 6
-                  bereits voll – hier nichts mehr eintragen.
+                  <b>Modus B aktiv:</b> Jedes Team spielt {skipKeep} von {skipN} Stationen. Teams mit 🔒
+                  haben ihre {skipKeep} bereits voll – hier nichts mehr eintragen.
                 </p>
               </div>
             )}
@@ -202,7 +203,7 @@ export default function ScorePage() {
                   skipMode &&
                   SCORING_META[selDisc]?.gamePhase === 'a' &&
                   !s?.finished &&
-                  phaseADone(t.id) >= SKIP_CAP;
+                  phaseADone(t.id) >= skipKeep;
 
                 if (locked) {
                   return (
@@ -213,7 +214,7 @@ export default function ScorePage() {
                       <TeamBadge color={t.color} emoji={t.emoji} name={t.team_name} startNumber={t.start_number} />
                       <span className="flex items-center gap-1.5 flex-shrink-0">
                         <span className="text-sm">🔒</span>
-                        <span className="font-bebas text-sm text-white/50 whitespace-nowrap">6/6 · fertig</span>
+                        <span className="font-bebas text-sm text-white/50 whitespace-nowrap">{skipKeep}/{skipKeep} · fertig</span>
                       </span>
                     </div>
                   );

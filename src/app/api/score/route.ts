@@ -77,10 +77,11 @@ export async function POST(request: NextRequest) {
   if (!adminAuthed && meta?.gamePhase === 'a' && !(existing?.finished ?? false)) {
     const { data: cfg } = await supabase
       .from('gc_config')
-      .select('skip_mode')
+      .select('skip_mode, skip_keep')
       .eq('id', 1)
-      .maybeSingle<{ skip_mode: boolean }>();
+      .maybeSingle<{ skip_mode: boolean; skip_keep: number }>();
     if (cfg?.skip_mode) {
+      const keep = cfg.skip_keep ?? 6;
       const phaseAIds = disciplineIdsByPhase('a');
       const { data: doneRows } = await supabase
         .from('gc_scores')
@@ -90,10 +91,10 @@ export async function POST(request: NextRequest) {
       const otherFinished = (doneRows ?? []).filter(
         (r) => r.discipline_id !== discipline_id && phaseAIds.includes(r.discipline_id)
       ).length;
-      if (otherFinished >= phaseAIds.length - 1) {
+      if (otherFinished >= keep) {
         return NextResponse.json(
           {
-            error: `Modus B aktiv: Team hat bereits ${phaseAIds.length - 1} Stationen abgeschlossen – die letzte offene Station ist gesperrt.`,
+            error: `Modus B aktiv: Team hat bereits ${keep} Stationen abgeschlossen – weitere Stationen sind gesperrt.`,
           },
           { status: 409 }
         );

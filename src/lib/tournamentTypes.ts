@@ -32,7 +32,8 @@ export interface GcConfig {
   countdown_target: string | null;
   slide_seconds: number;
   test_mode: boolean;
-  skip_mode: boolean; // Modus B: jedes Team lässt 1 von 7 Phase-A-Stationen aus (nach 6 → 7. gesperrt)
+  skip_mode: boolean; // Modus B: jedes Team spielt nur K Phase-A-Stationen (Rest gesperrt)
+  skip_keep: number; // Modus B: Anzahl Pflicht-Stationen je Team (K, Standard 6) – funktioniert für 7 oder 8 Stationen
   points_table: PointsTable;
   updated_at: string;
 }

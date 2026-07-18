@@ -64,7 +64,7 @@ export default function BeamerStage() {
       case 'logo':
         return <BeamerLogoLoop />;
       case 'progress':
-        return <BeamerProgressGrid teams={teams} scores={scores} skipMode={!!config!.skip_mode} />;
+        return <BeamerProgressGrid teams={teams} scores={scores} skipMode={!!config!.skip_mode} skipKeep={config!.skip_keep ?? 6} />;
       case 'countdown':
         return <BeamerCountdown target={config!.countdown_target} />;
       case 'opening':
