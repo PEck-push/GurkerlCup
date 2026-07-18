@@ -7,8 +7,9 @@ import BeamerHeading from './BeamerHeading';
 import CharAvatar from './CharAvatar';
 import { chunky, nameOutline, COMIC_OUTLINE } from '@/lib/comicStyles';
 
-const OPENING_IDS = disciplineIdsByPhase('opening');
-const STATION_IDS = [...OPENING_IDS, ...disciplineIdsByPhase('a')];
+// Fortschritt zählt NUR die Phase-A-Stationen (die Eröffnung läuft einmalig zu Beginn
+// und ist keine Station, die die Teams abarbeiten) → Anzeige X/7.
+const STATION_IDS = disciplineIdsByPhase('a');
 const TOTAL = STATION_IDS.length;
 
 /** Fortschritt je Team (erledigte Stationen) – Cartoon-Look, OHNE Ranking. Skaliert bis ~30 Teams. */
@@ -24,8 +25,8 @@ export default function BeamerProgressGrid({
   skipKeep?: number;
 }) {
   const active = teams.filter((t) => t.checked_in).sort((a, b) => a.start_number - b.start_number);
-  // Modus B: Ziel = Eröffnung + K Pflicht-Stationen (z. B. 1 + 6 = 7), sonst alle Stationen.
-  const target = skipMode ? Math.min(TOTAL, OPENING_IDS.length + skipKeep) : TOTAL;
+  // Ziel = alle Phase-A-Stationen (7/7), in Modus B nur K Pflicht-Stationen (z. B. 6).
+  const target = skipMode ? Math.min(TOTAL, skipKeep) : TOTAL;
   const finishedCount = (teamId: string) =>
     STATION_IDS.filter((d) => scores.some((s) => s.team_id === teamId && s.discipline_id === d && s.finished)).length;
 
