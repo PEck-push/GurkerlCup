@@ -73,14 +73,24 @@ export default function PrintExportPanel() {
           Eine Seite für die Begrüßung/Anmoderation: 3 Phasen, Punktesystem, Gurkerl-Karten,
           Spritzer &amp; Timeline – alles auf einen Blick (inkl. Modus-B-Hinweis 6 von 7–8).
         </p>
-        <a
-          href="/downloads/gurkerl-cup-moderation-spickzettel.pdf"
-          target="_blank"
-          rel="noreferrer"
-          className="btn-gold px-5 py-2.5 rounded-full text-sm inline-block"
-        >
-          ⬇ Spickzettel (PDF)
-        </a>
+        <div className="flex flex-wrap items-center gap-3">
+          <a
+            href="/admin/spickzettel"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-gold px-5 py-2.5 rounded-full text-sm inline-block"
+          >
+            🖨 Spickzettel öffnen / drucken
+          </a>
+          <a
+            href="/downloads/gurkerl-cup-moderation-spickzettel.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="font-nunito text-sm text-[#52B788] hover:text-white border border-[#52B788]/30 hover:border-[#52B788] rounded-full px-5 py-2.5 inline-block transition-all"
+          >
+            ⬇ PDF
+          </a>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-[#1E4028] bg-[#111E13] p-5">
