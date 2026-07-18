@@ -300,8 +300,9 @@ function DisciplineGroup({
         {ids.map((id) => {
           const disc = disciplines.find((d) => d.id === id);
           if (!disc) return null;
+          // Zählt Teams mit vorhandenem Ergebnis (nicht nur das manuelle "fertig"-Häkchen).
           const finishedCount = scores.filter(
-            (s) => s.discipline_id === id && s.finished
+            (s) => s.discipline_id === id && (s.finished || s.raw_value != null || s.manual_rank != null)
           ).length;
           return (
             <button

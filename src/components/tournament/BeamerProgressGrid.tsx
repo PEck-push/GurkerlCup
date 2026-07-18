@@ -27,8 +27,17 @@ export default function BeamerProgressGrid({
   const active = teams.filter((t) => t.checked_in).sort((a, b) => a.start_number - b.start_number);
   // Ziel = alle Phase-A-Stationen (7/7), in Modus B nur K Pflicht-Stationen (z. B. 6).
   const target = skipMode ? Math.min(TOTAL, skipKeep) : TOTAL;
+  // "Erledigt" = ein Ergebnis liegt vor (Rohwert/Platz) – NICHT das manuelle "fertig"-Häkchen,
+  // das die Stationsbetreuer oft nicht setzen (z. B. Biathlon). So passt die Anzeige zur Team-Seite.
   const finishedCount = (teamId: string) =>
-    STATION_IDS.filter((d) => scores.some((s) => s.team_id === teamId && s.discipline_id === d && s.finished)).length;
+    STATION_IDS.filter((d) =>
+      scores.some(
+        (s) =>
+          s.team_id === teamId &&
+          s.discipline_id === d &&
+          (s.finished || s.raw_value != null || s.manual_rank != null)
+      )
+    ).length;
 
   // Spalten & Kompaktheit nach Teamzahl (bis 30): 2 → 3 → 4 Spalten.
   const n = active.length;
